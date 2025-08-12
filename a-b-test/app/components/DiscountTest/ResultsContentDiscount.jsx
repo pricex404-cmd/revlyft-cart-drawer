@@ -1,6 +1,6 @@
 import { Text, BlockStack, Card, EmptyState, InlineStack } from "@shopify/polaris";
 
-export const ResultsContentProductDetails = ({ testGroups = [] }) => {
+export const ResultsContentDiscount = ({ testGroups = [] }) => {
     if (!testGroups || testGroups.length === 0) {
         return (
             <BlockStack gap="400">
@@ -143,4 +143,4 @@ export const ResultsContentProductDetails = ({ testGroups = [] }) => {
     );
 };
 
-export default ResultsContentProductDetails; 
+export default ResultsContentDiscount; 

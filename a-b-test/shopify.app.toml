@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "b633b97839927c8b34e5028c47d2c881"
-application_url = "https://tracks-affiliate-ours-deals.trycloudflare.com"
+application_url = "https://recovery-panel-gloves-brass.trycloudflare.com"
 embedded = true
 name = "abtest"
 handle = "abtest-6"
@@ -43,9 +43,9 @@ scopes = "read_orders,read_script_tags,write_discounts,write_products,write_scri
 
 [auth]
 redirect_urls = [
-  "https://tracks-affiliate-ours-deals.trycloudflare.com/auth/callback",
-  "https://tracks-affiliate-ours-deals.trycloudflare.com/auth/shopify/callback",
-  "https://tracks-affiliate-ours-deals.trycloudflare.com/api/auth/callback"
+  "https://recovery-panel-gloves-brass.trycloudflare.com/auth/callback",
+  "https://recovery-panel-gloves-brass.trycloudflare.com/auth/shopify/callback",
+  "https://recovery-panel-gloves-brass.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
