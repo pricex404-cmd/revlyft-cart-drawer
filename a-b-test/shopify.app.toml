@@ -15,15 +15,15 @@ api_version = "2025-01"
 
   [[webhooks.subscriptions]]
   compliance_topics = [ "customers/data_request" ]
-  uri = "https://abtest.causalfunnel.org/webhooks/customers/data_request"
+  uri = "/webhooks/customers/data_request"
 
   [[webhooks.subscriptions]]
   compliance_topics = [ "customers/redact" ]
-  uri = "https://abtest.causalfunnel.org/webhooks/customers/redact"
+  uri = "/webhooks/customers/redact"
 
   [[webhooks.subscriptions]]
   compliance_topics = [ "shop/redact" ]
-  uri = "https://abtest.causalfunnel.org/webhooks/shop/redact"
+  uri = "/webhooks/shop/redact"
 
   [[webhooks.subscriptions]]
   topics = [ "app/scopes_update" ]
