@@ -473,7 +473,7 @@ export async function deactivateDiscount(admin, discountId) {
   }
 }
 
-const FIREBASE_DB_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
 
 /**
  * Deactivates all active tests except for the specified test

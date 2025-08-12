@@ -2,7 +2,7 @@ import { sanitizeShopDomain } from "../utils/sanitizeShopDomain";
 import extractShopifyProductId from "../utils/extractProductId";
 import { createNewSession, closeOpenSessions } from "./timer";
 
-const FIREBASE_DB_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
 
 // Function to check if any modifications have been made
 export const checkIfModificationsMade = (isTestStarted, selectedProducts, testGroups) => {

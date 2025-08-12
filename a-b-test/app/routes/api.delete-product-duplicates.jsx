@@ -9,7 +9,7 @@ import {
     ADJUST_INVENTORY
 } from "../utils/graphqlQueries";
 
-const FIREBASE_DB_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
 
 const logToFile = createLogger('delete-product-duplicates');
 export const action = async ({ request }) => {

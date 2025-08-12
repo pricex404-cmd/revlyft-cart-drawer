@@ -84,7 +84,7 @@ import {
 import { checkIfModificationsMade, validateInventoryDistribution } from "../functions/productdetails";
 
 // Firebase configuration
-const FIREBASE_DB_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
 
 // Add an action for creating discounts (handles both cart and product discounts)
 export async function action({ request }) {

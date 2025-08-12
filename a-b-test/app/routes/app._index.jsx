@@ -35,7 +35,7 @@ import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { deactivateAllActivePriceTests, deactivateAllActiveDiscountTests } from "../functions/discount";
 import { CREATE_PRODUCT_POPULATE, UPDATE_PRODUCT_VARIANTS_BULK } from "../utils/graphqlQueries";
-const FIREBASE_DB_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
