@@ -1,0 +1,46 @@
+[
+    {
+        "name": "theme_info",
+        "theme_name": "CausalFunnel A/B Test",
+        "theme_version": "1.0.0",
+        "theme_author": "CausalFunnel",
+        "theme_documentation_url": "",
+        "theme_support_url": ""
+    },
+    {
+        "name": "Colors",
+        "settings": [
+            {
+                "type": "color",
+                "id": "primary_color",
+                "label": "Primary color",
+                "default": "#000000"
+            },
+            {
+                "type": "color",
+                "id": "secondary_color",
+                "label": "Secondary color",
+                "default": "#ffffff"
+            }
+        ]
+    },
+    {
+        "name": "Typography",
+        "settings": [
+            {
+                "type": "font_picker",
+                "id": "heading_font",
+                "default": "helvetica_n4",
+                "label": "Heading font",
+                "info": "Select a font for headings"
+            },
+            {
+                "type": "font_picker",
+                "id": "body_font",
+                "default": "helvetica_n4",
+                "label": "Body font",
+                "info": "Select a font for body text"
+            }
+        ]
+    }
+]

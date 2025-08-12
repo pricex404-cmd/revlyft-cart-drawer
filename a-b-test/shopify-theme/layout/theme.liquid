@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <title>{{ page_title }}</title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    {{ content_for_header }}
+
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+
+    <!-- Price modification script for A/B testing -->
+    <script>
+      (function() {
+        // Get price modifications from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const priceModsStr = urlParams.get('price_mods');
+        if (!priceModsStr) return;
+
+        try {
+          const priceMods = JSON.parse(decodeURIComponent(priceModsStr));
+          
+          // Function to format price
+          function formatPrice(cents) {
+            if (typeof Shopify !== 'undefined' && Shopify.formatMoney) {
+              return Shopify.formatMoney(cents * 100);
+            }
+            return `$${parseFloat(cents).toFixed(2)}`;
+          }
+
+          // Function to update price elements
+          function updatePrices() {
+            Object.entries(priceMods).forEach(([productId, newPrice]) => {
+              // Find all price elements for this product using various selectors
+              const selectors = [
+                `.price-item[data-product-id="${productId}"]`,
+                `.product-price[data-product-id="${productId}"]`,
+                `#ProductPrice-${productId}`,
+                `[data-product-id="${productId}"] .price`,
+                `[data-product-id="${productId}"] .price-item`,
+                `[data-product-id="${productId}"] .price__regular`,
+                `[data-product-id="${productId}"] .product__price`,
+                `[data-product-id="${productId}"] .product-price`,
+                `.product__price[data-product-id="${productId}"]`
+              ];
+              
+              const priceElements = document.querySelectorAll(selectors.join(', '));
+              priceElements.forEach(element => {
+                element.textContent = formatPrice(newPrice);
+                // Also update any data attributes that might contain the price
+                element.setAttribute('data-price', newPrice);
+                element.setAttribute('data-regular-price', newPrice);
+              });
+            });
+          }
+
+          // Run price updates when DOM is ready
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', updatePrices);
+          } else {
+            updatePrices();
+          }
+
+          // Watch for dynamic content changes
+          const observer = new MutationObserver((mutations) => {
+            let shouldUpdate = false;
+            mutations.forEach((mutation) => {
+              if (mutation.addedNodes.length > 0) {
+                shouldUpdate = true;
+              }
+            });
+            if (shouldUpdate) {
+              updatePrices();
+            }
+          });
+
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['data-price', 'data-regular-price']
+          });
+        } catch (error) {
+          console.error('Error applying price modifications:', error);
+        }
+      })();
+    </script>
+  </head>
+
+  <body>
+    {% section 'header' %}
+
+    <main role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+  </body>
+</html> 

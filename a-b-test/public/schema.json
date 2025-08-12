@@ -1,0 +1,65 @@
+{
+    "abTests": {
+        "shopDomain": {
+            "testId": {
+                "basicInfo": {
+                    "testName": string,
+                    "testDescription": string,
+                    "type": "price",
+                    "status": string, // "active", "paused", "completed"
+                    "createdAt": timestamp,
+                    "updatedAt": timestamp,
+                    "currency": string // e.g., "INR"
+                },
+                "testGroups": [
+                    {
+                        "id": number,
+                        "name": string,
+                        "percentage": number,
+                        "color": string,
+                        "products": {
+                            "productId": {
+                                "originalPrice": number,
+                                "modifiedPrice": number
+                            }
+                        }
+                    }
+                ],
+                "targeting": {
+                    "deviceType": string, // "all", "desktop", "mobile", "tablet"
+                    "visitorType": string, // "all", "new", "returning"
+                    "trafficSource": array, // ["all"] or specific sources
+                    "selectedCountry": string
+                },
+                "analytics": {
+                    "conversionType": string, // "all" or specific type
+                    "primaryMetric": string // "conversion" or other metrics
+                },
+                "selectedProducts": [
+                    {
+                        "productId": string,
+                        "title": string,
+                        "handle": string,
+                        "originalPrice": number,
+                        "imageUrl": string
+                    }
+                ]
+            }
+        }
+    }
+}
+
+
+
+"testVariants": [
+    {
+        "id": number,
+        "name": string,
+        "percentage": number,
+        "products": {
+            "productId": {
+                "disountPrice": number
+            }
+        }
+    }
+],

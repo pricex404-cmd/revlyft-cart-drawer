@@ -1,0 +1,57 @@
+query RunInput {
+  cart {
+    lines {
+      quantity
+      cost {
+        totalAmount {
+          amount
+          currencyCode
+        }
+        amountPerQuantity {
+          amount
+          currencyCode
+        }
+      }
+      merchandise {
+        __typename
+        ... on ProductVariant {
+          id
+          product {
+            id
+            title
+          }
+        }
+      }
+    }
+    cost {
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+    }
+    buyerIdentity {
+      customer {
+        id
+      }
+    }
+    # Individual cart attributes for CausalFunnel IDs
+    deviceIdAttribute: attribute(key: "causal_funnel_device_id") {
+      value
+    }
+    hashValueAttribute: attribute(key: "causal_funnel_hash_value") {
+      value
+    }
+    testDataAttribute: attribute(key: "causal_funnel_test_data") {
+      value
+    }
+  }
+  discountNode {
+    metafield(namespace: "$app:product-discount", key: "function-configuration") {
+      value
+    }
+  }
+}

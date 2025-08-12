@@ -1,0 +1,530 @@
+{
+  "17e21d01-e1d3-421b-b933-f5e2f5fdd755": {
+    "analytics": {
+      "conversionType": "all",
+      "primaryMetric": "conversion"
+    },
+    "basicInfo": {
+      "createdAt": "2025-06-24T13:14:35.512Z",
+      "currency": "USD",
+      "discountId": "gid://shopify/DiscountAutomaticNode/1368091459738",
+      "instructionsSeen": true,
+      "lastStartTime": "2025-06-24T13:14:58.800Z",
+      "status": "active",
+      "testDescription": "desc",
+      "testName": "price",
+      "type": "pricing",
+      "updatedAt": "2025-06-24T13:14:58.800Z"
+    },
+    "selectedProducts": [
+      {
+        "handle": "the-inventory-not-tracked-snowboard",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0671/6194/8314/files/snowboard_purple_hydrogen.png?v=1743502849",
+        "isMultiVariant": true,
+        "originalPrice": 949.95,
+        "productId": "gid://shopify/Product/8469363654810",
+        "samePrice": true,
+        "title": "The Inventory Not Tracked Snowboard",
+        "variants": [
+          {
+            "price": 949.95,
+            "title": "lg",
+            "variantId": "gid://shopify/ProductVariant/45850006683802"
+          },
+          {
+            "price": 949.95,
+            "title": "sm",
+            "variantId": "gid://shopify/ProductVariant/45850006716570"
+          },
+          {
+            "price": 949.95,
+            "title": "xs",
+            "variantId": "gid://shopify/ProductVariant/45850006749338"
+          }
+        ]
+      }
+    ],
+    "sessions": [
+      {
+        "id": "1750770898800",
+        "sessionType": "manual",
+        "startTime": "2025-06-24T13:14:58.800Z"
+      }
+    ],
+    "targeting": {
+      "deviceType": "all",
+      "trafficSource": "all",
+      "visitorType": "all"
+    },
+    "testGroups": [
+      {
+        "color": "#0040FF",
+        "id": 1,
+        "name": "Control Group",
+        "percentage": 13,
+        "products": {
+          "8469363654810": {
+            "discountPercentage": 0,
+            "isMultiVariant": true,
+            "modifiedPrice": 949.95,
+            "originalPrice": 949.95,
+            "samePrice": true,
+            "variants": {
+              "45850006683802": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "lg",
+                "variantId": "gid://shopify/ProductVariant/45850006683802"
+              },
+              "45850006716570": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "sm",
+                "variantId": "gid://shopify/ProductVariant/45850006716570"
+              },
+              "45850006749338": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "xs",
+                "variantId": "gid://shopify/ProductVariant/45850006749338"
+              }
+            }
+          }
+        }
+      },
+      {
+        "analytics": {
+          "addToCart": {
+            "variantId_45850006683802": [
+              "2409:40e3:3d4:8645:2dfb:9d35:9152:3efd"
+            ]
+          },
+          "views": {
+            "productId_8469363654810": [
+              "2409:40e3:3d4:8645:2dfb:9d35:9152:3efd"
+            ],
+            "variantId_45850006683802": [
+              "2409:40e3:3d4:8645:2dfb:9d35:9152:3efd",
+              "2409:40e3:3d4:8645:2dfb:9d35:9152:3efd",
+              "2409:40e3:3d4:8645:2dfb:9d35:9152:3efd"
+            ]
+          }
+        },
+        "color": "#00A47C",
+        "id": 2,
+        "name": "New Group 1",
+        "percentage": 87,
+        "products": {
+          "8469363654810": {
+            "discountPercentage": 98.74,
+            "isMultiVariant": true,
+            "modifiedPrice": 12,
+            "originalPrice": 949.95,
+            "samePrice": true,
+            "variants": {
+              "45850006683802": {
+                "discountPercentage": 98.74,
+                "modifiedPrice": 12,
+                "originalPrice": 949.95,
+                "title": "lg",
+                "variantId": "gid://shopify/ProductVariant/45850006683802"
+              },
+              "45850006716570": {
+                "discountPercentage": 98.74,
+                "modifiedPrice": 12,
+                "originalPrice": 949.95,
+                "title": "sm",
+                "variantId": "gid://shopify/ProductVariant/45850006716570"
+              },
+              "45850006749338": {
+                "discountPercentage": 98.74,
+                "modifiedPrice": 12,
+                "originalPrice": 949.95,
+                "title": "xs",
+                "variantId": "gid://shopify/ProductVariant/45850006749338"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "querySelectors": {
+    "-OTXGk_06k1U6Qn1x4hH": {
+      "elementType": "price",
+      "selector": ".price .price__container .price__regular .price-item.price-item--regular",
+      "timestamp": "2025-06-24T14:10:53.370Z",
+      "url": "https://pulsestore-1.myshopify.com/?price_tagging=true&source=ab_test"
+    }
+  }
+}
+//new data 
+{
+  "67281a68-413f-45a6-ac35-1a642e6f91b6": {
+    "analytics": {
+      "conversionType": "all",
+      "primaryMetric": "conversion"
+    },
+    "basicInfo": {
+      "createdAt": "2025-06-25T07:34:51.193Z",
+      "currency": "USD",
+      "discountId": "",
+      "instructionsSeen": true,
+      "pricingMethod": "percentage",
+      "status": "pending",
+      "testDescription": "desc",
+      "testName": "price2",
+      "type": "pricing",
+      "updatedAt": "2025-06-25T07:50:47.102Z"
+    },
+    "selectedProducts": [
+      {
+        "handle": "the-inventory-not-tracked-snowboard",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0671/6194/8314/files/snowboard_purple_hydrogen.png?v=1743502849",
+        "isMultiVariant": true,
+        "originalPrice": 949.95,
+        "productId": "gid://shopify/Product/8469363654810",
+        "samePrice": true,
+        "title": "The Inventory Not Tracked Snowboard",
+        "variants": [
+          {
+            "price": 949.95,
+            "title": "lg",
+            "variantId": "gid://shopify/ProductVariant/45850006683802"
+          },
+          {
+            "price": 949.95,
+            "title": "sm",
+            "variantId": "gid://shopify/ProductVariant/45850006716570"
+          },
+          {
+            "price": 949.95,
+            "title": "xs",
+            "variantId": "gid://shopify/ProductVariant/45850006749338"
+          }
+        ]
+      },
+      {
+        "allVariants": [
+          {
+            "price": 699.95,
+            "title": "Ice",
+            "variantId": "gid://shopify/ProductVariant/45639020839066"
+          },
+          {
+            "price": 699.95,
+            "title": "Dawn",
+            "variantId": "gid://shopify/ProductVariant/45639020871834"
+          },
+          {
+            "price": 13,
+            "title": "Powder",
+            "variantId": "gid://shopify/ProductVariant/45639020904602"
+          },
+          {
+            "price": 699.95,
+            "title": "Electric",
+            "variantId": "gid://shopify/ProductVariant/45639020937370"
+          },
+          {
+            "price": 12,
+            "title": "Sunset",
+            "variantId": "gid://shopify/ProductVariant/45639020970138"
+          }
+        ],
+        "handle": "the-complete-snowboard",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0671/6194/8314/files/Main_589fc064-24a2-4236-9eaf-13b2bd35d21d.jpg?v=1743502849",
+        "isMultiVariant": true,
+        "productId": "gid://shopify/Product/8469363818650",
+        "samePrice": false,
+        "title": "The Complete Snowboard",
+        "variants": [
+          {
+            "price": 699.95,
+            "title": "Ice",
+            "variantId": "gid://shopify/ProductVariant/45639020839066"
+          },
+          {
+            "price": 699.95,
+            "title": "Electric",
+            "variantId": "gid://shopify/ProductVariant/45639020937370"
+          }
+        ]
+      },
+      {
+        "handle": "the-draft-snowboard",
+        "imageUrl": "https://cdn.shopify.com/s/files/1/0671/6194/8314/files/Main_5127218a-8f6c-498f-b489-09242c0fab0a.jpg?v=1743502848",
+        "isMultiVariant": false,
+        "originalPrice": 2629.95,
+        "productId": "gid://shopify/Product/8469363916954",
+        "title": "The Draft Snowboard",
+        "variantId": "gid://shopify/ProductVariant/45639021002906"
+      }
+    ],
+    "targeting": {
+      "deviceType": "all",
+      "trafficSource": "all",
+      "visitorType": "all"
+    },
+    "testGroups": [
+      {
+        "color": "#0040FF",
+        "id": 1,
+        "name": "Control Group",
+        "percentage": 34,
+        "products": {
+          "8469363654810": {
+            "discountPercentage": 0,
+            "isMultiVariant": true,
+            "modifiedPrice": 949.95,
+            "originalPrice": 949.95,
+            "samePrice": true,
+            "variants": {
+              "45850006683802": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "lg",
+                "variantId": "gid://shopify/ProductVariant/45850006683802"
+              },
+              "45850006716570": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "sm",
+                "variantId": "gid://shopify/ProductVariant/45850006716570"
+              },
+              "45850006749338": {
+                "discountPercentage": 0,
+                "modifiedPrice": 949.95,
+                "originalPrice": 949.95,
+                "title": "xs",
+                "variantId": "gid://shopify/ProductVariant/45850006749338"
+              }
+            }
+          },
+          "8469363818650": {
+            "isMultiVariant": true,
+            "samePrice": false,
+            "variants": {
+              "45639020839066": {
+                "discountPercentage": 0,
+                "modifiedPrice": 699.95,
+                "originalPrice": 699.95,
+                "title": "Ice",
+                "variantId": "gid://shopify/ProductVariant/45639020839066"
+              },
+              "45639020937370": {
+                "discountPercentage": 0,
+                "modifiedPrice": 699.95,
+                "originalPrice": 699.95,
+                "title": "Electric",
+                "variantId": "gid://shopify/ProductVariant/45639020937370"
+              }
+            }
+          },
+          "8469363916954": {
+            "discountPercentage": 0,
+            "isMultiVariant": false,
+            "modifiedPrice": 2629.95,
+            "originalPrice": 2629.95,
+            "variants": {
+              "45639021002906": {
+                "discountPercentage": 0,
+                "modifiedPrice": 2629.95,
+                "originalPrice": 2629.95,
+                "title": "Default Title",
+                "variantId": "gid://shopify/ProductVariant/45639021002906"
+              }
+            }
+          }
+        },
+        "style": {
+          "backgroundColor": "#0040FF",
+          "border": "2px solid #0040FF",
+          "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"
+        }
+      },
+      {
+        "color": "#00A47C",
+        "id": 2,
+        "name": "New Group 1",
+        "percentage": 33,
+        "products": {
+          "8469363654810": {
+            "discountPercentage": 21,
+            "isMultiVariant": true,
+            "modifiedPrice": 750.4605,
+            "originalPrice": 949.95,
+            "samePrice": true,
+            "variants": {
+              "45850006683802": {
+                "discountPercentage": 21,
+                "modifiedPrice": 750.4605,
+                "originalPrice": 949.95,
+                "title": "lg",
+                "variantId": "gid://shopify/ProductVariant/45850006683802"
+              },
+              "45850006716570": {
+                "discountPercentage": 21,
+                "modifiedPrice": 750.4605,
+                "originalPrice": 949.95,
+                "title": "sm",
+                "variantId": "gid://shopify/ProductVariant/45850006716570"
+              },
+              "45850006749338": {
+                "discountPercentage": 21,
+                "modifiedPrice": 750.4605,
+                "originalPrice": 949.95,
+                "title": "xs",
+                "variantId": "gid://shopify/ProductVariant/45850006749338"
+              }
+            }
+          },
+          "8469363818650": {
+            "isMultiVariant": true,
+            "samePrice": false,
+            "variants": {
+              "45639020839066": {
+                "discountPercentage": 22,
+                "modifiedPrice": 545.961,
+                "originalPrice": 699.95,
+                "title": "Ice",
+                "variantId": "gid://shopify/ProductVariant/45639020839066"
+              },
+              "45639020937370": {
+                "discountPercentage": 23,
+                "modifiedPrice": 538.9615,
+                "originalPrice": 699.95,
+                "title": "Electric",
+                "variantId": "gid://shopify/ProductVariant/45639020937370"
+              }
+            }
+          },
+          "8469363916954": {
+            "discountPercentage": 24,
+            "isMultiVariant": false,
+            "modifiedPrice": 1998.762,
+            "originalPrice": 2629.95,
+            "variants": {
+              "45639021002906": {
+                "discountPercentage": 24,
+                "modifiedPrice": 1998.762,
+                "originalPrice": 2629.95,
+                "title": "Default Title",
+                "variantId": "gid://shopify/ProductVariant/45639021002906"
+              }
+            }
+          }
+        },
+        "style": {
+          "backgroundColor": "#00A47C",
+          "border": "2px solid #00A47C",
+          "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"
+        }
+      },
+      {
+        "color": "#FFA500",
+        "id": 3,
+        "name": "New Group 2",
+        "percentage": 33,
+        "products": {
+          "8469363654810": {
+            "discountPercentage": 22,
+            "isMultiVariant": true,
+            "modifiedDescription": "",
+            "modifiedInventory": 0,
+            "modifiedPrice": 740.961,
+            "modifiedTitle": "",
+            "originalInventory": 0,
+            "originalPrice": 949.95,
+            "samePrice": true,
+            "variants": {
+              "45850006683802": {
+                "discountPercentage": 22,
+                "modifiedPrice": 740.961,
+                "originalPrice": 949.95,
+                "title": "lg",
+                "variantId": "gid://shopify/ProductVariant/45850006683802"
+              },
+              "45850006716570": {
+                "discountPercentage": 22,
+                "modifiedPrice": 740.961,
+                "originalPrice": 949.95,
+                "title": "sm",
+                "variantId": "gid://shopify/ProductVariant/45850006716570"
+              },
+              "45850006749338": {
+                "discountPercentage": 22,
+                "modifiedPrice": 740.961,
+                "originalPrice": 949.95,
+                "title": "xs",
+                "variantId": "gid://shopify/ProductVariant/45850006749338"
+              }
+            }
+          },
+          "8469363818650": {
+            "isMultiVariant": true,
+            "modifiedDescription": "",
+            "modifiedInventory": 0,
+            "modifiedTitle": "",
+            "originalInventory": 0,
+            "samePrice": false,
+            "variants": {
+              "45639020839066": {
+                "discountPercentage": 23,
+                "modifiedPrice": 538.9615,
+                "originalPrice": 699.95,
+                "title": "Ice",
+                "variantId": "gid://shopify/ProductVariant/45639020839066"
+              },
+              "45639020937370": {
+                "discountPercentage": 23.9,
+                "modifiedPrice": 532.66195,
+                "originalPrice": 699.95,
+                "title": "Electric",
+                "variantId": "gid://shopify/ProductVariant/45639020937370"
+              }
+            }
+          },
+          "8469363916954": {
+            "discountPercentage": 20,
+            "isMultiVariant": false,
+            "modifiedDescription": "",
+            "modifiedInventory": 0,
+            "modifiedPrice": 2103.96,
+            "modifiedTitle": "",
+            "originalInventory": 0,
+            "originalPrice": 2629.95,
+            "variants": {
+              "45639021002906": {
+                "discountPercentage": 20,
+                "modifiedPrice": 2103.96,
+                "originalPrice": 2629.95,
+                "title": "Default Title",
+                "variantId": "gid://shopify/ProductVariant/45639021002906"
+              }
+            }
+          }
+        },
+        "style": {
+          "backgroundColor": "#FFA500",
+          "border": "2px solid #FFA500",
+          "boxShadow": "0 2px 4px rgba(0,0,0,0.1)"
+        }
+      }
+    ]
+  },
+  "isScriptDetected": true,
+  "querySelectors": {
+    "-OTXGk_06k1U6Qn1x4hH": {
+      "elementType": "price",
+      "selector": ".price .price__container .price__regular .price-item.price-item--regular",
+      "timestamp": "2025-06-24T14:10:53.370Z",
+      "url": "https://pulsestore-1.myshopify.com/?price_tagging=true&source=ab_test"
+    }
+  }
+}
