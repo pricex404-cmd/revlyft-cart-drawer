@@ -43,7 +43,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
             setIsLoading(true);
             try {
                 const sanitizedDomain = shop.domain.replace(/\./g, '_');
-                const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/${testId}.json`);
+                const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}.json`);
                 const data = await response.json();
 
                 if (!data) {

@@ -2,7 +2,7 @@ import { authenticate } from "../shopify.server";
 import path from 'path';
 import fs from 'fs';
 
-const FIREBASE_URL = "https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/";
+const FIREBASE_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/abTests/";
 
 const logToFile = (message) => {
     const logDir = path.resolve(process.cwd(), 'logs');

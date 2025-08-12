@@ -59,7 +59,7 @@ export const ConfigurationContent = ({ shop, testId }) => {
             if (!shop?.domain || !testId) return;
             const sanitizedDomain = shop.domain.replace(/\./g, '_');
             const response = await fetch(
-                `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`
+                `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`
             );
             const data = await response.json();
             if (data) {
@@ -80,7 +80,7 @@ export const ConfigurationContent = ({ shop, testId }) => {
         if (!shop?.domain || !testId) return;
         const sanitizedDomain = shop.domain.replace(/\./g, '_');
         await fetch(
-            `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`,
+            `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`,
             {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },

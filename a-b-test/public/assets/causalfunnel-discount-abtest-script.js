@@ -201,7 +201,7 @@ async function getStoreId() {
 async function fetchABTestData() {
     try {
         const storeId = await getStoreId();
-        const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${storeId}.json`);
+        const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${storeId}.json`);
         if (!response.ok) {
             throw new Error(`Failed to fetch AB test data: ${response.status}`);
         }
@@ -255,7 +255,7 @@ async function trackCartDrawerMessageAnalytics(messageType, testId, variantIndex
 
         const storeId = await getStoreId();
         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/${messageType}`;
-        const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
         // Fetch current analytics data
         const response = await fetch(analyticsUrl);
@@ -351,7 +351,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
 
         const storeId = await getStoreId();
         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${ip}`;
-        const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
         // Fetch current user behavior data
         const response = await fetch(analyticsUrl);

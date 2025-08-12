@@ -1333,7 +1333,7 @@ async function fetchABTestData() {
         const domain = getShopifyDomainFromScript();
         const sanitizedDomain = domain.replace(/\./g, '_');
 
-        const firebaseUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}.json`;
+        const firebaseUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}.json`;
 
         const response = await fetch(firebaseUrl);
 
@@ -1781,7 +1781,7 @@ async function processProductVisibility(activeTests, hashValue) {
                         if (variantIndex !== -1) {
                             const storeId = await getStoreId();
                             const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/views`;
-                            const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+                            const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
                             const response = await fetch(analyticsUrl);
                             if (response.ok) {
@@ -2563,7 +2563,7 @@ function setupCartTracking() {
                         console.log(`📊 Tracking addToCart for ${trackingKey}`);
 
                         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/addToCart`;
-                        const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+                        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
                         // Fetch current addToCart data
                         const response = await fetch(analyticsUrl);
@@ -2608,7 +2608,7 @@ function setupCartTracking() {
                     } else {
                         // For productDetails tests, keep original simple array tracking
                         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/addToCart`;
-                        const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+                        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
                         // Fetch current addToCart data
                         const response = await fetch(analyticsUrl);
@@ -3121,7 +3121,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
         const storeId = await getStoreId();
 
         // Firebase URL for isscriptDetected node (same level as querySelectors)
-        const firebaseUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${storeId}/isScriptDetected.json`;
+        const firebaseUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${storeId}/isScriptDetected.json`;
 
         // Make the Firebase call to set isscriptDetected to true
         const response = await fetch(firebaseUrl, {
@@ -3506,7 +3506,7 @@ async function processAllProducts(activeTests, hashValue) {
                                 }
 
                                 const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/views`;
-                                const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+                                const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
                                 const response = await fetch(analyticsUrl);
                                 if (response.ok) {

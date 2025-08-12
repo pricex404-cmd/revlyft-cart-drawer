@@ -437,7 +437,7 @@ if (checkRequiredParameters()) {
             }
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
-            const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
+            const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -507,7 +507,7 @@ if (checkRequiredParameters()) {
             console.log('Storing selector for shop:', sanitizedDomain);
 
             // First check if this selector already exists
-            const checkResponse = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
+            const checkResponse = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
 
             if (!checkResponse.ok) {
                 throw new Error(`HTTP error! status: ${checkResponse.status}`);
@@ -539,7 +539,7 @@ if (checkRequiredParameters()) {
             console.log('Sending data to Firebase:', data);
 
             // Make the API call to store under the store's node
-            const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`, {
+            const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -580,9 +580,9 @@ if (checkRequiredParameters()) {
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
             console.log('Attempting to delete selector with key:', key);
-            console.log('DELETE URL:', `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors/${key}.json`);
+            console.log('DELETE URL:', `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors/${key}.json`);
 
-            const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors/${key}.json`, {
+            const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors/${key}.json`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -959,7 +959,7 @@ if (checkRequiredParameters()) {
             }
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
-            const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
+            const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -988,7 +988,7 @@ if (checkRequiredParameters()) {
             }
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
-            const response = await fetch(`https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
+            const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/querySelectors.json`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

@@ -152,7 +152,7 @@ const checkUserMeetsTargeting = (testId, testType, testStatus, targetingData) =>
 const fetchABTestData = async (shopDomain) => {
     try {
         const storeId = shopDomain;
-        const firebaseUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${storeId}.json`;
+        const firebaseUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${storeId}.json`;
 
         logToFile(`Fetching A/B test data from Firebase for store: ${storeId}`);
 
@@ -329,7 +329,7 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
             logToFile(`[trackAnalyticsEvent] Using default path`);
         }
 
-        const analyticsUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/${firebasePath}.json`;
+        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
         logToFile(`[trackAnalyticsEvent] Firebase path: ${firebasePath}`);
         logToFile(`[trackAnalyticsEvent] Analytics URL: ${analyticsUrl}`);
@@ -608,7 +608,7 @@ async function processWebhook(payload, shopDomain) {
                 }
 
                 // Read userBehavior node for this user
-                const userBehaviorUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
+                const userBehaviorUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
                 let userBehaviorData = {};
                 try {
                     const userBehaviorResp = await fetch(userBehaviorUrl);
@@ -646,7 +646,7 @@ async function processWebhook(payload, shopDomain) {
                 // Set saleDone in the correct experience node
                 userBehaviorData[targetIndex].saleDone = analyticsDetails;
                 // Save to Firebase under userBehavior node
-                const updateUrl = `https://causalfunnel-21-shopify-abtest-app.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
+                const updateUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
                 const response = await fetch(updateUrl, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
