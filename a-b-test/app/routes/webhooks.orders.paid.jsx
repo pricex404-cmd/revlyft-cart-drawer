@@ -456,10 +456,10 @@ async function processWebhook(payload, shopDomain) {
         };
 
         // Get device ID and hash value
-        const deviceId = findAttributeValue('causal_funnel_device_id');
-        const deepId = findAttributeValue('causal_funnel_deep_id');
-        const fetchhashValue = findAttributeValue('causal_funnel_hash_value');
-        const testDataAttribute = findAttributeValue('causal_funnel_test_data');
+        const deviceId = findAttributeValue('abtest_device_id');
+        const deepId = findAttributeValue('abtest_deep_id');
+        const fetchhashValue = findAttributeValue('abtest_hash_value');
+        const testDataAttribute = findAttributeValue('abtest_test_data');
 
         // Use deviceId from attributes if available, otherwise fallback to browser_ip
         const browserIp = deviceId || payload.browser_ip;

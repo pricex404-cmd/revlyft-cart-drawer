@@ -34,7 +34,7 @@ export default function SetupGuide() {
             if (option === 'manual') {
                 navigate('/app/setup-guide/script-installation');
             } else if (option === 'contact') {
-                window.open('mailto:support@causalfunnel.com?subject=A/B Test Setup Assistance', '_blank');
+                window.open('mailto:support@abtest.com?subject=A/B Test Setup Assistance', '_blank');
             }
         }, 500);
     };

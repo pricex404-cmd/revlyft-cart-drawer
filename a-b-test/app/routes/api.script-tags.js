@@ -23,7 +23,7 @@ export const loader = async ({ request }) => {
 
         // Find our script tag by checking the src URL
         const existingScriptTag = scriptTagsData.data.scriptTags.edges.find(
-            edge => edge.node.src.includes('/assets/causalfunnel-price-query-selector-script.js')
+            edge => edge.node.src.includes('/assets/price-query-selector-script.js')
         );
 
         if (existingScriptTag) {
@@ -41,7 +41,7 @@ export const loader = async ({ request }) => {
             {
                 variables: {
                     input: {
-                        src: `${process.env.SHOPIFY_APP_URL}/assets/causalfunnel-price-query-selector-script.js`,
+                        src: `${process.env.SHOPIFY_APP_URL}/assets/price-query-selector-script.js`,
                         displayScope: "ONLINE_STORE",
                         cache: false
                     }

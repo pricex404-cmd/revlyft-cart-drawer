@@ -53,7 +53,7 @@ const shopify = shopifyApp({
       //     {
       //       variables: {
       //         input: {
-      //           src: `${process.env.SHOPIFY_APP_URL}/assets/causalfunnel-abtest-script.js`,
+      //           src: `${process.env.SHOPIFY_APP_URL}/assets/abtest-script.js`,
       //           displayScope: "ONLINE_STORE",
       //           cache: true
       //         }

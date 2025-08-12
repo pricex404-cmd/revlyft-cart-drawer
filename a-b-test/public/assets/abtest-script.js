@@ -1,5 +1,5 @@
 // Add this to a JavaScript file in your theme or as a script tag
-console.log("🚀 CausalFunnel cart attribute script loaded");
+console.log("🚀 A/B Test cart attribute script loaded");
 console.log("🚀 Start");
 var cf_finalDevId;
 
@@ -1070,7 +1070,7 @@ var cf_cachedShopifyDomain = null;
 
 
 // Secret key for encryption/decryption (in production, this should be stored securely)
-var ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
+var ENCRYPTION_KEY = 'abtest-secret-key-2025';
 
 /**
  * Generate a random string of specified length
@@ -1186,7 +1186,7 @@ function generateConsistentHash(customerId) {
 
 
 
-function saveCausalFunnelIdsToCart() {
+function saveAbtestIdsToCart() {
     // Get IP from cookies
     const ip = getCookie('cf_browserIp');
 
@@ -1239,7 +1239,7 @@ async function getTargetingInfoForCart() {
         }
 
         // Add single cart attribute with all test data as JSON string
-        targetingInfo.causal_funnel_test_data = JSON.stringify(testData);
+        targetingInfo.abtest_test_data = JSON.stringify(testData);
 
         console.log('🎯 Targeting info for cart:', targetingInfo);
         return targetingInfo;
@@ -1254,16 +1254,14 @@ async function updateCartWithIP(ip) {
     let attributes = {};
 
     if (ip) {
-        attributes.causal_funnel_device_id = ip;
-        attributes.causal_funnel_hash_value = getCausalFunnelHashValue();
-        attributes._causal_funnel_device_id = ip;
-        attributes._causal_funnel_hash_value = getCausalFunnelHashValue();
-        attributes.causal_funnel_deep_id = getCookie('cf_finalDevId');
-        attributes._causal_funnel_deep_id = getCookie('cf_finalDevId');
+        attributes.abtest_device_id = ip;
+        attributes.abtest_hash_value = getHashValue();
+        attributes._abtest_device_id = ip;
+        attributes._abtest_hash_value = getHashValue();
+        attributes.abtest_deep_id = getCookie('cf_finalDevId');
+        attributes._abtest_deep_id = getCookie('cf_finalDevId');
     }
-
-    // Initialize causalfunneltest structure
-    const causalfunneltest = {
+    const abtest = {
         starttimer: {}
     };
 
@@ -1281,14 +1279,14 @@ async function updateCartWithIP(ip) {
             const testId = parts[1];
 
             // Add to starttimer object
-            causalfunneltest.starttimer[`${testType}_${testId}`] = decodeURIComponent(value);
+            abtest.starttimer[`${testType}_${testId}`] = decodeURIComponent(value);
         }
     }
 
-    // Add causalfunneltest to attributes if we have any timers
-    if (Object.keys(causalfunneltest.starttimer).length > 0) {
-        attributes.causal_funnel_test_timer = JSON.stringify(causalfunneltest);
-        attributes._causal_funnel_test_timer = JSON.stringify(causalfunneltest);
+    // Add abtest to attributes if we have any timers
+    if (Object.keys(abtest.starttimer).length > 0) {
+        attributes.causal_funnel_test_timer = JSON.stringify(abtest);
+        attributes._causal_funnel_test_timer = JSON.stringify(abtest);
     }
 
     // Add targeting criteria information for all active tests
@@ -1313,11 +1311,11 @@ async function updateCartWithIP(ip) {
             return response.json();
         })
         .then(data => {
-            console.log('🛒 CausalFunnel attributes saved to cart');
+            console.log('🛒 A/B Test attributes saved to cart');
             window.cfAttributesSet = true;
         })
         .catch(error => {
-            console.error('❌ Error saving CausalFunnel IP to cart:', error);
+            console.error('❌ Error saving A/B Test IP to cart:', error);
         });
 }
 
@@ -1363,7 +1361,7 @@ function getAppDomain() {
         // Find the current script tag by looking for addCartAttribute.js
         const scripts = document.getElementsByTagName('script');
         for (const script of scripts) {
-            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
+            if (script.src && script.src.includes('abtest-script.js')) {
                 const url = new URL(script.src);
                 return url.origin;
             }
@@ -1393,7 +1391,7 @@ function getShopifyDomainFromScript() {
     try {
         // Method 0: Try document.currentScript first (most reliable)
         if (document.currentScript && document.currentScript.src) {
-            if (document.currentScript.src.includes('causalfunnel-abtest-script.js')) {
+            if (document.currentScript.src.includes('abtest-script.js')) {
                 try {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1411,7 +1409,7 @@ function getShopifyDomainFromScript() {
         const scripts = document.getElementsByTagName('script');
 
         for (const script of scripts) {
-            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
+            if (script.src && script.src.includes('abtest-script.js')) {
                 try {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1526,7 +1524,7 @@ async function getStoreId() {
  * Get the hash value from session storage (for preview) or cookies
  * @returns {number} The hash value (0-100)
  */
-function getCausalFunnelHashValue() {
+function getHashValue() {
     // First check session storage for preview hash
     const sessionHashValue = sessionStorage.getItem('cf_hashValue');
     if (sessionHashValue) {
@@ -1611,7 +1609,7 @@ async function applyABTestProductModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getCausalFunnelHashValue();
+    const hashValue = getHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || activeTests.length === 0) {
@@ -1984,11 +1982,9 @@ function findProductElementsById(productId) {
 
 
 
-/**
- * Initialize CausalFunnel price modifications with proper timing and observer setup
- */
 
-function initializeCausalFunnelPriceModifications() {
+
+function initializeAbtestPriceModifications() {
     // Prevent multiple executions
     if (window.cfPriceModificationRunning || window.cfPriceModificationComplete) {
         return;
@@ -2103,7 +2099,7 @@ function initializeCausalFunnelPriceModifications() {
 /**
  * Generate and store consistent hash value in cookies
  */
-function storeCausalFunnelHashValue() {
+function storeAbtestHashValue() {
     // Check for preview hash in URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const previewHash = urlParams.get('cf_preview_hash');
@@ -2117,9 +2113,8 @@ function storeCausalFunnelHashValue() {
             const decryptedTestId = decryptValue(previewTestId);
             if (decryptedTestId) {
                 console.log("🎯 Using decrypted preview test ID:", decryptedTestId);
-                sessionStorage.setItem('causalFunnel_testId', decryptedTestId);
-                // Also store in cookies for persistence across sessions (expires in 1 day)
-                // setCookie('causalFunnel_previewTestId', decryptedTestId, 1);
+                sessionStorage.setItem('abTest_testId', decryptedTestId);
+
             } else {
                 console.error("❌ Failed to decrypt preview test ID");
             }
@@ -2177,7 +2172,7 @@ function storeCausalFunnelHashValue() {
 }
 
 // (function () {
-////console.log("CausalFunnel cart attribute script self-executing");
+
 
 // Try to run immediately
 // initializeCFCartAttributes();
@@ -2199,7 +2194,7 @@ function storeCausalFunnelHashValue() {
 
 // function initializeCFCartAttributes() {
 
-//     saveCausalFunnelIdsToCart();
+//     saveAbtestIdsToCart();
 
 // }
 // })();
@@ -2207,33 +2202,32 @@ function storeCausalFunnelHashValue() {
 
 
 // Call this function before initializing price modifications
-storeCausalFunnelHashValue();
-initializeCausalFunnelPriceModifications();
+storeAbtestHashValue();
+initializeAbtestPriceModifications();
 
 
 
 // Ensure initialization happens after DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeCausalFunnel);
+    document.addEventListener('DOMContentLoaded', initializeAbtest);
 } else {
-    initializeCausalFunnel();
+    initializeAbtest();
 }
 
 // Also add load event listener as backup
 window.addEventListener('load', () => {
-    initializeCausalFunnel();
+    initializeAbtest();
 });
 
 
 
 // Initialize everything when DOM is loaded
-function initializeCausalFunnel() {
+function initializeAbtest() {
     // Prevent multiple initializations
     if (window.cfInitialized) {
         return;
     }
 
-    console.log('🚀 Initializing CausalFunnel...');
     window.cfInitialized = true;
 
     // Check for config parameters and mark script as detected
@@ -2242,10 +2236,10 @@ function initializeCausalFunnel() {
     });
 
     // Store device ID to cart attributes
-    saveCausalFunnelIdsToCart();
+    saveAbtestIdsToCart();
 
     // Generate and store hash value
-    storeCausalFunnelHashValue();
+    storeAbtestHashValue();
 
     // Apply product visibility modifications
     applyABTestProductModifications().catch(error => {
@@ -2260,8 +2254,8 @@ function initializeCausalFunnel() {
 }
 
 // Add cleanup function
-function cleanupCausalFunnel() {
-    console.log('🧹 Cleaning up CausalFunnel...');
+function cleanupAbtest() {
+
 
     // Clear variant check interval
     if (window.cfVariantCheckInterval) {
@@ -2438,7 +2432,7 @@ function setupCartTracking() {
             }
 
             // Get hash value
-            const hashValue = getCausalFunnelHashValue();
+            const hashValue = getHashValue();
             if (hashValue < 0) {
                 console.log('❌ No valid hash value found');
                 return;
@@ -3216,7 +3210,7 @@ function getDeviceType() {
  * @returns {boolean} True if test is in preview mode
  */
 function isTestInPreviewMode(testId) {
-    const previewTestIdSession = sessionStorage.getItem('causalFunnel_testId');
+    const previewTestIdSession = sessionStorage.getItem('abTest_testId');
 
 
     return previewTestIdSession && previewTestIdSession === testId;
@@ -3303,7 +3297,7 @@ async function applyABTestPriceModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getCausalFunnelHashValue();
+    const hashValue = getHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || Object.keys(activeTests).length === 0) {

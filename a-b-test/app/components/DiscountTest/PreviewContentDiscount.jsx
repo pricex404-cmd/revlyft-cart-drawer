@@ -111,7 +111,7 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
     };
 
     const encryptValue = (value) => {
-        const ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
+        const ENCRYPTION_KEY = 'abtest-secret-key-2025';
         const paddedValue = value.toString().padStart(3, '0');
         const prefix = generateRandomString(4);
         const suffix = generateRandomString(4);
@@ -203,7 +203,7 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
             <Banner title="Important Note" tone="info">
                 <p>You can test all active Discount Tests (Control & Test Groups).</p>
                 <p>The discount will be applied based on the {testData.discountConfig.type} threshold of {testData.discountConfig.threshold}.</p>
-                <p>Need help? Contact us at growth@causalfunnel.com for assistance with your discount test configuration.</p>
+                <p>Need help? Contact us at growth@abtest.com for assistance with your discount test configuration.</p>
             </Banner>
 
             <BlockStack gap="400">

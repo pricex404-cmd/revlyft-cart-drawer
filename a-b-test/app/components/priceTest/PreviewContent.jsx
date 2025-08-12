@@ -130,7 +130,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
 
     // Add encryption function
     const encryptValue = (value) => {
-        const ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
+        const ENCRYPTION_KEY = 'abtest-secret-key-2025';
 
         // Convert value to a fixed-length string (pad with zeros if needed)
         const paddedValue = value.toString().padStart(3, '0');
@@ -261,7 +261,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
             >
                 <p>You can test all active Product Price Tests (Control & Test Groups).</p>
                 <p>If the price doesn't update on your site, go to the Configuration tab and try another setup method.</p>
-                <p>Still not working? Share collaborator access with us at growth@causalfunnel.com — our team will help configure the product selectors.</p>
+                <p>Still not working? Share collaborator access with us at growth@``.com — our team will help configure the product selectors.</p>
             </Banner>
 
             <BlockStack gap="400">

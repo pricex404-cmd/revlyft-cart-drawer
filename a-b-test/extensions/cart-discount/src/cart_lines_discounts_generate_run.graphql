@@ -15,14 +15,14 @@ query CartInput {
         }
       }
     }
-    # Individual cart attributes for CausalFunnel IDs
-    deviceIdAttribute: attribute(key: "causal_funnel_device_id") {
+    # Individual cart attributes for A/B Test IDs
+    deviceIdAttribute: attribute(key: "abtest_device_id") {
       value
     }
-    hashValueAttribute: attribute(key: "causal_funnel_hash_value") {
+    hashValueAttribute: attribute(key: "abtest_hash_value") {
       value
     }
-    testDataAttribute: attribute(key: "causal_funnel_test_data") {
+    testDataAttribute: attribute(key: "abtest_test_data") {
       value
     }
     testTimerAttribute: attribute(key: "causal_funnel_test_timer") {

@@ -105,7 +105,7 @@ export const PreviewContentProductDetails = ({ testId, shop, currentTestData }) 
 
     // Add encryption function
     const encryptValue = (value) => {
-        const ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
+        const ENCRYPTION_KEY = 'abtest-secret-key-2025';
 
         // Convert value to a fixed-length string (pad with zeros if needed)
         const paddedValue = value.toString().padStart(3, '0');
