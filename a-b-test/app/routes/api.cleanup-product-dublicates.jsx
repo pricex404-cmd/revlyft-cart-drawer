@@ -9,7 +9,7 @@ import {
     ADJUST_INVENTORY
 } from "../utils/graphqlQueries";
 
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 const logToFile = createLogger('cleanup-product-duplicates');
 export const action = async ({ request }) => {

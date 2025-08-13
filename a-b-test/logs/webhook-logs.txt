@@ -1,0 +1,18 @@
+[2025-08-13T15:41:30.124Z] ========= UNINSTALLED WEBHOOK TRIGGERED =========
+[2025-08-13T15:41:30.124Z] Received webhook request at: 2025-08-13T15:41:30.124Z
+[2025-08-13T15:41:30.124Z] Request method: POST
+[2025-08-13T15:41:30.125Z] Headers: {"accept":"*/*","accept-encoding":"gzip","cdn-loop":"cloudflare; loops=1; subreqs=1","cf-connecting-ip":"34.58.222.103","cf-ew-via":"15","cf-ipcountry":"US","cf-ray":"96e9512296edcca3-ORD","cf-visitor":"{\"scheme\":\"https\"}","cf-warp-tag-id":"23a0582d-9ed7-4f72-beec-4a9a5d1cf58a","cf-worker":"trycloudflare.com","connection":"close","content-length":"1510","content-type":"application/json","host":"decrease-scored-drilling-justice.trycloudflare.com","user-agent":"Shopify-Captain-Hook","x-forwarded-for":"34.58.222.103","x-forwarded-proto":"https","x-shopify-api-version":"2025-01","x-shopify-event-id":"bd1fd098-73f6-4eb9-b057-afae04e4eb1e","x-shopify-hmac-sha256":"2FUWg2AP1nz4imHCISDHDm1DMmjpJ1/F+HA38mVwYYA=","x-shopify-shop-domain":"jugunu-store.myshopify.com","x-shopify-topic":"app/uninstalled","x-shopify-triggered-at":"2025-08-13T15:41:27.539431798Z","x-shopify-webhook-id":"b0b759c0-3abe-437c-abd9-dce25907daeb"}
+[2025-08-13T15:41:30.135Z] HMAC verification passed - Authenticated webhook: APP_UNINSTALLED for shop: jugunu-store.myshopify.com
+[2025-08-13T15:41:30.135Z] Session info: Present (ID: offline_jugunu-store.myshopify.com)
+[2025-08-13T15:41:30.136Z] ==========================================
+[2025-08-13T15:41:30.136Z] Trying to update tests for shop: jugunu-store.myshopify.com
+[2025-08-13T15:41:30.136Z] Sanitized domain: jugunu-store_myshopify_com
+[2025-08-13T15:41:30.136Z] Fetching tests from Firebase URL: https://abtest-6b299-default-rtdb.firebaseio.com/abTests/jugunu-store_myshopify_com.json
+[2025-08-13T15:41:31.243Z] Firebase update response status: 200
+[2025-08-13T15:41:31.243Z] Verifying Firebase update...
+[2025-08-13T15:41:31.508Z] Verification response status: 200
+[2025-08-13T15:41:31.509Z] Verification successful
+[2025-08-13T15:41:31.509Z] Some tests were not updated to pending status!
+[2025-08-13T15:41:31.510Z] Successfully processed tests for shop: jugunu-store.myshopify.com
+[2025-08-13T15:41:31.514Z] Successfully deleted session for shop: jugunu-store.myshopify.com
+[2025-08-13T15:41:31.514Z] ===== UNINSTALLED WEBHOOK PROCESSING COMPLETE =====

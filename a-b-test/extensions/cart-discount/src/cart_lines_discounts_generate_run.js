@@ -29,8 +29,8 @@ export function cartLinesDiscountsGenerateRun(input) {
     discountConfig: configuration.discountConfig
   }));
 
-  // Check test targeting from testDataAttribute
-  const testData = JSON.parse(input.cart.testDataAttribute?.value ?? "{}");
+  // Check test targeting from testTargetingAttribute
+  const testData = JSON.parse(input.cart.testTargetingAttribute?.value ?? "{}");
   console.log('Test data attribute:', testData);
 
   // Check if discount test is active for this user
@@ -59,11 +59,16 @@ export function cartLinesDiscountsGenerateRun(input) {
   }
 
   try {
-    // Parse the timer JSON structure
+    // Parse the timer JSON structure (now flat)
     const timerData = JSON.parse(testTimer);
-    const discountKey = `discount_${Object.keys(testData)[0].split('_discount_active')[0]}`;
-    const startTime = timerData.starttimer[discountKey];
-
+    // Find the active discount test key
+    const activeDiscountKey = Object.entries(testData)
+      .find(([key, value]) => key.includes('discount_active') && value === "true")?.[0];
+    if (!activeDiscountKey) {
+      console.log('No discount applied: No active discount test key found');
+      return { operations: [] };
+    }
+    const startTime = timerData[activeDiscountKey];
     if (!startTime) {
       console.log('No discount applied: No start time found for this discount test');
       return { operations: [] };

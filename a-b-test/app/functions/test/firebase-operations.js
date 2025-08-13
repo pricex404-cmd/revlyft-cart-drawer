@@ -1,5 +1,5 @@
 // Firebase configuration
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 // Function to sanitize shop domain for Firebase path
 export const sanitizeShopDomain = (domain) => {

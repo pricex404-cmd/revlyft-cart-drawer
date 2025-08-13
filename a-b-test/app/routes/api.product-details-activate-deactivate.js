@@ -7,7 +7,7 @@ import { sanitizeShopDomain } from "../utils/sanitizeShopDomain";
 
 const webhookLogger = createLogger('activate-deactivate-logs');
 
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 export const action = async ({ request }) => {
     try {

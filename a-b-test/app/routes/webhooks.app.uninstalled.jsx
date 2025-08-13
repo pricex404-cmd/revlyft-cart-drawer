@@ -3,7 +3,7 @@ import db from "../db.server";
 import fs from 'fs';
 import path from 'path';
 
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 // Helper function to sanitize shop domain for Firebase
 const sanitizeShopDomain = (domain) => {

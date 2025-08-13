@@ -35,7 +35,7 @@ import { TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { authenticate } from "../shopify.server";
 import { deactivateAllActivePriceTests, deactivateAllActiveDiscountTests } from "../functions/discount";
 import { CREATE_PRODUCT_POPULATE, UPDATE_PRODUCT_VARIANTS_BULK } from "../utils/graphqlQueries";
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 export const loader = async ({ request }) => {
   const { admin, session } = await authenticate.admin(request);
@@ -1096,9 +1096,9 @@ export default function Index() {
 
   // Copy script functionality
   const handleCopyScript = async () => {
-    const scriptTemplate = `<!--   A/B Testing Script -->
-<script src="https://abtest.abtest.org/assets/price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.abtest.org/assets/abtest-script.js?shop=${shop}" defer></script>`;
+    const scriptTemplate = `<!-- CausalFunnel A/B Testing Script -->
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>`;
     console.log("scriptTemplate", scriptTemplate);
     try {
       await navigator.clipboard.writeText(scriptTemplate);

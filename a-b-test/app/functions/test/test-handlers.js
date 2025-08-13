@@ -5,7 +5,7 @@ import { isDiscountTestDataComplete } from "./state-management";
 import { deactivateAllActiveDiscountTests, deactivateAllActivePriceTests } from "../discount";
 import { createNewSession } from "../timer";
 
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
 
 export const createSaveTestHandler = (
     basicInfo,

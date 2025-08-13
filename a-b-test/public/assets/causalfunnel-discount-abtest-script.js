@@ -1,4 +1,12 @@
 // Function to get time remaining in minutes and seconds
+// Get hashValue from sessionStorage or cookies
+let hashValue = null;
+if (window.sessionStorage && window.sessionStorage.getItem('cf_hashValue')) {
+    hashValue = window.sessionStorage.getItem('cf_hashValue');
+} else {
+    hashValue = getCookie('cf_hashValue');
+}
+
 function getTimeRemaining(startTime) {
     const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
     const now = new Date().getTime();
@@ -70,15 +78,32 @@ function findDiscountElement() {
     return null;
 }
 
+// Global flag to prevent infinite discount message retries
+window.cfDiscountMessageRetryLimitReached = false;
+
 // Function to create or update timer UI
-function updateTimerUI(timeString) {
+function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
+    if (window.cfDiscountMessageRetryLimitReached) {
+        return;
+    }
     console.log('🔄 Updating timer UI');
     let timerDiv = document.getElementById('cf-discount-timer');
 
     if (!timerDiv) {
         const discountMessage = findDiscountElement();
         if (!discountMessage) {
+            if (timerExpired) {
+                console.log('⏳ No discount message found and timer expired, will NOT retry.');
+                return;
+            }
+            // Limit retries to 4
+            if (retryCount >= 4) {
+                console.log('⏳ No discount message found after 4 retries, will NOT retry again.');
+                window.cfDiscountMessageRetryLimitReached = true;
+                return;
+            }
             console.log('⏳ No discount message found, will retry...');
+            setTimeout(() => updateTimerUI(timeString, timerExpired, retryCount + 1), 500);
             return;
         }
 
@@ -153,35 +178,195 @@ function manageDiscountCountdown() {
         // Look for discount test timer cookie
         const cookies = document.cookie.split(';');
         let discountStartTime = null;
-
+        let testId = null;
+        let abTestsData = null;
+        // Find the discount timer cookie and testId
         for (const cookie of cookies) {
             const [name, value] = cookie.trim().split('=');
-            if (name.startsWith('cf_test_timer_discount_')) {
+            if (name.startsWith('cf_tests_start_time_') && name.endsWith('_discount_active')) {
                 discountStartTime = decodeURIComponent(value);
+                // Extract testId from the cookie name
+                // Remove prefix and suffix to get just the testId
+                testId = name.replace('cf_tests_start_time_', '').replace('_discount_active', '');
                 console.log('🍪 Found discount timer cookie:', name, discountStartTime);
                 break;
             }
         }
+        // Get hashValue from cookie if available
+        if (hashValue) hashValue = parseInt(hashValue, 10);
 
         if (!discountStartTime) {
             console.log('❌ No discount timer cookie found');
             return;
         }
-
-        // Start the countdown
-        const countdownInterval = setInterval(() => {
-            const remaining = getTimeRemaining(discountStartTime);
-            if (!remaining) {
-                clearInterval(countdownInterval);
-                removeTimerUI(); // Only remove the UI, keep the cookie
+        if (!testId) {
+            console.log('❌ No testId found from discount timer cookie');
+            return;
+        }
+        // Fetch AB test data to get testGroups
+        fetchABTestData().then(async function (abTestsData) {
+            const storeId = await getStoreId();
+            if (!abTestsData || !abTestsData[storeId] || !abTestsData[storeId][testId] || !abTestsData[storeId][testId].testGroups) {
+                console.log('❌ No AB test data or testGroups found for testId', testId, 'in store', storeId);
                 return;
             }
-
-            const timeString = formatTime(remaining.minutes, remaining.seconds);
-            updateTimerUI(timeString);
-        }, 1000);
+            const testGroups = abTestsData[storeId][testId].testGroups;
+            const userVariant = getVariantForUser(testGroups, hashValue);
+            const variantIndex = testGroups.findIndex(group => group.id.toString() === userVariant.id.toString());
+            if (variantIndex === 0) {
+                console.log('🛑 User is in control group (variant index 0), skipping timer UI and DOM lookups.');
+                return;
+            }
+            // Start the countdown only for non-control group
+            let timerExpired = false;
+            const countdownInterval = setInterval(() => {
+                const remaining = getTimeRemaining(discountStartTime);
+                if (!remaining) {
+                    clearInterval(countdownInterval);
+                    removeTimerUI(); // Only remove the UI, keep the cookie
+                    timerExpired = true;
+                    return;
+                }
+                if (!timerExpired) {
+                    const timeString = formatTime(remaining.minutes, remaining.seconds);
+                    updateTimerUI(timeString, timerExpired);
+                }
+            }, 1000);
+        });
     } catch (error) {
         console.error('❌ Error in countdown:', error);
+    }
+}
+
+// Global variable to cache Shopify domain
+if (typeof cf_cachedShopifyDomain === 'undefined') {
+    var cf_cachedShopifyDomain = null;
+}
+
+/**
+ * Get Shopify domain from script parameters or current page
+ * @returns {string|null} The Shopify domain or null
+ */
+function getShopifyDomainFromScript() {
+    try {
+        // Method 0: Try document.currentScript first (most reliable)
+        if (document.currentScript && document.currentScript.src) {
+            if (document.currentScript.src.includes('causalfunnel-discount-abtest-script.js')) {
+                try {
+                    const url = new URL(document.currentScript.src);
+                    const shopParam = url.searchParams.get('shop');
+                    if (shopParam) {
+                        console.log('🔍 Found shop parameter in current script:', shopParam);
+                        return shopParam;
+                    }
+                } catch (urlError) {
+                    console.error('❌ Error parsing current script URL:', urlError);
+                }
+            }
+        }
+
+        // Method 1: Check if the script URL has a shop parameter
+        const scripts = document.getElementsByTagName('script');
+
+        for (const script of scripts) {
+            if (script.src && script.src.includes('causalfunnel-discount-abtest-script.js')) {
+                try {
+                    const url = new URL(script.src);
+                    const shopParam = url.searchParams.get('shop');
+                    if (shopParam) {
+                        console.log('🔍 Found shop parameter in script URL:', shopParam);
+                        return shopParam;
+                    }
+                } catch (urlError) {
+                    console.error('❌ Error parsing script URL:', script.src, urlError);
+                }
+            }
+        }
+
+        // Method 2: Check URL parameters of current page
+        const urlParams = new URLSearchParams(window.location.search);
+        const shopParam = urlParams.get('shop');
+        if (shopParam) {
+            console.log('🔍 Found shop parameter in page URL:', shopParam);
+            return shopParam;
+        }
+
+        // Method 3: Check if current domain is already a myshopify domain
+        const currentDomain = window.location.hostname;
+        if (currentDomain.includes('.myshopify.com')) {
+            console.log('🔍 Current domain is already a Shopify domain:', currentDomain);
+            return currentDomain;
+        }
+
+        return null;
+    } catch (error) {
+        console.error('❌ Error getting Shopify domain from script:', error);
+        return null;
+    }
+}
+
+/**
+ * Get the app domain for API calls
+ * @returns {string} The app domain
+ */
+function getAppDomain() {
+    // Try to get from script parameters first
+    const scripts = document.getElementsByTagName('script');
+    for (const script of scripts) {
+        if (script.src && script.src.includes('causalfunnel-discount-abtest-script.js')) {
+            try {
+                const url = new URL(script.src);
+                const appDomain = url.searchParams.get('app_domain');
+                if (appDomain) {
+                    return appDomain;
+                }
+            } catch (urlError) {
+                console.error('❌ Error parsing script URL for app domain:', urlError);
+            }
+        }
+    }
+    
+    // Fallback to current domain
+    return window.location.origin;
+}
+
+/**
+ * Fetch the actual Shopify domain from the API
+ * @returns {Promise<string>} The actual myshopify domain
+ */
+async function fetchShopifyDomain() {
+    // First try to get domain from script parameters (faster and doesn't require API call)
+    const scriptDomain = getShopifyDomainFromScript();
+    if (scriptDomain) {
+        console.log('🔍 Using Shopify domain from script:', scriptDomain);
+        return scriptDomain;
+    }
+
+    // If script method fails, try API call
+    try {
+        const appDomain = getAppDomain();
+        const apiUrl = `${appDomain}/api/store-info`;
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch store info: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data.myshopifyDomain;
+    } catch (error) {
+        console.error('❌ Error fetching Shopify domain from API:', error);
+        // Final fallback to current domain
+        const fallbackDomain = window.location.hostname;
+        console.warn('⚠️ Using fallback domain:', fallbackDomain);
+        return fallbackDomain;
     }
 }
 
@@ -194,8 +379,30 @@ function getCookie(name) {
 }
 
 async function getStoreId() {
-    // This should return your store ID - implement based on your existing logic
-    return 'store01test1_myshopify_com';
+    // Return cached domain if available
+    if (cf_cachedShopifyDomain) {
+        return cf_cachedShopifyDomain.replace(/\./g, '_');
+    }
+
+    try {
+        // Fetch actual Shopify domain from API
+        const shopifyDomain = await fetchShopifyDomain();
+
+        // Cache the domain for future use
+        cf_cachedShopifyDomain = shopifyDomain;
+
+        // Convert to Firebase format (replace dots with underscores)
+        const sanitizedDomain = shopifyDomain.replace(/\./g, '_');
+
+        return sanitizedDomain;
+    } catch (error) {
+        console.error('❌ Error getting store ID:', error);
+        // Fallback to current domain
+        const domain = window.location.hostname;
+        const sanitizedDomain = domain.replace(/\./g, '_');
+        console.warn('⚠️ Falling back to current domain:', domain);
+        return sanitizedDomain;
+    }
 }
 
 async function fetchABTestData() {
@@ -286,6 +493,17 @@ async function trackCartDrawerMessageAnalytics(messageType, testId, variantIndex
     }
 }
 
+// Generic function to extract threshold value and unit from discount message
+function extractThresholdInfo(message) {
+    // Extract everything between 'Add' and 'more'
+    const match = message.match(/Add\s+(.+?)\s*more/i);
+    if (match) {
+        const thresholdToAdd = match[1].trim();
+        return { thresholdToAdd };
+    }
+    return { thresholdToAdd: '' };
+}
+
 // Function to determine event data based on state changes
 function determineEventData(currentState, messageText, threshold, isControlGroup = false) {
     const timestamp = new Date().toISOString();
@@ -294,20 +512,23 @@ function determineEventData(currentState, messageText, threshold, isControlGroup
         // For control group, we just track item count and basic info
         return {
             currentItemCount: currentState,
-            itemsToThreshold: Math.max(0, threshold - currentState),
+            itemsToThreshold: "N/A",
             messageShown: "Control Group - No discount message",
             timestamp: timestamp,
         };
     }
 
-    // Check if the message indicates we've met the threshold
+    // Use the generic extraction for threshold info
+    const { thresholdToAdd } = extractThresholdInfo(messageText);
     const hasMetThreshold = messageText.includes(`${threshold}+ items`) ||
         messageText.includes('off orders with') ||
-        !messageText.includes('more item');
+        !messageText.includes('more');
+
+    let itemsToThreshold = hasMetThreshold ? 0 : thresholdToAdd;
 
     return {
         currentItemCount: currentState,
-        itemsToThreshold: hasMetThreshold ? 0 : Math.max(0, threshold - currentState),
+        itemsToThreshold,
         messageShown: messageText,
         timestamp: timestamp,
     };
@@ -329,10 +550,30 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
             return;
         }
 
+        // Guard: Do not add analytics if not on cart page and eventData is empty/zero
+        if (
+            eventData.currentItemCount === 0 &&
+            eventData.itemsToThreshold === 0
+        ) {
+            console.log('🚫 Not on cart page or empty cart, skipping analytics.');
+            return;
+        }
+
         const ip = getCookie('cf_finalDevId');
         if (!ip) {
             console.log('❌ No IP found in cookies for analytics');
             return;
+        }
+
+        // Check if discount timer expired (skip analytics if expired)
+        const discountStartTime = getCookie(`cf_tests_start_time_${testId}_discount_active`);
+        if (discountStartTime) {
+            const now = Date.now();
+            const start = new Date(discountStartTime).getTime();
+            if (now - start > 30 * 60 * 1000) {
+                console.log('⏰ Discount timer expired, skipping analytics');
+                return;
+            }
         }
 
         // Create a unique key for this event
@@ -504,7 +745,16 @@ function observeCartChanges() {
             // Find the active discount test
             for (const [testId, test] of Object.entries(abTestsData)) {
                 if (test.basicInfo?.type === 'discount' && test.basicInfo?.status === 'active') {
-                    const hashValue = getCookie('cf_hashValue');
+                    // Check if discount timer expired (skip analytics if expired)
+                    const discountStartTime = getCookie(`cf_tests_start_time_${testId}_discount_active`);
+                    if (discountStartTime) {
+                        const now = Date.now();
+                        const start = new Date(discountStartTime).getTime();
+                        if (now - start > 30 * 60 * 1000) {
+                            console.log('⏰ Discount timer expired, skipping cart change analytics');
+                            continue;
+                        }
+                    }
                     const userVariant = getVariantForUser(test.testGroups, hashValue);
                     if (!userVariant) continue;
 
@@ -606,7 +856,7 @@ function observeCartChanges() {
     });
 
     // Function to start observing cart
-    function startObserving() {
+    function startObserving(retryCount = 0) {
         const cartDrawer = document.querySelector('cart-drawer');
         if (cartDrawer) {
             console.log('✅ Cart drawer found, starting observation for all groups');
@@ -616,8 +866,23 @@ function observeCartChanges() {
                 subtree: true
             });
         } else {
-            console.log('⏳ Cart drawer not found, will retry...');
-            setTimeout(startObserving, 500);
+            // NEW: Support for cart page
+            const cartPage = document.querySelector('.cart__items');
+            if (cartPage) {
+                console.log('✅ Cart page found, starting observation for all groups');
+                observer.observe(cartPage, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+            } else {
+                if (retryCount >= 4) {
+                    console.log('⏳ Cart drawer/page not found after 4 retries, will NOT retry again.');
+                    return;
+                }
+                console.log('⏳ Cart drawer/page not found, will retry...');
+                setTimeout(() => startObserving(retryCount + 1), 500);
+            }
         }
     }
 

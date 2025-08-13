@@ -1,8 +1,8 @@
 // Add this to a JavaScript file in your theme or as a script tag
-console.log("🚀 A/B Test cart attribute script loaded");
+console.log("🚀 CausalFunnel cart attribute script loaded");
 console.log("🚀 Start");
 var cf_finalDevId;
-
+const timestamp = new Date().toISOString();
 
 
 function cf_callbody() {
@@ -1070,7 +1070,7 @@ var cf_cachedShopifyDomain = null;
 
 
 // Secret key for encryption/decryption (in production, this should be stored securely)
-var ENCRYPTION_KEY = 'abtest-secret-key-2025';
+var ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
 
 /**
  * Generate a random string of specified length
@@ -1186,7 +1186,7 @@ function generateConsistentHash(customerId) {
 
 
 
-function saveAbtestIdsToCart() {
+function saveCausalFunnelIdsToCart() {
     // Get IP from cookies
     const ip = getCookie('cf_browserIp');
 
@@ -1239,7 +1239,7 @@ async function getTargetingInfoForCart() {
         }
 
         // Add single cart attribute with all test data as JSON string
-        targetingInfo.abtest_test_data = JSON.stringify(testData);
+        targetingInfo.causal_funnel_tests_targeting_data = JSON.stringify(testData);
 
         console.log('🎯 Targeting info for cart:', targetingInfo);
         return targetingInfo;
@@ -1254,39 +1254,29 @@ async function updateCartWithIP(ip) {
     let attributes = {};
 
     if (ip) {
-        attributes.abtest_device_id = ip;
-        attributes.abtest_hash_value = getHashValue();
-        attributes._abtest_device_id = ip;
-        attributes._abtest_hash_value = getHashValue();
-        attributes.abtest_deep_id = getCookie('cf_finalDevId');
-        attributes._abtest_deep_id = getCookie('cf_finalDevId');
+        attributes.causal_funnel_device_id = ip;
+        attributes.causal_funnel_hash_value = getCausalFunnelHashValue();
+        attributes.causal_funnel_deep_id = getCookie('cf_finalDevId');
     }
-    const abtest = {
-        starttimer: {}
-    };
 
-    // Add current time as a separate attribute
-    attributes.causal_funnel_current_time = new Date().toISOString();
-
-    // Add test timer information from cookies
+    attributes.causal_funnel_current_time= timestamp
+    // Initialize causalfunneltest structure
+    const startTimeData = {};
     const cookies = document.cookie.split(';');
     for (const cookie of cookies) {
         const [name, value] = cookie.trim().split('=');
-        if (name.startsWith('cf_test_timer_')) {
-            // Extract test type and ID from cookie name
-            const parts = name.split('cf_test_timer_')[1].split('_');
-            const testType = parts[0]; // 'discount' or 'pricing'
-            const testId = parts[1];
-
-            // Add to starttimer object
-            abtest.starttimer[`${testType}_${testId}`] = decodeURIComponent(value);
+        if (name.startsWith('cf_tests_start_time_')) {
+            // name format: cf_tests_start_time_${testId}_${testType}_${testStatus}
+            const parts = name.split('cf_tests_start_time_')[1].split('_');
+            const testId = parts[0];
+            const testType = parts[1];
+            const testStatus = parts.slice(2).join('_'); // in case status has underscores
+            const key = `${testId}_${testType}_${testStatus}`;
+            startTimeData[key] = decodeURIComponent(value);
         }
     }
-
-    // Add abtest to attributes if we have any timers
-    if (Object.keys(abtest.starttimer).length > 0) {
-        attributes.causal_funnel_test_timer = JSON.stringify(abtest);
-        attributes._causal_funnel_test_timer = JSON.stringify(abtest);
+    if (Object.keys(startTimeData).length > 0) {
+        attributes.causal_funnel_tests_start_time_data = JSON.stringify(startTimeData);
     }
 
     // Add targeting criteria information for all active tests
@@ -1311,11 +1301,11 @@ async function updateCartWithIP(ip) {
             return response.json();
         })
         .then(data => {
-            console.log('🛒 A/B Test attributes saved to cart');
+            console.log('🛒 CausalFunnel attributes saved to cart');
             window.cfAttributesSet = true;
         })
         .catch(error => {
-            console.error('❌ Error saving A/B Test IP to cart:', error);
+            console.error('❌ Error saving CausalFunnel IP to cart:', error);
         });
 }
 
@@ -1361,7 +1351,7 @@ function getAppDomain() {
         // Find the current script tag by looking for addCartAttribute.js
         const scripts = document.getElementsByTagName('script');
         for (const script of scripts) {
-            if (script.src && script.src.includes('abtest-script.js')) {
+            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
                 const url = new URL(script.src);
                 return url.origin;
             }
@@ -1391,7 +1381,7 @@ function getShopifyDomainFromScript() {
     try {
         // Method 0: Try document.currentScript first (most reliable)
         if (document.currentScript && document.currentScript.src) {
-            if (document.currentScript.src.includes('abtest-script.js')) {
+            if (document.currentScript.src.includes('causalfunnel-abtest-script.js')) {
                 try {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1409,7 +1399,7 @@ function getShopifyDomainFromScript() {
         const scripts = document.getElementsByTagName('script');
 
         for (const script of scripts) {
-            if (script.src && script.src.includes('abtest-script.js')) {
+            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
                 try {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1524,7 +1514,7 @@ async function getStoreId() {
  * Get the hash value from session storage (for preview) or cookies
  * @returns {number} The hash value (0-100)
  */
-function getHashValue() {
+function getCausalFunnelHashValue() {
     // First check session storage for preview hash
     const sessionHashValue = sessionStorage.getItem('cf_hashValue');
     if (sessionHashValue) {
@@ -1609,7 +1599,7 @@ async function applyABTestProductModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getHashValue();
+    const hashValue = getCausalFunnelHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || activeTests.length === 0) {
@@ -1982,9 +1972,11 @@ function findProductElementsById(productId) {
 
 
 
+/**
+ * Initialize CausalFunnel price modifications with proper timing and observer setup
+ */
 
-
-function initializeAbtestPriceModifications() {
+function initializeCausalFunnelPriceModifications() {
     // Prevent multiple executions
     if (window.cfPriceModificationRunning || window.cfPriceModificationComplete) {
         return;
@@ -2099,7 +2091,7 @@ function initializeAbtestPriceModifications() {
 /**
  * Generate and store consistent hash value in cookies
  */
-function storeAbtestHashValue() {
+function storeCausalFunnelHashValue() {
     // Check for preview hash in URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const previewHash = urlParams.get('cf_preview_hash');
@@ -2113,8 +2105,9 @@ function storeAbtestHashValue() {
             const decryptedTestId = decryptValue(previewTestId);
             if (decryptedTestId) {
                 console.log("🎯 Using decrypted preview test ID:", decryptedTestId);
-                sessionStorage.setItem('abTest_testId', decryptedTestId);
-
+                sessionStorage.setItem('causalFunnel_testId', decryptedTestId);
+                // Also store in cookies for persistence across sessions (expires in 1 day)
+                // setCookie('causalFunnel_previewTestId', decryptedTestId, 1);
             } else {
                 console.error("❌ Failed to decrypt preview test ID");
             }
@@ -2172,7 +2165,7 @@ function storeAbtestHashValue() {
 }
 
 // (function () {
-
+////console.log("CausalFunnel cart attribute script self-executing");
 
 // Try to run immediately
 // initializeCFCartAttributes();
@@ -2194,7 +2187,7 @@ function storeAbtestHashValue() {
 
 // function initializeCFCartAttributes() {
 
-//     saveAbtestIdsToCart();
+//     saveCausalFunnelIdsToCart();
 
 // }
 // })();
@@ -2202,32 +2195,33 @@ function storeAbtestHashValue() {
 
 
 // Call this function before initializing price modifications
-storeAbtestHashValue();
-initializeAbtestPriceModifications();
+storeCausalFunnelHashValue();
+initializeCausalFunnelPriceModifications();
 
 
 
 // Ensure initialization happens after DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeAbtest);
+    document.addEventListener('DOMContentLoaded', initializeCausalFunnel);
 } else {
-    initializeAbtest();
+    initializeCausalFunnel();
 }
 
 // Also add load event listener as backup
 window.addEventListener('load', () => {
-    initializeAbtest();
+    initializeCausalFunnel();
 });
 
 
 
 // Initialize everything when DOM is loaded
-function initializeAbtest() {
+function initializeCausalFunnel() {
     // Prevent multiple initializations
     if (window.cfInitialized) {
         return;
     }
 
+    console.log('🚀 Initializing CausalFunnel...');
     window.cfInitialized = true;
 
     // Check for config parameters and mark script as detected
@@ -2236,10 +2230,10 @@ function initializeAbtest() {
     });
 
     // Store device ID to cart attributes
-    saveAbtestIdsToCart();
+    saveCausalFunnelIdsToCart();
 
     // Generate and store hash value
-    storeAbtestHashValue();
+    storeCausalFunnelHashValue();
 
     // Apply product visibility modifications
     applyABTestProductModifications().catch(error => {
@@ -2254,8 +2248,8 @@ function initializeAbtest() {
 }
 
 // Add cleanup function
-function cleanupAbtest() {
-
+function cleanupCausalFunnel() {
+    console.log('🧹 Cleaning up CausalFunnel...');
 
     // Clear variant check interval
     if (window.cfVariantCheckInterval) {
@@ -2432,7 +2426,7 @@ function setupCartTracking() {
             }
 
             // Get hash value
-            const hashValue = getHashValue();
+            const hashValue = getCausalFunnelHashValue();
             if (hashValue < 0) {
                 console.log('❌ No valid hash value found');
                 return;
@@ -3210,7 +3204,7 @@ function getDeviceType() {
  * @returns {boolean} True if test is in preview mode
  */
 function isTestInPreviewMode(testId) {
-    const previewTestIdSession = sessionStorage.getItem('abTest_testId');
+    const previewTestIdSession = sessionStorage.getItem('causalFunnel_testId');
 
 
     return previewTestIdSession && previewTestIdSession === testId;
@@ -3297,7 +3291,7 @@ async function applyABTestPriceModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getHashValue();
+    const hashValue = getCausalFunnelHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || Object.keys(activeTests).length === 0) {
@@ -3671,6 +3665,28 @@ async function manageTestTimers() {
             return;
         }
 
+        // Remove timer cookies for tests that no longer exist in Firebase or are not active
+        const cookies = document.cookie.split(';');
+        const validTestIds = new Set(Object.keys(testData).filter(
+            id => id !== 'isScriptDetected' && id !== 'querySelectors'
+        ));
+        for (const cookie of cookies) {
+            const [name] = cookie.trim().split('=');
+            if (name.startsWith('cf_tests_start_time_')) {
+                // name format: cf_tests_start_time_${testId}_${testType}_${testStatus}
+                const parts = name.split('cf_tests_start_time_')[1].split('_');
+                const testId = parts[0];
+                // Remove if testId is not in DB, or if test is not active
+                if (
+                    !validTestIds.has(testId) ||
+                    (testData[testId] && testData[testId].basicInfo && testData[testId].basicInfo.status !== 'active')
+                ) {
+                    setCookie(name, '', -1); // Remove cookie
+                    console.log('🗑️ Timer cookie removed for deleted/inactive test:', name);
+                }
+            }
+        }
+
         // Get current timestamp in the correct timezone
         const now = new Date();
         const currentTime = now.toISOString();
@@ -3688,9 +3704,10 @@ async function manageTestTimers() {
             }
 
             const testType = testInfo?.basicInfo?.type || 'unknown';
-            const testTimerKey = `cf_test_timer_${testType}_${testId}`;
+            const testStatus = testInfo?.basicInfo?.status || 'unknown';
+            const testTimerKey = `cf_tests_start_time_${testId}_${testType}_${testStatus}`;
             const existingTimer = getCookie(testTimerKey);
-            console.log('🔍 Test:', testId, 'Type:', testType, 'Timer key:', testTimerKey, 'Existing timer:', existingTimer);
+            console.log('🔍 Test:', testId, 'Type:', testType, 'Status:', testStatus, 'Timer key:', testTimerKey, 'Existing timer:', existingTimer);
 
             // Check if test is active based on basicInfo.status
             const isActive = testInfo?.basicInfo?.status === 'active';
@@ -3698,12 +3715,12 @@ async function manageTestTimers() {
 
             // If test is active and no timer exists, set it
             if (isActive && !existingTimer) {
-                // Ensure we're using a valid current timestamp
-                const timestamp = new Date().toISOString();
+
                 setCookie(testTimerKey, timestamp, 3); // Set for 3 days
                 console.log('✅ Timer set for test:', {
                     testId,
                     type: testType,
+                    status: testStatus,
                     timestamp,
                     localTime: new Date().toString()
                 });
@@ -3711,11 +3728,12 @@ async function manageTestTimers() {
             // If test is not active and timer exists, remove it
             else if (!isActive && existingTimer) {
                 setCookie(testTimerKey, '', -1); // Remove cookie
-                console.log('🗑️ Timer removed for inactive test:', testId, 'Type:', testType);
+                console.log('🗑️ Timer removed for inactive test:', testId, 'Type:', testType, 'Status:', testStatus);
             } else {
                 console.log('ℹ️ Timer already exists or test inactive:', {
                     testId,
                     type: testType,
+                    status: testStatus,
                     existingTimer: existingTimer || 'none'
                 });
             }

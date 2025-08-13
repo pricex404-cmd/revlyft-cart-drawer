@@ -56,10 +56,10 @@ export function run(input) {
   }
 
   // Check if user is targeted for any active pricing tests
-  const testDataAttribute = input?.cart?.testDataAttribute?.value;
-  if (testDataAttribute) {
+  const testTargetingAttribute = input?.cart?.testTargetingAttribute?.value;
+  if (testTargetingAttribute) {
     try {
-      const testData = JSON.parse(testDataAttribute);
+      const testData = JSON.parse(testTargetingAttribute);
 
       // Check if user is NOT targeted for any active pricing tests
       for (const [testKey, isTargeted] of Object.entries(testData)) {

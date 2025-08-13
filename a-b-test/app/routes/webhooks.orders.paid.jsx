@@ -101,7 +101,6 @@ const saveProcessedWebhooks = (webhookIds) => {
 // Function to extract safe cart data
 const getSafeCartData = (lineItems) => {
     if (!lineItems || !Array.isArray(lineItems)) return [];
-    logToFile(`Processing ${lineItems.length} line items`);
     return lineItems.map(item => ({
         product_id: item.product_id,
         variant_id: item.variant_id,
@@ -131,7 +130,6 @@ const getCleanProductId = (productId) => {
 // Function to check if user meets targeting criteria for a specific test
 const checkUserMeetsTargeting = (testId, testType, testStatus, targetingData) => {
     if (!targetingData || typeof targetingData !== 'object') {
-        logToFile(`No targeting data available, allowing tracking for test ${testId}`);
         return true; // No targeting data, allow tracking
     }
 
@@ -140,7 +138,6 @@ const checkUserMeetsTargeting = (testId, testType, testStatus, targetingData) =>
 
     if (targetingData.hasOwnProperty(testKey)) {
         const meetsTargeting = targetingData[testKey] === 'true';
-        logToFile(`Targeting check for test ${testId} (${testKey}): ${meetsTargeting ? 'PASS' : 'FAIL'}`);
         return meetsTargeting;
     }
 
@@ -153,8 +150,6 @@ const fetchABTestData = async (shopDomain) => {
     try {
         const storeId = shopDomain;
         const firebaseUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${storeId}.json`;
-
-        logToFile(`Fetching A/B test data from Firebase for store: ${storeId}`);
 
         const response = await fetch(firebaseUrl);
         if (!response.ok) {
@@ -187,17 +182,12 @@ const generateConsistentHash = (input) => {
 const getProductTestInfo = async (productId, shopDomain, browserIp, fetchHashValue) => {
     try {
         const cleanProductId = getCleanProductId(productId);
-        logToFile(`Getting test info for product ${cleanProductId}`);
 
         // Calculate hash value from device ID
         const hashValue = fetchHashValue || generateConsistentHash(browserIp);
-        logToFile(`Generated hash value ${hashValue} for device ID ${browserIp}`);
 
         // Get A/B test data
         const abTestsData = await fetchABTestData(shopDomain);
-
-        logToFile('=== TEST DATA ===');
-        logToFile(`Number of tests found: ${Object.keys(abTestsData).length}`);
 
         // Find active tests that include this product
         for (const [testId, test] of Object.entries(abTestsData)) {
@@ -206,20 +196,13 @@ const getProductTestInfo = async (productId, shopDomain, browserIp, fetchHashVal
                 continue;
             }
 
-            logToFile(`\nChecking test ${testId}:`);
-            logToFile(`Test status: ${test.basicInfo?.status}`);
-            logToFile(`Test type: ${test.basicInfo?.type}`);
-
             if (!test.basicInfo || test.basicInfo.status !== 'active') {
-                logToFile('Test not active, skipping');
                 continue;
             }
 
             // Check if this product is in the test's selectedProducts
-            logToFile(`Test selectedProducts: ${JSON.stringify(test.selectedProducts)}`);
             const isProductInTest = test.selectedProducts && test.selectedProducts.some(product => {
                 const testProductId = getCleanProductId(product.productId);
-                logToFile(`Comparing order product ID "${cleanProductId}" (${typeof cleanProductId}) with test product ID "${testProductId}" (${typeof testProductId})`);
                 return String(testProductId) === String(cleanProductId);
             });
 
@@ -246,17 +229,12 @@ const getProductTestInfo = async (productId, shopDomain, browserIp, fetchHashVal
                     }
 
                     if (!foundInCreatedProducts) {
-                        logToFile('Product not found in test selectedProducts or created products');
                         continue;
                     }
                 } else {
-                    logToFile('Product not found in test selectedProducts');
                     continue;
                 }
             }
-
-            logToFile(`Product found in test ${testId} (type: ${test.basicInfo.type})`);
-            logToFile(`Selected products in test: ${JSON.stringify(test.selectedProducts)}`);
 
             // Get test groups and sort by ID to maintain order
             const testVariants = (test.testGroups || [])
@@ -280,7 +258,6 @@ const getProductTestInfo = async (productId, shopDomain, browserIp, fetchHashVal
 
             for (const variant of testVariants) {
                 cumulativePercentage += variant.percentage;
-                logToFile(`Checking variant ${variant.name} (cumulative percentage: ${cumulativePercentage})`);
 
                 if (hashValue <= cumulativePercentage) {
                     selectedVariant = variant;
@@ -312,9 +289,6 @@ const getProductTestInfo = async (productId, shopDomain, browserIp, fetchHashVal
 // Function to track analytics event in Firebase
 const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, shopDomain, testType = null, variantId = null) => {
     try {
-        logToFile(`[trackAnalyticsEvent] Starting for ${eventType}`);
-        logToFile(`[trackAnalyticsEvent] Parameters: eventType=${eventType}, browserIp=${browserIp}, testId=${testId}, variantIndex=${variantIndex}, shopDomain=${shopDomain}, testType=${testType}, variantId=${variantId}`);
-
         // Use the store ID as provided (already processed)
         const storeId = shopDomain;
 
@@ -322,20 +296,14 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
         let firebasePath;
         if (testType === 'pricing' && eventType === 'saleDone' && variantId) {
             firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/${eventType}/variantId_${variantId}`;
-            logToFile(`[trackAnalyticsEvent] Using variant-specific path for price test`);
         } else {
             // Default path for other test types or events
             firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/${eventType}`;
-            logToFile(`[trackAnalyticsEvent] Using default path`);
         }
 
         const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
 
-        logToFile(`[trackAnalyticsEvent] Firebase path: ${firebasePath}`);
-        logToFile(`[trackAnalyticsEvent] Analytics URL: ${analyticsUrl}`);
-
         // Fetch current analytics data
-        logToFile(`[trackAnalyticsEvent] Fetching current analytics data from Firebase`);
         const response = await fetch(analyticsUrl);
         if (!response.ok) {
             logToFile(`[trackAnalyticsEvent] Failed to fetch analytics: ${response.status} ${response.statusText}`);
@@ -344,7 +312,6 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
 
         // Parse current data
         let analyticsData = await response.json();
-        logToFile(`[trackAnalyticsEvent] Current data from Firebase: ${JSON.stringify(analyticsData)}`);
 
         // Initialize array if null or not an array
         if (!analyticsData || !Array.isArray(analyticsData)) {
@@ -354,10 +321,8 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
 
         // Filter out empty strings and null values
         analyticsData = analyticsData.filter(id => id && id !== "");
-        logToFile(`[trackAnalyticsEvent] Filtered analytics array: ${JSON.stringify(analyticsData)}`);
 
         // Always add browser IP to analytics (allow duplicates)
-        logToFile(`[trackAnalyticsEvent] Adding browser IP ${browserIp} to analytics`);
         analyticsData.push(browserIp);
 
         // Update Firebase with the new array
@@ -376,9 +341,6 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
         }
 
         const responseData = await updateResponse.json();
-        logToFile(`[trackAnalyticsEvent] Firebase update response: ${JSON.stringify(responseData)}`);
-        logToFile(`[trackAnalyticsEvent] Successfully updated analytics with new array: ${JSON.stringify(analyticsData)}`);
-        logToFile(`[trackAnalyticsEvent] Analytics tracking completed successfully`);
     } catch (error) {
         logToFile(`[trackAnalyticsEvent] Error: ${error.message}`);
         logToFile(`[trackAnalyticsEvent] Error stack: ${error.stack}`);
@@ -406,7 +368,6 @@ export const action = async ({ request }) => {
 
         // Authenticate and get the full payload
         const { payload } = await authenticate.webhook(request);
-        logToFile(`Processing webhook for shop domain: ${shopDomain}`);
 
         // Get the webhook ID from the correct location in the payload
         const webhookId = payload.id || payload.webhook_id;
@@ -444,7 +405,7 @@ async function processWebhook(payload, shopDomain) {
         // Extract cart attributes from multiple possible locations
         const noteAttributes = payload.note_attributes || [];
         const cartAttributes = payload.attributes || {};
-
+        // logToFile(`payloadd: ${JSON.stringify(payload)}`);
         // Helper function to find attribute value
         const findAttributeValue = (key) => {
             // Check note_attributes first
@@ -456,10 +417,12 @@ async function processWebhook(payload, shopDomain) {
         };
 
         // Get device ID and hash value
-        const deviceId = findAttributeValue('abtest_device_id');
-        const deepId = findAttributeValue('abtest_deep_id');
-        const fetchhashValue = findAttributeValue('abtest_hash_value');
-        const testDataAttribute = findAttributeValue('abtest_test_data');
+        const deviceId = findAttributeValue('causal_funnel_device_id');
+        const deepId = findAttributeValue('causal_funnel_deep_id');
+        const fetchhashValue = findAttributeValue('causal_funnel_hash_value');
+        const testTargetingAttribute = findAttributeValue('causal_funnel_tests_targeting_data');
+        const testTimerAttribute = findAttributeValue('causal_funnel_tests_start_time_data');
+        const currentTimeStr = findAttributeValue('causal_funnel_current_time');
 
         // Use deviceId from attributes if available, otherwise fallback to browser_ip
         const browserIp = deviceId || payload.browser_ip;
@@ -471,23 +434,13 @@ async function processWebhook(payload, shopDomain) {
 
         // Parse targeting data if available
         let targetingData = {};
-        if (testDataAttribute) {
+        if (testTargetingAttribute) {
             try {
-                targetingData = JSON.parse(testDataAttribute);
-                logToFile(`Targeting data parsed: ${JSON.stringify(targetingData)}`);
+                targetingData = JSON.parse(testTargetingAttribute);
             } catch (error) {
                 logToFile(`Error parsing targeting data: ${error.message}`);
             }
         }
-
-        // Log the cart attributes and note attributes for debugging
-        logToFile('=== CART ATTRIBUTES ===');
-        logToFile(`Note Attributes: ${JSON.stringify(noteAttributes)}`);
-        logToFile(`Cart Attributes: ${JSON.stringify(cartAttributes)}`);
-        logToFile(`Device ID: ${deviceId}`);
-        logToFile(`Fetch Hash Value: ${fetchhashValue}`);
-        logToFile(`Test Data Attribute: ${testDataAttribute}`);
-        logToFile('=== END CART ATTRIBUTES ===');
 
         // Extract safe cart data with attributes
         const cartData = getSafeCartData(payload.line_items);
@@ -506,13 +459,10 @@ async function processWebhook(payload, shopDomain) {
 
         // Process each item in the cart for analytics
         for (const item of safeData.cart) {
-            logToFile(`Processing sale for product: ${item.product_id}`);
 
             // Get test information for this product
             const testInfo = await getProductTestInfo(item.product_id, shopDomain, browserIp, fetchhashValue);
             if (testInfo) {
-                logToFile(`Found test info for product ${item.product_id}:`);
-                logToFile(`Test ID: ${testInfo.testId}, Test Type: ${testInfo.testType}, Variant Index: ${testInfo.variantIndex}`);
                 // Check if user meets targeting criteria for this test (skip for product detail tests)
                 if (testInfo.testType !== 'productDetails') {
                     const meetsTargeting = checkUserMeetsTargeting(testInfo.testId, testInfo.testType, 'active', targetingData);
@@ -529,7 +479,6 @@ async function processWebhook(payload, shopDomain) {
                 if (testInfo.testType === 'pricing') {
                     // Use the variant_id from the cart item
                     variantId = getCleanProductId(item.variant_id);
-                    logToFile(`Checking variant ID ${variantId} for price test analytics`);
                     // Check if this specific variant is part of the test group
                     const abTestsData = await fetchABTestData(shopDomain);
                     const test = abTestsData[testInfo.testId];
@@ -541,9 +490,7 @@ async function processWebhook(payload, shopDomain) {
                             const productInTestGroup = testGroup.products[cleanProductId];
                             // Check if the specific variant exists in this test group's product variants
                             if (productInTestGroup.variants && productInTestGroup.variants[variantId]) {
-                                logToFile(`Variant ID ${variantId} is configured in test group. Proceeding with analytics.`);
                             } else {
-                                logToFile(`Variant ID ${variantId} is not configured in this test group. Skipping analytics.`);
                                 shouldTrackAnalytics = false;
                             }
                         } else {
@@ -558,7 +505,7 @@ async function processWebhook(payload, shopDomain) {
                 if (shouldTrackAnalytics) {
                     // Track the sale in Firebase
                     await trackAnalyticsEvent('saleDone', browserIp, testInfo.testId, testInfo.variantIndex, shopDomain, testInfo.testType, variantId);
-                    logToFile(`Successfully tracked sale for ${testInfo.testType} test`);
+
                 } else {
                     logToFile(`Skipped analytics tracking for variant not in test`);
                 }
@@ -580,8 +527,36 @@ async function processWebhook(payload, shopDomain) {
                 continue;
             }
 
-
             if (test.basicInfo.status === 'active' && test.basicInfo.type === 'discount') {
+                // --- 30 MINUTES CHECK ---
+                let skipAnalytics = false;
+                if (!testTimerAttribute) {
+                    logToFile(`Skipping analytics for discount test ${testId}: test timer attribute missing or empty.`);
+                    skipAnalytics = true;
+                } else {
+                    try {
+                        const timerObj = testTimerAttribute ? JSON.parse(testTimerAttribute) : {};
+                        const timerKey = `${testId}_${test.basicInfo.type}_${test.basicInfo.status}`;
+                        const startTimeStr = timerObj[timerKey];
+                        if (!startTimeStr) {
+                            logToFile(`Skipping analytics for discount test ${testId}: start time not found in timer attribute.`);
+                            skipAnalytics = true;
+                        } else {
+                            const startTime = new Date(startTimeStr);
+                            const now = currentTimeStr ? new Date(currentTimeStr) : new Date();
+                            const diffMs = now - startTime;
+                            if (diffMs > 30 * 60 * 1000) {
+                                logToFile(`Skipping analytics for discount test ${testId}: more than 30 minutes since start (${(diffMs / 60000).toFixed(2)} min)`);
+                                skipAnalytics = true;
+                            }
+                        }
+                    } catch (e) {
+                        logToFile(`Error parsing test timer for discount test ${testId}: ${e.message}`);
+                        skipAnalytics = true;
+                    }
+                }
+                if (skipAnalytics) continue;
+
                 const hashValue = fetchhashValue || generateConsistentHash(browserIp);
                 const userVariant = getVariantForUser(test.testGroups, hashValue);
                 if (!userVariant) continue;
@@ -598,14 +573,22 @@ async function processWebhook(payload, shopDomain) {
                 const discountAmount = safeData.cart.reduce((sum, item) => sum + parseFloat(item.total_discount || 0), 0);
                 const total = subtotal - discountAmount;
                 // Optionally, get itemsToThreshold/messageShown from attributes or testData if available
-                // Save only the discount_applications array as analyticsDetails
-                let analyticsDetails = payload.discount_applications;
-                if (analyticsDetails.length > 0) {
-                    analyticsDetails = payload.discount_applications;
-                }
-                else {
-                    analyticsDetails = "No discount applications";
-                }
+                // Save only the minimal order summary as analyticsDetails
+                let analyticsDetails = {
+                    order_number: payload.order_number,
+                    order_id: payload.id,
+                    created_at: payload.created_at,
+                    currency: payload.currency,
+                    total_price: payload.total_price,
+                    subtotal_price: payload.total_line_items_price || payload.subtotal_price,
+                    total_discounts: payload.total_discounts,
+                    discount_applications: (payload.discount_applications || []).map(app => ({
+                        title: app.title,
+                        type: app.type,
+                        value: app.value,
+                        value_type: app.value_type
+                    }))
+                };
 
                 // Read userBehavior node for this user
                 const userBehaviorUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
@@ -652,7 +635,6 @@ async function processWebhook(payload, shopDomain) {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userBehaviorData)
                 });
-                logToFile(`saleDone analytics written for discount test ${testId} (experience node ${targetIndex}): ${JSON.stringify(analyticsDetails)}`);
             }
             else {
                 logToFile(`No active discount test found for shop domain ${shopDomain}`);
