@@ -1098,7 +1098,8 @@ export default function Index() {
   const handleCopyScript = async () => {
     const scriptTemplate = `<!-- CausalFunnel A/B Testing Script -->
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>`;
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-discount-abtest-script.js?shop=${shop}" defer></script>`;
     console.log("scriptTemplate", scriptTemplate);
     try {
       await navigator.clipboard.writeText(scriptTemplate);

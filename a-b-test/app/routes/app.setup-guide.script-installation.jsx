@@ -48,7 +48,8 @@ export default function ScriptInstallation() {
 
     const combinedScript = `<!-- CausalFunnel A/B Testing Script -->
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>`;
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.causalfunnel.org/assets/causalfunnel-discount-abtest-script.js?shop=${shop}" defer></script>`;
 
     const handleNextStep = () => {
         navigate('/app/setup-guide/dom-injection');
