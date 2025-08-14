@@ -62,6 +62,29 @@ export const handleStartTest = async (fetcher, shop, testId, testData, functionI
     try {
         const testType = testData?.basicInfo?.type;
 
+        if (testType === 'productDetails') {
+            // For product details tests, call the create-product-duplicates API
+            const formData = new FormData();
+            formData.append('testId', testId);
+            formData.append('shop', shop.domain);
+            formData.append('testData', JSON.stringify(testData));
+
+            // Submit to the create-product-duplicates API
+            fetcher.submit(formData, { 
+                method: 'post',
+                action: '/api/create-product-duplicates'
+            });
+
+            // For product details tests, we need to wait for the fetcher response
+            // The response will be handled by the fetcher state
+            return {
+                success: true,
+                message: 'Product details test start process initiated',
+                isAsync: true // Indicate that this is an async operation
+            };
+        }
+
+        // For pricing and discount tests, use the existing logic
         // Prepare test variants based on test type
         let testVariants;
         if (testType === 'pricing') {

@@ -568,7 +568,14 @@ export default function Test() {
                     }));
                 } else {
                     setToastMessage(fetcher.data.message || 'Test started successfully!');
-                    if (fetcher.data.newStatus) {
+                    // For product details tests, the API returns basicInfo with status: 'active'
+                    if (fetcher.data.basicInfo?.status) {
+                        setTestStatus(fetcher.data.basicInfo.status);
+                        setBasicInfo(prev => ({
+                            ...prev,
+                            status: fetcher.data.basicInfo.status
+                        }));
+                    } else if (fetcher.data.newStatus) {
                         setTestStatus(fetcher.data.newStatus);
                     }
                 }
