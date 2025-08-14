@@ -1,10 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "b633b97839927c8b34e5028c47d2c881"
-application_url = "https://decrease-scored-drilling-justice.trycloudflare.com"
+application_url = "https://studied-mason-announcement-circus.trycloudflare.com"
 embedded = true
-name = "abtest"
-handle = "abtest-6"
+client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
+name = "ab-test"
+handle = "ab-test-18"
 
 [build]
 automatically_update_urls_on_dev = true
@@ -43,9 +43,9 @@ scopes = "read_orders,read_script_tags,write_discounts,write_products,write_scri
 
 [auth]
 redirect_urls = [
-  "https://decrease-scored-drilling-justice.trycloudflare.com/auth/callback",
-  "https://decrease-scored-drilling-justice.trycloudflare.com/auth/shopify/callback",
-  "https://decrease-scored-drilling-justice.trycloudflare.com/api/auth/callback"
+  "https://studied-mason-announcement-circus.trycloudflare.com/auth/callback",
+  "https://studied-mason-announcement-circus.trycloudflare.com/auth/shopify/callback",
+  "https://studied-mason-announcement-circus.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
