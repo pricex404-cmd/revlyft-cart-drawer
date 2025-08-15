@@ -37,7 +37,7 @@ import { GET_PRODUCTS_AND_SHOP, GET_SHOPIFY_FUNCTIONS } from "../utils/graphqlQu
 
 // Import components
 import { TestGroupsContent } from "../components/test/TestGroupsContent";
-import ModificationsContent from "../components/priceTest/ModificationsContent";
+import ModificationsContentPrice from "../components/priceTest/ModificationsContentPrice";
 import ModificationsContentProductDetails from "../components/productDetailTest/ModificationsContentProductDetails";
 import { ModificationsContentDiscount } from "../components/DiscountTest/ModificationsContentDiscount";
 import TargetingContent from "../components/test/TargetingContent";
@@ -669,7 +669,7 @@ export default function Test() {
                 setDiscountConfig={setDiscountConfig}
             />
         ) : (
-            <ModificationsContent
+            <ModificationsContentPrice
                 products={products}
                 testGroups={testGroups}
                 setTestGroups={setTestGroups}

@@ -35,7 +35,7 @@ if (typeof document !== 'undefined') {
     document.head.appendChild(styleSheet);
 }
 
-export const ModificationsContent = ({
+ const ModificationsContentPrice = ({
     products,
     testGroups,
     setTestGroups,
@@ -924,4 +924,4 @@ export const ModificationsContent = ({
     );
 };
 
-export default ModificationsContent; 
+export default ModificationsContentPrice; 
