@@ -383,16 +383,25 @@ export const ProductsList = ({
                             />
                         </div>
 
-                        <Button
-                            onClick={() => {
-                                setSearchValue('');
-                                setSortSelected('product asc');
-                                setVariantTypeFilter('');
-                                setStatusFilter('');
-                            }}
-                        >
-                            Clear All
-                        </Button>
+                        <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'flex-end',
+                            minHeight: '60px',
+                            paddingBottom: '4px'// Match the height of Select components
+                        }}>
+                            <Button
+                                variant="primary"
+                                
+                                onClick={() => {
+                                    setSearchValue('');
+                                    setSortSelected('product asc');
+                                    setVariantTypeFilter('');
+                                    setStatusFilter('');
+                                }}
+                            >
+                                Clear All
+                            </Button>
+                        </div>
                     </InlineStack>
                 </BlockStack>
             </div>
