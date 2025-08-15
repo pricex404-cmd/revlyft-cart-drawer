@@ -95,11 +95,12 @@ export const ModificationsContent = ({
         isTestStarted,
         AllProductIdsInTests,
         multiVariantProductIds,
-        compareAtPriceProductIds
+        compareAtPriceProductIds,
+        pricingMethod: basicInfo?.pricingMethod || 'percentage'
     });
 
-    // Get the current pricing method from basicInfo, default to 'fixedPrice'
-    const pricingMethod = basicInfo?.pricingMethod || 'fixedPrice';
+    // Get the current pricing method from basicInfo, default to 'percentage'
+    const pricingMethod = basicInfo?.pricingMethod || 'percentage';
 
     // State for bulk discount modal
     const [showBulkDiscountModal, setShowBulkDiscountModal] = useState(false);
@@ -117,6 +118,22 @@ export const ModificationsContent = ({
             pricingMethod: method
         }));
 
+    };
+
+    // Function to handle per-product pricing method change
+    const handleProductPricingMethodChange = (productId, method) => {
+        if (isTestStarted) return;
+
+        // Update the selectedProducts array to include the pricing method for this specific product
+        setSelectedProducts(prev => prev.map(product => {
+            if (product.productId === productId) {
+                return {
+                    ...product,
+                    pricingMethod: method
+                };
+            }
+            return product;
+        }));
     };
 
     console.log("ModificationsContent - isTestStarted:", isTestStarted);
@@ -281,7 +298,8 @@ export const ModificationsContent = ({
                     isMultiVariant: true,
                     samePrice: true, // Flag to indicate same price across variants
                     originalPrice: firstPrice, // Store all variants for backend
-                    variants: allVariants // Auto-select all variants
+                    variants: allVariants, // Auto-select all variants
+                    pricingMethod: pricingMethod // Initialize with current pricing method
                 };
 
                 // Add formatted product
@@ -326,7 +344,8 @@ export const ModificationsContent = ({
                     isMultiVariant: true,
                     samePrice: false,
                     allVariants: allVariants, // Store all available variants
-                    variants: [] // Initially no variants selected for testing
+                    variants: [], // Initially no variants selected for testing
+                    pricingMethod: pricingMethod // Initialize with current pricing method
                 };
 
                 // Add formatted product
@@ -360,7 +379,8 @@ export const ModificationsContent = ({
                 handle: product.handle,
                 originalPrice: parseFloat(firstVariant?.price || '0'),
                 imageUrl: product.images.edges[0]?.node.url || '',
-                isMultiVariant: false
+                isMultiVariant: false,
+                pricingMethod: pricingMethod // Initialize with current pricing method
             };
 
             // Add formatted product
@@ -855,15 +875,7 @@ export const ModificationsContent = ({
                 </BlockStack>
             </InlineStack>
 
-            {/* Pricing Method Selection */}
-            {selectedProducts.length > 0 && !showProductList && (
-                <PricingMethodSelector
-                    pricingMethod={pricingMethod}
-                    onPricingMethodChange={handlePricingMethodChange}
-                    isTestStarted={isTestStarted}
-                    currency={currency}
-                />
-            )}
+
 
             <LegacyCard>
                 <LegacyCard.Section>
@@ -900,6 +912,7 @@ export const ModificationsContent = ({
                                 onShowProductList={() => setShowProductList(true)}
                                 isTestStarted={isTestStarted}
                                 extractShopifyProductId={extractShopifyProductId}
+                                onProductPricingMethodChange={handleProductPricingMethodChange}
                             />
                         )}
 
