@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Text, Button, BlockStack, InlineStack, Box, LegacyCard, Modal, Banner } from "@shopify/polaris";
 import TestGroupCircle from "./TestGroupCircle";
 import PercentageSlider from "./PercentageSlider";
@@ -18,9 +18,46 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
     const [removingGroupId, setRemovingGroupId] = useState(null);
     const groupColors = [colors.primary, colors.secondary, colors.accent, colors.warning]; // Colors for test groups
 
-
     // Check if modifications are disabled
     const isModificationsDisabled = isTestStarted;
+
+    // FIXED: Added robust percentage validation and deletion handling to prevent inconsistencies
+    // when deleting test groups from any position. The issue was caused by race conditions
+    // between the deletion logic and the percentage slider updates.
+
+    // Function to validate and fix percentage totals
+    const validateAndFixPercentages = (groups) => {
+        const totalPercentage = groups.reduce((sum, group) => sum + group.percentage, 0);
+        if (totalPercentage !== 100) {
+            console.warn(`Percentage total is ${totalPercentage}%, fixing to 100%`);
+            const diff = 100 - totalPercentage;
+            const updatedGroups = groups.map((group, index) => 
+                index === 0 ? { ...group, percentage: group.percentage + diff } : group
+            );
+            return updatedGroups;
+        }
+        return groups;
+    };
+
+    // Monitor testGroups and ensure percentages are always correct
+    useEffect(() => {
+        // Don't run validation during deletion process
+        if (removingGroupId !== null) return;
+        
+        if (testGroups && testGroups.length > 0) {
+            const totalPercentage = testGroups.reduce((sum, group) => sum + group.percentage, 0);
+            if (totalPercentage !== 100) {
+                console.warn(`TestGroupsContent: Detected incorrect percentage total: ${totalPercentage}%`);
+                const validatedGroups = validateAndFixPercentages(testGroups);
+                // Only update if the validated groups are different from current groups
+                const currentGroupsString = JSON.stringify(testGroups.map(g => ({ id: g.id, percentage: g.percentage })));
+                const validatedGroupsString = JSON.stringify(validatedGroups.map(g => ({ id: g.id, percentage: g.percentage })));
+                if (currentGroupsString !== validatedGroupsString) {
+                    setTestGroups(validatedGroups);
+                }
+            }
+        }
+    }, [testGroups, removingGroupId]);
 
     // Function to handle modification attempts when disabled
 
@@ -42,8 +79,9 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
             }
         }));
 
-        // Calculate next sequential ID (should be 3 for the third group, 4 for fourth, etc.)
-        const nextId = newGroupNumber + 1; // +2 because we start with Control Group (1) and count up
+        // Calculate next sequential ID - find the highest existing ID and add 1
+        const maxId = Math.max(...testGroups.map(group => group.id));
+        const nextId = maxId + 1;
 
         // Add new group with sequential ID
         const newGroup = {
@@ -88,7 +126,10 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
             updatedGroups[0].percentage += remainder;
         }
 
-        setTestGroups([...updatedGroups, newGroup]);
+        // Ensure the total is exactly 100%
+        const finalGroups = [...updatedGroups, newGroup];
+        const validatedGroups = validateAndFixPercentages(finalGroups);
+        setTestGroups(validatedGroups);
     };
 
     const handleEdit = (groupId, newName) => {
@@ -102,23 +143,33 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
 
     const handleRemoveConfirm = () => {
         if (removingGroupId) {
-            // Filter out the group to remove
-            const remainingGroups = testGroups.filter(group => group.id !== removingGroupId);
+            console.log(`Removing group with ID: ${removingGroupId}`);
+            console.log('Before removal:', testGroups.map(g => ({ id: g.id, name: g.name, percentage: g.percentage })));
+            
+            // Use a callback to ensure we're working with the latest state
+            setTestGroups(currentGroups => {
+                // Filter out the group to remove
+                const remainingGroups = currentGroups.filter(group => group.id !== removingGroupId);
 
-            // Recalculate percentages for remaining groups
-            const equalPercentage = Math.floor(100 / remainingGroups.length);
-            const updatedGroups = remainingGroups.map(group => ({
-                ...group,
-                percentage: equalPercentage
-            }));
+                // Recalculate percentages for remaining groups
+                const equalPercentage = Math.floor(100 / remainingGroups.length);
+                const updatedGroups = remainingGroups.map(group => ({
+                    ...group,
+                    percentage: equalPercentage
+                }));
 
-            // Adjust for any remainder to ensure total is 100%
-            const remainder = 100 - (equalPercentage * remainingGroups.length);
-            if (remainder > 0) {
-                updatedGroups[0].percentage += remainder;
-            }
+                // Adjust for any remainder to ensure total is 100%
+                const remainder = 100 - (equalPercentage * remainingGroups.length);
+                if (remainder > 0) {
+                    updatedGroups[0].percentage += remainder;
+                }
 
-            setTestGroups(updatedGroups);
+                // Ensure the total is exactly 100%
+                const validatedGroups = validateAndFixPercentages(updatedGroups);
+                console.log('After removal:', validatedGroups.map(g => ({ id: g.id, name: g.name, percentage: g.percentage })));
+                return validatedGroups;
+            });
+            
             setRemovingGroupId(null);
         }
     };
@@ -202,8 +253,14 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
                         {/* Percentage Slider */}
                         <PercentageSlider
                             testGroups={testGroups}
-                            onGroupPercentagesChange={setTestGroups}
-                            disabled={isModificationsDisabled}
+                            onGroupPercentagesChange={(newGroups) => {
+                                // Only allow slider changes if we're not in the middle of deleting a group
+                                if (removingGroupId === null) {
+                                    const validatedGroups = validateAndFixPercentages(newGroups);
+                                    setTestGroups(validatedGroups);
+                                }
+                            }}
+                            disabled={isModificationsDisabled || removingGroupId !== null}
                         />
 
                         {/* Group Labels */}
