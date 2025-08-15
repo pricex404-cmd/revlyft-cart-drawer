@@ -356,19 +356,6 @@ export const ModificationsContentProductDetails = ({ products, testGroups, setTe
                                     </Button>
                                 </InlineStack>
 
-                                <Box padding="400" style={{ overflowX: 'auto' }}>
-                                    <div style={{ paddingRight: '32px' }}>
-                                        <InlineStack align="end" gap="800" wrap={false}>
-                                            <Box style={{ minWidth: '300px', flexShrink: 0 }}></Box>
-                                            {testGroups.map(group => (
-                                                <Box key={group.id} style={{ minWidth: '100px', flexShrink: 0, textAlign: 'center' }}>
-                                                    <Text variant="bodyMd" as="p">{group.name}</Text>
-                                                </Box>
-                                            ))}
-                                        </InlineStack>
-                                    </div>
-                                </Box>
-
                                 {selectedProducts.map((product) => (
                                     <Box key={product.productId} padding="400" background="bg-surface-secondary">
                                         <BlockStack gap="400">
