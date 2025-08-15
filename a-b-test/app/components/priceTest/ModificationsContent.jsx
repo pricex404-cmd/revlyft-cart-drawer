@@ -43,7 +43,6 @@ export const ModificationsContent = ({
     setSelectedProducts,
     onPricesModified,
     isTestStarted,
-    AllProductIdsInTests,
     multiVariantProductIds,
     compareAtPriceProductIds,
     currency,
@@ -56,7 +55,7 @@ export const ModificationsContent = ({
         testGroups: testGroups?.length,
         selectedProducts: selectedProducts?.length,
         isTestStarted,
-        AllProductIdsInTests,
+
         multiVariantProductIds,
         compareAtPriceProductIds
     });
@@ -93,7 +92,7 @@ export const ModificationsContent = ({
         selectedProducts,
         setSelectedProducts,
         isTestStarted,
-        AllProductIdsInTests,
+
         multiVariantProductIds,
         compareAtPriceProductIds
     });
@@ -190,9 +189,9 @@ export const ModificationsContent = ({
         const productId = product.id.split('/').pop();
         console.log('productId extracted:', productId);
         console.log('multiVariantProductIds:', multiVariantProductIds);
-        console.log('AllProductIdsInTests:', AllProductIdsInTests);
+
         console.log('multiVariantProductIds type:', typeof multiVariantProductIds);
-        console.log('AllProductIdsInTests type:', typeof AllProductIdsInTests);
+
 
         // Check if product has compare at price using the pre-filtered array
         const hasCompareAtPrice = compareAtPriceProductIds && compareAtPriceProductIds.includes(productId);
@@ -205,10 +204,9 @@ export const ModificationsContent = ({
         // Check if product is already in another test
         console.log('🔍 Checking if product is in other tests:');
         console.log('📦 ProductId:', productId);
-        console.log('📋 AllProductIdsInTests:', AllProductIdsInTests);
-        console.log('✅ Is in other tests:', AllProductIdsInTests && AllProductIdsInTests.includes(productId));
 
-        const isInOtherTest = AllProductIdsInTests && AllProductIdsInTests.includes(productId);
+
+      
 
         // Check if this product is already selected
         const isAlreadySelected = selectedProducts.find(p => p.productId === product.id);
@@ -239,12 +237,7 @@ export const ModificationsContent = ({
             return; // Prevent selection
         }
 
-        if (isInOtherTest) {
-            console.log('🚨 WARNING: Product already in test, showing warning and preventing selection');
-            setProductSelectionError(`This product is already being used in another test. Please end that test before using this product.`);
-            setTimeout(() => setProductSelectionError(''), 6000);
-            return; // Prevent selection
-        }
+       
 
         console.log('Product has no issues, proceeding with selection');
 
@@ -875,7 +868,6 @@ export const ModificationsContent = ({
                                 onProductSelect={handleProductSelect}
                                 onDone={() => setShowProductList(false)}
                                 isTestStarted={isTestStarted}
-                                AllProductIdsInTests={AllProductIdsInTests}
                                 multiVariantProductIds={multiVariantProductIds}
                                 compareAtPriceProductIds={compareAtPriceProductIds}
                                 currency={currency}
