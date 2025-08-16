@@ -21,6 +21,7 @@ import {
   Modal,
   LegacyStack,
   Badge,
+  Banner,
 } from "@shopify/polaris";
 import {
   ViewIcon,
@@ -273,8 +274,9 @@ const CreateTestModal = ({
   selectedTestType,
   onTestTypeSelect,
   onCreateTest,
-  isCreateButtonDisabled,
-  isCreating
+  isCreating,
+  validationMessage,
+  setValidationMessage
 }) => {
   const testTypes = [
     {
@@ -315,6 +317,18 @@ const CreateTestModal = ({
       onClose={() => !isCreating && onClose()}
       title="Create A New Test"
     >
+      {validationMessage && (
+        <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: 'white', borderBottom: '1px solid #e1e3e5' }}>
+          <Modal.Section>
+            <Banner 
+              status="critical"
+              onDismiss={() => setValidationMessage('')}
+            >
+              <p>{validationMessage}</p>
+            </Banner>
+          </Modal.Section>
+        </div>
+      )}
       <Modal.Section>
         <BlockStack gap="400">
           <TextField
@@ -335,6 +349,7 @@ const CreateTestModal = ({
           />
 
           <BlockStack gap="400">
+            <Text variant="bodyMd" as="p" fontWeight="bold">Select Test Type:</Text>
             <LegacyStack distribution="fillEvenly">
               {testTypes.map((test) => (
                 <TestTypeButton
@@ -355,7 +370,6 @@ const CreateTestModal = ({
         <InlineStack align="end">
           <Button
             variant="primary"
-            disabled={isCreateButtonDisabled}
             onClick={onCreateTest}
             loading={isCreating}
           >
@@ -390,6 +404,7 @@ export default function Index() {
   const [showDisconnectCleanup, setShowDisconnectCleanup] = useState(false);
   const [disconnectConfirmOpen, setDisconnectConfirmOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [validationMessage, setValidationMessage] = useState('');
 
   // Search and filter states
   const [searchTerm, setSearchTerm] = useState('');
@@ -684,6 +699,7 @@ export default function Index() {
     setTestName('');
     setTestDescription('');
     setSelectedTestType('');
+    setValidationMessage('');
     // navigate('.');
   };
 
@@ -692,108 +708,125 @@ export default function Index() {
   };
 
   const handleCreateTest = async () => {
-    if (testName && testDescription && selectedTestType) {
+    // Validation check - collect all missing fields
+    const missingFields = [];
+    
+    if (!testName.trim()) {
+      missingFields.push("Test Name");
+    }
+    if (!testDescription.trim()) {
+      missingFields.push("Test Description");
+    }
+    if (!selectedTestType) {
+      missingFields.push("Test Type");
+    }
+    
+    if (missingFields.length > 0) {
+      const message = `Please complete the following required fields: ${missingFields.join(", ")}`;
+      setValidationMessage(message);
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      const testId = uuidv4();
+      const timestamp = new Date().toISOString();
+      const sanitizedDomain = sanitizeShopDomain(shop);
+
+      // Fetch shop currency dynamically
+      let shopCurrency = ""; // Default fallback
       try {
-        setIsCreating(true);
-        const testId = uuidv4();
-        const timestamp = new Date().toISOString();
-        const sanitizedDomain = sanitizeShopDomain(shop);
-
-        // Fetch shop currency dynamically
-        let shopCurrency = ""; // Default fallback
-        try {
-          const currencyResponse = await fetch('/api/shop-currency');
-          const currencyData = await currencyResponse.json();
-          if (currencyResponse.ok && currencyData.currencyCode) {
-            shopCurrency = currencyData.currencyCode;
-          }
-          console.log("shopCurrency", shopCurrency)
-        } catch (error) {
-          console.error('Failed to fetch shop currency:', error);
+        const currencyResponse = await fetch('/api/shop-currency');
+        const currencyData = await currencyResponse.json();
+        if (currencyResponse.ok && currencyData.currencyCode) {
+          shopCurrency = currencyData.currencyCode;
         }
-
-        // Deactivate all active tests first
-        // await deactivateAllActivePriceTests(sanitizedDomain, shop);
-
-        // Create initial test data structure
-        const testData = {
-          basicInfo: {
-            testName,
-            testDescription,
-            type: selectedTestType,
-            status: "pending",
-            createdAt: timestamp,
-            updatedAt: timestamp,
-            currency: shopCurrency
-          },
-          testGroups: [
-            {
-              id: 1,
-              name: 'Control Group',
-              percentage: 50,
-              color: '#0040FF',
-              products: {},
-              analytics: {
-                views: {},
-                addToCart: {},
-                saleDone: {}
-              }
-            },
-            {
-              id: 2,
-              name: 'New Group 1',
-              percentage: 50,
-              color: '#00A47C',
-              products: {},
-              analytics: {
-                views: {},
-                addToCart: {},
-                saleDone: {}
-              }
-            }
-          ],
-          targeting: {
-            deviceType: "all",
-            visitorType: "all",
-            trafficSource: "all"
-          },
-          analytics: {
-            conversionType: 'all',
-            primaryMetric: 'conversion'
-          },
-          sessions: [] // Initialize empty sessions array as separate top-level node
-        };
-
-        // Save to Firebase
-        const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}/${testId}.json`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(testData)
-        });
-
-        if (!response.ok) {
-          throw new Error('Failed to create test');
-        }
-
-        // Create query parameters
-        const searchParams = new URLSearchParams({
-          action: 'new',
-          type: selectedTestType,
-          tab: 'testGroups',
-          name: testName,
-          description: testDescription
-        });
-
-        // Navigate to the dynamic test route with both testId and query parameters
-        navigate(`/app/test/${testId}?${searchParams.toString()}`);
-        handleCloseModal();
+        console.log("shopCurrency", shopCurrency)
       } catch (error) {
-        console.error('Error creating test:', error);
-        shopify.toast.show("Failed to create test", { isError: true });
-        setIsCreating(false);
+        console.error('Failed to fetch shop currency:', error);
       }
+
+      // Deactivate all active tests first
+      // await deactivateAllActivePriceTests(sanitizedDomain, shop);
+
+      // Create initial test data structure
+      const testData = {
+        basicInfo: {
+          testName,
+          testDescription,
+          type: selectedTestType,
+          status: "pending",
+          createdAt: timestamp,
+          updatedAt: timestamp,
+          currency: shopCurrency
+        },
+        testGroups: [
+          {
+            id: 1,
+            name: 'Control Group',
+            percentage: 50,
+            color: '#0040FF',
+            products: {},
+            analytics: {
+              views: {},
+              addToCart: {},
+              saleDone: {}
+            }
+          },
+          {
+            id: 2,
+            name: 'New Group 1',
+            percentage: 50,
+            color: '#00A47C',
+            products: {},
+            analytics: {
+              views: {},
+              addToCart: {},
+              saleDone: {}
+            }
+          }
+        ],
+        targeting: {
+          deviceType: "all",
+          visitorType: "all",
+          trafficSource: "all"
+        },
+        analytics: {
+          conversionType: 'all',
+          primaryMetric: 'conversion'
+        },
+        sessions: [] // Initialize empty sessions array as separate top-level node
+      };
+
+      // Save to Firebase
+      const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}/${testId}.json`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(testData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create test');
+      }
+
+      // Create query parameters
+      const searchParams = new URLSearchParams({
+        action: 'new',
+        type: selectedTestType,
+        tab: 'testGroups',
+        name: testName,
+        description: testDescription
+      });
+
+      // Navigate to the dynamic test route with both testId and query parameters
+      navigate(`/app/test/${testId}?${searchParams.toString()}`);
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error creating test:', error);
+      shopify.toast.show("Failed to create test", { isError: true });
+      setIsCreating(false);
     }
   };
 
@@ -1200,14 +1233,24 @@ export default function Index() {
           open={isCreateModalOpen}
           onClose={handleCloseModal}
           testName={testName}
-          setTestName={setTestName}
+          setTestName={(value) => {
+            setTestName(value);
+            if (validationMessage) setValidationMessage('');
+          }}
           testDescription={testDescription}
-          setTestDescription={setTestDescription}
+          setTestDescription={(value) => {
+            setTestDescription(value);
+            if (validationMessage) setValidationMessage('');
+          }}
           selectedTestType={selectedTestType}
-          onTestTypeSelect={handleTestTypeSelect}
+          onTestTypeSelect={(type) => {
+            setSelectedTestType(type);
+            if (validationMessage) setValidationMessage('');
+          }}
           onCreateTest={handleCreateTest}
-          isCreateButtonDisabled={isCreateButtonDisabled || isCreating}
           isCreating={isCreating}
+          validationMessage={validationMessage}
+          setValidationMessage={setValidationMessage}
         />
 
         {/* Action Modal */}
@@ -1335,6 +1378,8 @@ export default function Index() {
             </BlockStack>
           </Modal.Section>
         </Modal>
+
+
       </BlockStack>
     </Page>
   );
