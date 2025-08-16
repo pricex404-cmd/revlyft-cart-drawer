@@ -9,7 +9,8 @@ export const useProductModifications = ({
     isTestStarted,
     AllProductIdsInTests,
     multiVariantProductIds,
-    compareAtPriceProductIds
+    compareAtPriceProductIds,
+    pricingMethod = 'percentage'
 }) => {
     const [showProductList, setShowProductList] = useState(false);
     const [showModificationWarning, setShowModificationWarning] = useState(false);
@@ -74,7 +75,8 @@ export const useProductModifications = ({
                 variantId: variant.id,
                 title: variant.title,
                 price: parseFloat(variant.price || '0')
-            }))
+            })),
+            pricingMethod: pricingMethod // Use the passed pricing method
         };
 
         // Add formatted product

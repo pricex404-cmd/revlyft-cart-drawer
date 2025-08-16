@@ -100,7 +100,7 @@ export const MultiVariantPricing = ({
             <Box padding="400" background="bg-surface-secondary">
                 <div style={{
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexDirection: 'column',
                     gap: '16px'
                 }}>
                     {product.allVariants?.map((variant) => {
@@ -111,9 +111,7 @@ export const MultiVariantPricing = ({
                                 display: 'flex',
                                 alignItems: 'center',
                                 gap: '12px',
-                                minWidth: '250px',
-                                flex: '1 1 auto',
-                                maxWidth: '400px'
+                                width: '100%'
                             }}>
                                 <input
                                     type="checkbox"

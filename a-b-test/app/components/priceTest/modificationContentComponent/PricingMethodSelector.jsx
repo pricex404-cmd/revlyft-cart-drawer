@@ -1,4 +1,4 @@
-import { BlockStack, Text, Box } from "@shopify/polaris";
+import { BlockStack, Text, Box, InlineStack, Button } from "@shopify/polaris";
 import { formatMoney } from "../../../utils/formatMoney";
 
 // Color theme
@@ -93,6 +93,85 @@ export const PricingMethodSelector = ({
                 </BlockStack>
             </BlockStack>
         </Box>
+    );
+};
+
+// Compact version for individual products
+export const ProductPricingMethodSelector = ({
+    pricingMethod,
+    onPricingMethodChange,
+    isTestStarted,
+    currency
+}) => {
+    return (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ 
+                fontSize: '13px', 
+                color: '#6b7280', 
+                fontWeight: '500',
+                whiteSpace: 'nowrap'
+            }}>
+                Pricing:
+            </span>
+            
+            <div style={{
+                display: 'flex',
+                background: '#f3f4f6',
+                borderRadius: '6px',
+                padding: '2px',
+                border: '1px solid #e5e7eb'
+            }}>
+                <button
+                    onClick={() => !isTestStarted && onPricingMethodChange('percentage')}
+                    disabled={isTestStarted}
+                    style={{
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: isTestStarted ? 'not-allowed' : 'pointer',
+                        background: pricingMethod === 'percentage' ? '#ffffff' : 'transparent',
+                        color: pricingMethod === 'percentage' ? '#1f2937' : '#6b7280',
+                        boxShadow: pricingMethod === 'percentage' ? '0 1px 2px rgba(0, 0, 0, 0.05)' : 'none',
+                        transition: 'all 0.2s ease',
+                        minWidth: '70px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px'
+                    }}
+                >
+                    <span style={{ fontSize: '14px', fontWeight: '700' }}>%</span>
+                    <span>Discount</span>
+                </button>
+                
+                <button
+                    onClick={() => !isTestStarted && onPricingMethodChange('fixedPrice')}
+                    disabled={isTestStarted}
+                    style={{
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: isTestStarted ? 'not-allowed' : 'pointer',
+                        background: pricingMethod === 'fixedPrice' ? '#ffffff' : 'transparent',
+                        color: pricingMethod === 'fixedPrice' ? '#1f2937' : '#6b7280',
+                        boxShadow: pricingMethod === 'fixedPrice' ? '0 1px 2px rgba(0, 0, 0, 0.05)' : 'none',
+                        transition: 'all 0.2s ease',
+                        minWidth: '70px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '4px'
+                    }}
+                >
+                    <span style={{ fontSize: '14px', fontWeight: '700' }}>₹</span>
+                    <span>Fixed</span>
+                </button>
+            </div>
+        </div>
     );
 };
 
