@@ -417,15 +417,15 @@ async function processWebhook(payload, shopDomain) {
         };
 
         // Get device ID and hash value
-        const deviceId = findAttributeValue('causal_funnel_device_id');
+        const userIp = findAttributeValue('causal_funnel_user_ip');
         const deepId = findAttributeValue('causal_funnel_deep_id');
         const fetchhashValue = findAttributeValue('causal_funnel_hash_value');
         const testTargetingAttribute = findAttributeValue('causal_funnel_tests_targeting_data');
         const testTimerAttribute = findAttributeValue('causal_funnel_tests_start_time_data');
         const currentTimeStr = findAttributeValue('causal_funnel_current_time');
 
-        // Use deviceId from attributes if available, otherwise fallback to browser_ip
-        const browserIp = deviceId || payload.browser_ip;
+        // Use userIp from attributes if available, otherwise fallback to browser_ip
+        const browserIp = userIp || payload.browser_ip;
 
         if (!browserIp) {
             logToFile('No device ID found in cart attributes or browser_ip, cannot track analytics');

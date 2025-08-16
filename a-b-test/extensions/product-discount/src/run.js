@@ -74,14 +74,14 @@ export function run(input) {
 
   // Get the hash value from the cart attribute if available
   const hashValueAttribute = input?.cart?.hashValueAttribute?.value;
-  const deviceIdAttribute = input?.cart?.deviceIdAttribute?.value;
+  const userIpAttribute = input?.cart?.userIpAttribute?.value;
 
   // Use hash value if available, otherwise calculate it from device ID
   let userHashValue;
   if (hashValueAttribute) {
     userHashValue = parseInt(hashValueAttribute, 10);
-  } else if (deviceIdAttribute) {
-    userHashValue = generateConsistentHash(deviceIdAttribute);
+  } else if (userIpAttribute) {
+    userHashValue = generateConsistentHash(userIpAttribute);
   } else {
     userHashValue = 0;
   }
@@ -91,7 +91,7 @@ export function run(input) {
   let cumulativePercentage = 0;
 
   // FOR TESTING: Force selection of the first non-control variant when no device ID
-  if (!deviceIdAttribute && testVariants.length > 1) {
+  if (!userIpAttribute && testVariants.length > 1) {
     selectedVariant = testVariants[1]; // Use the first non-control variant
   } else {
     // Normal variant selection logic

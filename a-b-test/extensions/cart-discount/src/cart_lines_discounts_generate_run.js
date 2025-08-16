@@ -104,14 +104,14 @@ export function cartLinesDiscountsGenerateRun(input) {
   }
 
   // Get the device ID and hash value from cart attributes
-  const deviceId = input.cart.deviceIdAttribute?.value ?? "";
+  const userIp = input.cart.userIpAttribute?.value ?? "";
   let hashValue = parseInt(input.cart.hashValueAttribute?.value ?? "0", 10);
 
   // If hash value is not available or invalid, calculate it from device ID
   if (isNaN(hashValue) || hashValue === 0) {
-    if (deviceId) {
-      hashValue = generateConsistentHash(deviceId) % 100; // Convert to 0-99 range for percentage-based selection
-      console.log('Calculated hash value from device ID:', { deviceId, hashValue });
+    if (userIp) {
+      hashValue = generateConsistentHash(userIp) % 100; // Convert to 0-99 range for percentage-based selection
+      console.log('Calculated hash value from device ID:', { userIp, hashValue });
     } else {
       console.log('No discount applied: No hash value or device ID available');
       return { operations: [] };

@@ -973,12 +973,12 @@ function cf_callbody() {
                         if (cf_debugGen) console.log("cf_ipstring is not 0.0.0.0");
                     }
                     // NOTE: browser ind
-                    var deviceIdIp = x64hash128(`'cf_ip':${cf_ipstring}`);
-                    //var deviceIdIp = x64hash128(`'canvasData':${cf_ipstring2}'`)
+                    var userIpIp = x64hash128(`'cf_ip':${cf_ipstring}`);
+                    //var userIpIp = x64hash128(`'canvasData':${cf_ipstring2}'`)
                     cf_browserInd.push(`'cf_ip':${cf_ipstring}`);
                     cf_browserIdLog.push(`'cf_ip':${cf_ipstring}`);
                     if (cf_debugGen) console.log("your ip:" + cf_ipstring);
-                    if (cf_debugGen) console.log("the device ip: " + deviceIdIp);
+                    if (cf_debugGen) console.log("the device ip: " + userIpIp);
                     cf_browserIndStr = cf_browserInd.join("_");
                     cf_browserIdLogStr = cf_browserIdLog.join("_");
                     cf_finalDevId = x64hash128(cf_browserIndStr);
@@ -1157,15 +1157,15 @@ function decryptValue(encryptedValue) {
 
 /**
  * Generate a consistent hash for a customer ID to ensure consistent test group assignment
- * @param {string} customerId - The customer ID to hash
+ * @param {string} userId - The customer ID to hash
  * @returns {number} - A value between 0 and 100
  */
-function generateConsistentHash(customerId) {
+function generateConsistentHash(userId) {
     let hash = 0;
-    if (customerId.length === 0) return hash;
+    if (userId.length === 0) return hash;
 
-    for (let i = 0; i < customerId.length; i++) {
-        const char = customerId.charCodeAt(i);
+    for (let i = 0; i < userId.length; i++) {
+        const char = userId.charCodeAt(i);
         hash = ((hash << 5) - hash) + char;
         hash = hash & hash; // Convert to 32bit integer
     }
@@ -1188,7 +1188,7 @@ function generateConsistentHash(customerId) {
 
 function saveCausalFunnelIdsToCart() {
     // Get IP from cookies
-    const ip = getCookie('cf_browserIp');
+    const ip = getCookie('cf_UserIp');
 
     // If no IP in cookies, fetch it
     if (!ip) {
@@ -1254,7 +1254,7 @@ async function updateCartWithIP(ip) {
     let attributes = {};
 
     if (ip) {
-        attributes.causal_funnel_device_id = ip;
+        attributes.causal_funnel_user_ip = ip;
         attributes.causal_funnel_hash_value = getCausalFunnelHashValue();
         attributes.causal_funnel_deep_id = getCookie('cf_finalDevId');
     }
@@ -1753,7 +1753,7 @@ async function processProductVisibility(activeTests, hashValue) {
 
                 // Track view for analytics
                 try {
-                    const ip = getCookie('cf_browserIp');
+                    const ip = getCookie('cf_UserIp');
                     if (ip) {
                         let variantIndex;
                         if (Array.isArray(test.testGroups)) {
@@ -2139,7 +2139,7 @@ function storeCausalFunnelHashValue() {
     }
 
     // Use IP if available
-    const ip = getCookie('cf_browserIp');
+    const ip = getCookie('cf_UserIp');
     if (ip) {
         hashValue = generateConsistentHash(ip);
     } else {
@@ -2419,7 +2419,7 @@ function setupCartTracking() {
             console.log(`🛒 Processing add to cart for product ID: ${cleanProductId}, variant ID: ${variantId}`);
 
             // Get IP from cookies
-            const ip = getCookie('cf_browserIp');
+            const ip = getCookie('cf_UserIp');
             if (!ip) {
                 console.log('❌ No IP found in cookies');
                 return;
@@ -2735,7 +2735,7 @@ async function fetchAndStoreIP() {
         const ip = data.ip;
 
         // Store IP in cookies
-        setCookie('cf_browserIp', ip, 1);
+        setCookie('cf_UserIp', ip, 1);
         return ip;
     } catch (error) {
         console.error('❌ Error fetching IP:', error);
@@ -3349,7 +3349,7 @@ async function processAllProducts(activeTests, hashValue) {
             console.log(`🎯 User does not meet targeting criteria for test ${testId}, skipping modifications but storing in cookies`);
 
             // Store user info in cookies for potential future targeting but don't apply any modifications
-            const ip = getCookie('cf_browserIp');
+            const ip = getCookie('cf_UserIp');
             if (ip) {
                 // Store that this user was evaluated for this test but didn't meet criteria
                 setCookie(`cf_test_${testId}_evaluated`, 'true', 1);
@@ -3464,7 +3464,7 @@ async function processAllProducts(activeTests, hashValue) {
                 // Track view for analytics with product/variant specificity - ONLY if product found on page
                 if (productElements.length > 0) {
                     try {
-                        const ip = getCookie('cf_browserIp');
+                        const ip = getCookie('cf_UserIp');
                         if (ip) {
                             const storeId = await getStoreId();
                             const variantIndex = testGroups.findIndex(group =>

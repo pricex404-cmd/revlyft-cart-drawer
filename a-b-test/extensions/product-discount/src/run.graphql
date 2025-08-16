@@ -39,18 +39,23 @@ query RunInput {
       }
     }
     # Individual cart attributes for CausalFunnel IDs
-    deviceIdAttribute: attribute(key: "causal_funnel_device_id") {
+    userIpAttribute: attribute(key: "causal_funnel_user_ip") {
       value
     }
     hashValueAttribute: attribute(key: "causal_funnel_hash_value") {
       value
     }
-    testTargetingAttribute: attribute(key: "causal_funnel_tests_targeting_data") {
+    testTargetingAttribute: attribute(
+      key: "causal_funnel_tests_targeting_data"
+    ) {
       value
     }
   }
   discountNode {
-    metafield(namespace: "$app:product-discount", key: "function-configuration") {
+    metafield(
+      namespace: "$app:product-discount"
+      key: "function-configuration"
+    ) {
       value
     }
   }
