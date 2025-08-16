@@ -677,7 +677,6 @@ export default function Test() {
                 setSelectedProducts={setSelectedProducts}
                 onPricesModified={setHasModifications}
                 isTestStarted={!isModificationsAllowed(testStatus)}
-                AllProductIdsInTests={AllProductIdsInTests}
                 multiVariantProductIds={multiVariantProductIds}
                 compareAtPriceProductIds={compareAtPriceProductIds}
                 currency={basicInfo?.currency}
