@@ -1302,7 +1302,7 @@ async function updateCartWithIP(ip) {
         })
         .then(data => {
             console.log('🛒 Revlyf attributes saved to cart');
-            window.cfAttributesSet = true;
+            window.rv_AttributesSet = true;
         })
         .catch(error => {
             console.error('❌ Error saving Revlyf IP to cart:', error);
@@ -1978,10 +1978,10 @@ function findProductElementsById(productId) {
 
 function initializeRevlyfPriceModifications() {
     // Prevent multiple executions
-    if (window.cfPriceModificationRunning || window.cfPriceModificationComplete) {
+    if (window.rv_PriceModificationRunning || window.rv_PriceModificationComplete) {
         return;
     }
-    window.cfPriceModificationRunning = true;
+    window.rv_PriceModificationRunning = true;
 
     console.log('💰 Initializing price modifications');
 
@@ -1991,7 +1991,7 @@ function initializeRevlyfPriceModifications() {
 
     // Debounced version of price modifications
     const debouncedApplyPriceModifications = debounce(async () => {
-        if (!window.cfPriceModificationRunning) return; // Skip if cleanup called
+        if (!window.rv_PriceModificationRunning) return; // Skip if cleanup called
         await applyABTestPriceModifications();
     }, 1000);
 
@@ -2003,7 +2003,7 @@ function initializeRevlyfPriceModifications() {
 
             // Set up a mutation observer with more specific targeting
             const observer = new MutationObserver((mutations) => {
-                if (!window.cfPriceModificationRunning) return; // Skip if cleanup called
+                if (!window.rv_PriceModificationRunning) return; // Skip if cleanup called
 
                 let shouldUpdate = false;
 
@@ -2071,19 +2071,19 @@ function initializeRevlyfPriceModifications() {
             }
 
             // Store cleanup function
-            window.cfPriceModificationCleanup = () => {
+            window.rv_PriceModificationCleanup = () => {
                 observer.disconnect();
                 modifiedElements.clear();
-                window.cfPriceModificationRunning = false;
+                window.rv_PriceModificationRunning = false;
             };
 
             // Mark as complete
-            window.cfPriceModificationComplete = true;
-            window.cfPriceModificationRunning = false;
+            window.rv_PriceModificationComplete = true;
+            window.rv_PriceModificationRunning = false;
 
         } catch (error) {
             console.error('❌ Error in price modifications initialization:', error);
-            window.cfPriceModificationRunning = false;
+            window.rv_PriceModificationRunning = false;
         }
     }, 1500); // Delay to ensure DOM is ready and theme scripts have loaded
 }
@@ -2168,24 +2168,24 @@ function storeRevlyfHashValue() {
 ////console.log("Revlyf cart attribute script self-executing");
 
 // Try to run immediately
-// initializeCFCartAttributes();
+// initializerv_CartAttributes();
 
 // Also attach to DOMContentLoaded as backup
 // if (document.readyState === "loading") {
-//     document.addEventListener('DOMContentLoaded', initializeCFCartAttributes);
+//     document.addEventListener('DOMContentLoaded', initializerv_CartAttributes);
 // } else {
 //     // DOMContentLoaded has already fired
-//     initializeCFCartAttributes();
+//     initializerv_CartAttributes();
 // }
 
 // Another fallback with window.onload
-// window.addEventListener('load', initializeCFCartAttributes);
+// window.addEventListener('load', initializerv_CartAttributes);
 
 // Add the direct script injection right away and again on load
 // injectPriceMessageScript();
 // window.addEventListener('load', injectPriceMessageScript);
 
-// function initializeCFCartAttributes() {
+// function initializerv_CartAttributes() {
 
 //     saveRevlyfIdsToCart();
 
@@ -2217,12 +2217,12 @@ window.addEventListener('load', () => {
 // Initialize everything when DOM is loaded
 function initializeRevlyf() {
     // Prevent multiple initializations
-    if (window.cfInitialized) {
+    if (window.rv_Initialized) {
         return;
     }
 
     console.log('🚀 Initializing Revlyf...');
-    window.cfInitialized = true;
+    window.rv_Initialized = true;
 
     // Check for config parameters and mark script as detected
     checkConfigParamsAndMarkScriptDetected().catch(error => {
@@ -2252,18 +2252,18 @@ function cleanupRevlyf() {
     console.log('🧹 Cleaning up Revlyf...');
 
     // Clear variant check interval
-    if (window.cfVariantCheckInterval) {
-        clearInterval(window.cfVariantCheckInterval);
-        window.cfVariantCheckInterval = null;
+    if (window.rv_VariantCheckInterval) {
+        clearInterval(window.rv_VariantCheckInterval);
+        window.rv_VariantCheckInterval = null;
     }
 
     // Call price modification cleanup
-    if (window.cfPriceModificationCleanup) {
-        window.cfPriceModificationCleanup();
+    if (window.rv_PriceModificationCleanup) {
+        window.rv_PriceModificationCleanup();
     }
 
     // Reset initialization flag
-    window.cfInitialized = false;
+    window.rv_Initialized = false;
 }
 
 /**
@@ -2307,7 +2307,7 @@ function setupVariantChangeListener() {
     const variantCheckInterval = setInterval(checkVariantChange, 5000);
 
     // Store interval ID for cleanup
-    window.cfVariantCheckInterval = variantCheckInterval;
+    window.rv_VariantCheckInterval = variantCheckInterval;
 
     // Also listen for popstate events (back/forward navigation)
     window.addEventListener('popstate', () => {

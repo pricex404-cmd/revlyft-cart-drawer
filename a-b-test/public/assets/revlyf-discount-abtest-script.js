@@ -79,11 +79,11 @@ function findDiscountElement() {
 }
 
 // Global flag to prevent infinite discount message retries
-window.cfDiscountMessageRetryLimitReached = false;
+window.rv_DiscountMessageRetryLimitReached = false;
 
 // Function to create or update timer UI
 function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
-    if (window.cfDiscountMessageRetryLimitReached) {
+    if (window.rv_DiscountMessageRetryLimitReached) {
         return;
     }
     console.log('🔄 Updating timer UI');
@@ -99,7 +99,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
             // Limit retries to 4
             if (retryCount >= 4) {
                 console.log('⏳ No discount message found after 4 retries, will NOT retry again.');
-                window.cfDiscountMessageRetryLimitReached = true;
+                window.rv_DiscountMessageRetryLimitReached = true;
                 return;
             }
             console.log('⏳ No discount message found, will retry...');
