@@ -47,9 +47,9 @@ export default function ScriptInstallation() {
     };
 
     const combinedScript = `<!-- Revlyf A/B Testing Script -->
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-discount-abtest-script.js?shop=${shop}" defer></script>`;
+<script src="https://abtest.revlyf.org/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.revlyf.org/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.revlyf.org/assets/revlyf-discount-abtest-script.js?shop=${shop}" defer></script>`;
 
     const handleNextStep = () => {
         navigate('/app/setup-guide/dom-injection');

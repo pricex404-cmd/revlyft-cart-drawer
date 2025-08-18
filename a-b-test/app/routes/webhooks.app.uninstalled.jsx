@@ -205,7 +205,7 @@ export const action = async ({ request }) => {
     //   logToFile(`Webhook data: ${shop}`);
     //   logToFile(`Making API call to notify about uninstallation with data: ${JSON.stringify(webhookData)}`);
 
-    //   const apiResponse = await fetch('https://us-central1-causalfunnel-21.cloudfunctions.net/ShopifyPluginWebHook/', {
+    //   const apiResponse = await fetch('https://us-central1-revlyf-21.cloudfunctions.net/ShopifyPluginWebHook/', {
     //     method: 'POST',
     //     headers: {
     //       'Content-Type': 'application/json',

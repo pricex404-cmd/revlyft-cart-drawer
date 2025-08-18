@@ -39,7 +39,7 @@ if (host === "localhost") {
 
 export default defineConfig({
   server: {
-    allowedHosts: [host, "abtest.causalfunnel.org"],
+    allowedHosts: [host, "abtest.revlyf.org"],
     cors: {
       preflightContinue: true,
     },

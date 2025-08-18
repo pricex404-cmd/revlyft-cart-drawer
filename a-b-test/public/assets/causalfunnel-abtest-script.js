@@ -1070,7 +1070,7 @@ var cf_cachedShopifyDomain = null;
 
 
 // Secret key for encryption/decryption (in production, this should be stored securely)
-var ENCRYPTION_KEY = 'causalfunnel-secret-key-2024';
+var ENCRYPTION_KEY = 'revlyf-secret-key-2024';
 
 /**
  * Generate a random string of specified length
@@ -1351,7 +1351,7 @@ function getAppDomain() {
         // Find the current script tag by looking for addCartAttribute.js
         const scripts = document.getElementsByTagName('script');
         for (const script of scripts) {
-            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
+            if (script.src && script.src.includes('revlyf-abtest-script.js')) {
                 const url = new URL(script.src);
                 return url.origin;
             }
@@ -1381,7 +1381,7 @@ function getShopifyDomainFromScript() {
     try {
         // Method 0: Try document.currentScript first (most reliable)
         if (document.currentScript && document.currentScript.src) {
-            if (document.currentScript.src.includes('causalfunnel-abtest-script.js')) {
+            if (document.currentScript.src.includes('revlyf-abtest-script.js')) {
                 try {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1399,7 +1399,7 @@ function getShopifyDomainFromScript() {
         const scripts = document.getElementsByTagName('script');
 
         for (const script of scripts) {
-            if (script.src && script.src.includes('causalfunnel-abtest-script.js')) {
+            if (script.src && script.src.includes('revlyf-abtest-script.js')) {
                 try {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
@@ -3158,7 +3158,7 @@ async function isReturningVisitor() {
             return false;
         }
 
-        const firebaseUrl = `https://causalfunnel-21-leightworks-prodv1-20jul2022.firebaseio.com/cronuploads/devXbrowserId/${uniqueId}.json`;
+        const firebaseUrl = `https://revlyf-21-leightworks-prodv1-20jul2022.firebaseio.com/cronuploads/devXbrowserId/${uniqueId}.json`;
 
         const response = await fetch(firebaseUrl);
         if (!response.ok) {

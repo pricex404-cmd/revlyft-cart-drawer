@@ -20,7 +20,7 @@ if (
 
 const host = new URL(process.env.SHOPIFY_APP_URL || "http://localhost")
     .hostname;
-const allowedDomain = process.env.ALLOWED_DOMAIN || "abtest.causalfunnel.org";
+const allowedDomain = process.env.ALLOWED_DOMAIN || "abtest.revlyf.org";
 console.log(allowedDomain);
 let hmrConfig;
 

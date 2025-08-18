@@ -251,7 +251,7 @@ function getShopifyDomainFromScript() {
     try {
         // Method 0: Try document.currentScript first (most reliable)
         if (document.currentScript && document.currentScript.src) {
-            if (document.currentScript.src.includes('causalfunnel-discount-abtest-script.js')) {
+            if (document.currentScript.src.includes('revlyf-discount-abtest-script.js')) {
                 try {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
@@ -269,7 +269,7 @@ function getShopifyDomainFromScript() {
         const scripts = document.getElementsByTagName('script');
 
         for (const script of scripts) {
-            if (script.src && script.src.includes('causalfunnel-discount-abtest-script.js')) {
+            if (script.src && script.src.includes('revlyf-discount-abtest-script.js')) {
                 try {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
@@ -313,7 +313,7 @@ function getAppDomain() {
     // Try to get from script parameters first
     const scripts = document.getElementsByTagName('script');
     for (const script of scripts) {
-        if (script.src && script.src.includes('causalfunnel-discount-abtest-script.js')) {
+        if (script.src && script.src.includes('revlyf-discount-abtest-script.js')) {
             try {
                 const url = new URL(script.src);
                 const appDomain = url.searchParams.get('app_domain');

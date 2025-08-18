@@ -1130,9 +1130,9 @@ export default function Index() {
   // Copy script functionality
   const handleCopyScript = async () => {
     const scriptTemplate = `<!-- Revlyf A/B Testing Script -->
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-discount-abtest-script.js?shop=${shop}" defer></script>`;
+<script src="https://abtest.revlyf.org/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.revlyf.org/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.revlyf.org/assets/revlyf-discount-abtest-script.js?shop=${shop}" defer></script>`;
     console.log("scriptTemplate", scriptTemplate);
     try {
       await navigator.clipboard.writeText(scriptTemplate);
@@ -1210,8 +1210,8 @@ export default function Index() {
                 <BlockStack gap="300">
                   <Text variant="bodyMd" as="pre" fontFamily="mono">
                     {`<!-- Revlyf A/B Testing Script -->
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>`}
+<script src="https://abtest.revlyf.org/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://abtest.revlyf.org/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>`}
                   </Text>
                   <InlineStack align="end">
                     <Button
