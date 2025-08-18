@@ -289,7 +289,7 @@ if (checkRequiredParameters()) {
 }
 
 /* New styles for selector mode */
-.cf-selector-mode * {
+.rv-selector-mode * {
     pointer-events: auto !important;
 }
 `;
@@ -297,7 +297,7 @@ if (checkRequiredParameters()) {
     // Add blue border highlight style
     const blueHighlightStyle = document.createElement('style');
     blueHighlightStyle.innerHTML = `
-.cf-product-highlight {
+.rv-product-highlight {
     outline: 2px solid #2196F3 !important;
     outline-offset: -2px !important;
     position: relative !important;
@@ -305,7 +305,7 @@ if (checkRequiredParameters()) {
     box-shadow: 0 0 0 2px #2196F3 !important;
 }
 
-.cf-stored-highlight {
+.rv-stored-highlight {
     outline: 2px solid #FFA500 !important;
     outline-offset: -2px !important;
     position: relative !important;
@@ -414,12 +414,12 @@ if (checkRequiredParameters()) {
         if (isSelectionModeActive) {
             selectorModeButton.textContent = 'Disable Selection Mode';
             selectorModeButton.classList.add('active');
-            document.body.classList.add('cf-selector-mode');
+            document.body.classList.add('rv-selector-mode');
             initializeEventListeners();
         } else {
             selectorModeButton.textContent = 'Enable Selection Mode';
             selectorModeButton.classList.remove('active');
-            document.body.classList.remove('cf-selector-mode');
+            document.body.classList.remove('rv-selector-mode');
             cleanup();
         }
     }
@@ -825,7 +825,7 @@ if (checkRequiredParameters()) {
             document.addEventListener('click', onClickCaptureSelector, true);
 
             // Add a class to the body to indicate selection mode is active
-            document.body.classList.add('cf-selector-mode');
+            document.body.classList.add('rv-selector-mode');
 
             console.log('Selection mode activated');
         }
@@ -1007,8 +1007,8 @@ if (checkRequiredParameters()) {
             console.log('[Highlight] Selectors from DB:', storedSelectorsFromDB);
 
             // Remove existing highlights
-            document.querySelectorAll('.cf-stored-highlight').forEach(el => {
-                el.classList.remove('cf-stored-highlight');
+            document.querySelectorAll('.rv-stored-highlight').forEach(el => {
+                el.classList.remove('rv-stored-highlight');
             });
 
             // Try to find and highlight elements for each stored selector
@@ -1017,7 +1017,7 @@ if (checkRequiredParameters()) {
                     const elements = document.querySelectorAll(selector);
                     console.log(`[Highlight] Found ${elements.length} elements for selector: ${selector}`);
                     elements.forEach(element => {
-                        element.classList.add('cf-stored-highlight');
+                        element.classList.add('rv-stored-highlight');
                         console.log('[Highlight] Added highlight to element:', element);
                     });
                 } catch (error) {
@@ -1040,7 +1040,7 @@ if (checkRequiredParameters()) {
     //             console.log('Adding element:', element.tagName, element.className);
     //             elements.add(element);
     //             // Add blue highlight to the element
-    //             element.classList.add('cf-product-highlight');
+    //             element.classList.add('rv-product-highlight');
     //             console.log('[Highlight] Added blue highlight to element:', element);
     //         }
     //     };
@@ -1341,8 +1341,8 @@ if (checkRequiredParameters()) {
 
     // Function to remove blue highlights
     function removeProductHighlights() {
-        document.querySelectorAll('.cf-product-highlight').forEach(element => {
-            element.classList.remove('cf-product-highlight');
+        document.querySelectorAll('.rv-product-highlight').forEach(element => {
+            element.classList.remove('rv-product-highlight');
         });
     }
 } else {

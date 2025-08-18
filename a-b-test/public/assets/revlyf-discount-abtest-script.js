@@ -1,10 +1,10 @@
 // Function to get time remaining in minutes and seconds
 // Get hashValue from sessionStorage or cookies
 let hashValue = null;
-if (window.sessionStorage && window.sessionStorage.getItem('cf_hashValue')) {
-    hashValue = window.sessionStorage.getItem('cf_hashValue');
+if (window.sessionStorage && window.sessionStorage.getItem('rv_hashValue')) {
+    hashValue = window.sessionStorage.getItem('rv_hashValue');
 } else {
-    hashValue = getCookie('cf_hashValue');
+    hashValue = getCookie('rv_hashValue');
 }
 
 function getTimeRemaining(startTime) {
@@ -87,7 +87,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         return;
     }
     console.log('🔄 Updating timer UI');
-    let timerDiv = document.getElementById('cf-discount-timer');
+    let timerDiv = document.getElementById('rv-discount-timer');
 
     if (!timerDiv) {
         const discountMessage = findDiscountElement();
@@ -109,7 +109,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
 
         console.log('✅ Creating new timer UI');
         timerDiv = document.createElement('div');
-        timerDiv.id = 'cf-discount-timer';
+        timerDiv.id = 'rv-discount-timer';
         timerDiv.style.cssText = `
             margin: 10px 0;
             padding: 8px 12px;
@@ -146,7 +146,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         document.head.appendChild(style);
 
         const textSpan = document.createElement('span');
-        textSpan.id = 'cf-discount-timer-text';
+        textSpan.id = 'rv-discount-timer-text';
         textSpan.style.flex = '1';
         timerDiv.appendChild(textSpan);
 
@@ -154,7 +154,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         console.log('✅ Timer UI inserted into DOM');
     }
 
-    const textSpan = document.getElementById('cf-discount-timer-text');
+    const textSpan = document.getElementById('rv-discount-timer-text');
     if (textSpan) {
         textSpan.textContent = `⚡ Hurry! This special offer expires in ${timeString}`;
         console.log('✅ Timer text updated:', timeString);
@@ -163,7 +163,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
 
 // Function to remove timer UI only (not the cookie)
 function removeTimerUI() {
-    const timerDiv = document.getElementById('cf-discount-timer');
+    const timerDiv = document.getElementById('rv-discount-timer');
     if (timerDiv) {
         timerDiv.remove();
         console.log('🗑️ Timer UI removed');
@@ -183,11 +183,11 @@ function manageDiscountCountdown() {
         // Find the discount timer cookie and testId
         for (const cookie of cookies) {
             const [name, value] = cookie.trim().split('=');
-            if (name.startsWith('cf_tests_start_time_') && name.endsWith('_discount_active')) {
+            if (name.startsWith('rv_tests_start_time_') && name.endsWith('_discount_active')) {
                 discountStartTime = decodeURIComponent(value);
                 // Extract testId from the cookie name
                 // Remove prefix and suffix to get just the testId
-                testId = name.replace('cf_tests_start_time_', '').replace('_discount_active', '');
+                testId = name.replace('rv_tests_start_time_', '').replace('_discount_active', '');
                 console.log('🍪 Found discount timer cookie:', name, discountStartTime);
                 break;
             }
@@ -239,8 +239,8 @@ function manageDiscountCountdown() {
 }
 
 // Global variable to cache Shopify domain
-if (typeof cf_cachedShopifyDomain === 'undefined') {
-    var cf_cachedShopifyDomain = null;
+if (typeof rv_cachedShopifyDomain === 'undefined') {
+    var rv_cachedShopifyDomain = null;
 }
 
 /**
@@ -380,8 +380,8 @@ function getCookie(name) {
 
 async function getStoreId() {
     // Return cached domain if available
-    if (cf_cachedShopifyDomain) {
-        return cf_cachedShopifyDomain.replace(/\./g, '_');
+    if (rv_cachedShopifyDomain) {
+        return rv_cachedShopifyDomain.replace(/\./g, '_');
     }
 
     try {
@@ -389,7 +389,7 @@ async function getStoreId() {
         const shopifyDomain = await fetchShopifyDomain();
 
         // Cache the domain for future use
-        cf_cachedShopifyDomain = shopifyDomain;
+        rv_cachedShopifyDomain = shopifyDomain;
 
         // Convert to Firebase format (replace dots with underscores)
         const sanitizedDomain = shopifyDomain.replace(/\./g, '_');
@@ -454,7 +454,7 @@ function getVariantForUser(testVariants, hashValue) {
 // Function to track cart drawer message analytics
 async function trackCartDrawerMessageAnalytics(messageType, testId, variantIndex) {
     try {
-        const ip = getCookie('cf_finalDevId');
+        const ip = getCookie('rv_finalDevId');
         if (!ip) {
             console.log('❌ No IP found in cookies for analytics');
             return;
@@ -559,14 +559,14 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
             return;
         }
 
-        const ip = getCookie('cf_finalDevId');
+        const ip = getCookie('rv_finalDevId');
         if (!ip) {
             console.log('❌ No IP found in cookies for analytics');
             return;
         }
 
         // Check if discount timer expired (skip analytics if expired)
-        const discountStartTime = getCookie(`cf_tests_start_time_${testId}_discount_active`);
+        const discountStartTime = getCookie(`rv_tests_start_time_${testId}_discount_active`);
         if (discountStartTime) {
             const now = Date.now();
             const start = new Date(discountStartTime).getTime();
@@ -746,7 +746,7 @@ function observeCartChanges() {
             for (const [testId, test] of Object.entries(abTestsData)) {
                 if (test.basicInfo?.type === 'discount' && test.basicInfo?.status === 'active') {
                     // Check if discount timer expired (skip analytics if expired)
-                    const discountStartTime = getCookie(`cf_tests_start_time_${testId}_discount_active`);
+                    const discountStartTime = getCookie(`rv_tests_start_time_${testId}_discount_active`);
                     if (discountStartTime) {
                         const now = Date.now();
                         const start = new Date(discountStartTime).getTime();
@@ -819,9 +819,9 @@ function observeCartChanges() {
         for (const mutation of mutations) {
             if (mutation.type === 'childList' || mutation.type === 'characterData') {
                 // Skip timer-related changes
-                if (mutation.target.id === 'cf-discount-timer' ||
-                    mutation.target.id === 'cf-discount-timer-text' ||
-                    (mutation.target.parentElement && mutation.target.parentElement.id === 'cf-discount-timer')) {
+                if (mutation.target.id === 'rv-discount-timer' ||
+                    mutation.target.id === 'rv-discount-timer-text' ||
+                    (mutation.target.parentElement && mutation.target.parentElement.id === 'rv-discount-timer')) {
                     continue;
                 }
 

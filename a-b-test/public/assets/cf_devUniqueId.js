@@ -1,13 +1,13 @@
-function cf_callbody() {
+function rv_callbody() {
 
-    var cf_debugGen = false;
-    var cf_finalDevId = "dummy_devid";
-    var cf_finalBrowserId = "dummy_browserid";
-    var cf_finalBrowserIdV2 = "dummy_browseridV2";
-    var cf_browserIdStr = "dummy_browseridStr";
-    var cf_browserIdStrV2 = "dummy_browseridStrV2";
-    var cf_browserIdStrV2part = "dummy_cf_browserIdStrV2part";
-    var cf_browserIndStr = "dummy_browserIndStr";
+    var rv_debugGen = false;
+    var rv_finalDevId = "dummy_devid";
+    var rv_finalBrowserId = "dummy_browserid";
+    var rv_finalBrowserIdV2 = "dummy_browseridV2";
+    var rv_browserIdStr = "dummy_browseridStr";
+    var rv_browserIdStrV2 = "dummy_browseridStrV2";
+    var rv_browserIdStrV2part = "dummy_rv_browserIdStrV2part";
+    var rv_browserIndStr = "dummy_browserIndStr";
 
   
     (function (window) {
@@ -170,8 +170,8 @@ function cf_callbody() {
             break;
         }
   
-        cf_platform = navigator.platform;
-        window.cf_browser = browser;
+        rv_platform = navigator.platform;
+        window.rv_browser = browser;
   
         // flash (you'll need to include swfobject)
         /* script src="//ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js" */
@@ -187,11 +187,11 @@ function cf_callbody() {
         }
       }
   
-      window.cf_jscd = {
+      window.rv_jscd = {
         mobile: mobile,
         os: os,
         //osVersion: osVersion,
-        platform: cf_platform
+        platform: rv_platform
       };
     }(this));
   
@@ -684,7 +684,7 @@ function cf_callbody() {
       )
     }
   
-    (function initCF_PrintJS() {
+    (function initrv_PrintJS() {
   
       try {
         var fa2s = function (fa) {
@@ -727,11 +727,11 @@ function cf_callbody() {
         gl.vertexAttribPointer(program.vertexPosAttrib, vertexPosBuffer.itemSize, gl.FLOAT, !1, 0, 0);
         gl.uniform2f(program.offsetUniform, 1, 1);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexPosBuffer.numItems);
-        var cf_canvasDataURL = null;
-        var cf_resultPrecision = [];
-        if (gl.canvas != null) { cf_canvasDataURL = gl.canvas.toDataURL(); }
+        var rv_canvasDataURL = null;
+        var rv_resultPrecision = [];
+        if (gl.canvas != null) { rv_canvasDataURL = gl.canvas.toDataURL(); }
         //if (gl.canvas != null) { result.push(gl.canvas.toDataURL()); }
-        if (gl.canvas != null) { result_device.push(cf_canvasDataURL); }
+        if (gl.canvas != null) { result_device.push(rv_canvasDataURL); }
         result.push("extensions:" + gl.getSupportedExtensions().join(";"));
         result.push("webgl aliased line width range:" + fa2s(gl.getParameter(gl.ALIASED_LINE_WIDTH_RANGE)));
         result.push("webgl aliased point size range:" + fa2s(gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)));
@@ -758,47 +758,47 @@ function cf_callbody() {
         result.push("webgl stencil bits:" + gl.getParameter(gl.STENCIL_BITS));
         result.push("webgl vendor:" + gl.getParameter(gl.VENDOR));
         result.push("webgl version:" + gl.getParameter(gl.VERSION));
-        cf_resultPrecision.push("webgl vertex shader high float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).precision);
-        cf_resultPrecision.push("webgl vertex shader high float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader high float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl vertex shader medium float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).precision);
-        cf_resultPrecision.push("webgl vertex shader medium float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader medium float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl vertex shader low float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).precision);
-        cf_resultPrecision.push("webgl vertex shader low float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader low float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader high float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).precision);
-        cf_resultPrecision.push("webgl fragment shader high float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader high float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader medium float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).precision);
-        cf_resultPrecision.push("webgl fragment shader medium float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader medium float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader low float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).precision);
-        cf_resultPrecision.push("webgl fragment shader low float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader low float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).rangeMax);
-        cf_resultPrecision.push("webgl vertex shader high int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).precision);
-        cf_resultPrecision.push("webgl vertex shader high int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader high int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).rangeMax);
-        cf_resultPrecision.push("webgl vertex shader medium int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).precision);
-        cf_resultPrecision.push("webgl vertex shader medium int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader medium int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).rangeMax);
-        cf_resultPrecision.push("webgl vertex shader low int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).precision);
-        cf_resultPrecision.push("webgl vertex shader low int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).rangeMin);
-        cf_resultPrecision.push("webgl vertex shader low int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader high int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).precision);
-        cf_resultPrecision.push("webgl fragment shader high int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader high int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader medium int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).precision);
-        cf_resultPrecision.push("webgl fragment shader medium int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader medium int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).rangeMax);
-        cf_resultPrecision.push("webgl fragment shader low int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).precision);
-        cf_resultPrecision.push("webgl fragment shader low int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).rangeMin);
-        cf_resultPrecision.push("webgl fragment shader low int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader high float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).precision);
+        rv_resultPrecision.push("webgl vertex shader high float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader high float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader medium float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).precision);
+        rv_resultPrecision.push("webgl vertex shader medium float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader medium float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader low float precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).precision);
+        rv_resultPrecision.push("webgl vertex shader low float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader low float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader high float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).precision);
+        rv_resultPrecision.push("webgl fragment shader high float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader high float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader medium float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).precision);
+        rv_resultPrecision.push("webgl fragment shader medium float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader medium float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader low float precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).precision);
+        rv_resultPrecision.push("webgl fragment shader low float precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader low float precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_FLOAT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader high int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).precision);
+        rv_resultPrecision.push("webgl vertex shader high int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader high int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.HIGH_INT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader medium int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).precision);
+        rv_resultPrecision.push("webgl vertex shader medium int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader medium int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.MEDIUM_INT).rangeMax);
+        rv_resultPrecision.push("webgl vertex shader low int precision:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).precision);
+        rv_resultPrecision.push("webgl vertex shader low int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).rangeMin);
+        rv_resultPrecision.push("webgl vertex shader low int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.VERTEX_SHADER, gl.LOW_INT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader high int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).precision);
+        rv_resultPrecision.push("webgl fragment shader high int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader high int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.HIGH_INT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader medium int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).precision);
+        rv_resultPrecision.push("webgl fragment shader medium int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader medium int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_INT).rangeMax);
+        rv_resultPrecision.push("webgl fragment shader low int precision:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).precision);
+        rv_resultPrecision.push("webgl fragment shader low int precision rangeMin:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).rangeMin);
+        rv_resultPrecision.push("webgl fragment shader low int precision rangeMax:" + gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.LOW_INT).rangeMax);
   
         // NOTE: browser ind
-        device_webglSpecs = cf_resultPrecision.join("_")
+        device_webglSpecs = rv_resultPrecision.join("_")
   
-        result.push(cf_canvasDataURL)
+        result.push(rv_canvasDataURL)
         result.push(device_webglSpecs)
         webGLData = result.join("Â§");
   
@@ -840,100 +840,100 @@ function cf_callbody() {
       }
       //console.log(canvasData)
       //console.log(webGLData)
-      if (cf_debugGen) console.log(webGLVendor)
-      if (cf_debugGen) console.log(webGLRenderer)
+      if (rv_debugGen) console.log(webGLVendor)
+      if (rv_debugGen) console.log(webGLRenderer)
   
   
   
       //console.log("canvasData", canvasData);
       var visitorIdCan = x64hash128(`'canvasData':${canvasData}`)
-      if (cf_debugGen) console.log("the visitorIdCan: " + visitorIdCan);
+      if (rv_debugGen) console.log("the visitorIdCan: " + visitorIdCan);
   
       //console.log("webGLData", webGLData);
       var visitorIdWebGL = x64hash128(`'webGLData':${webGLData}`)
-      if (cf_debugGen) console.log("the visitorIdWebGL: " + visitorIdWebGL);
+      if (rv_debugGen) console.log("the visitorIdWebGL: " + visitorIdWebGL);
   
-      var cf_browserInd = [];
-      var cf_browserIdV2 = [];
-      var cf_browserIdLog = [];
+      var rv_browserInd = [];
+      var rv_browserIdV2 = [];
+      var rv_browserIdLog = [];
   
       // NOTE: browser ind -- not ind for new MacOS 
-      if (cf_debugGen) console.log("webGLVendor", webGLVendor);
-      //cf_browserInd.push(`'webGLVendor':${webGLVendor}`)
+      if (rv_debugGen) console.log("webGLVendor", webGLVendor);
+      //rv_browserInd.push(`'webGLVendor':${webGLVendor}`)
       var visitorIdWebGLV = x64hash128(`'webGLVendor':${webGLVendor}`)
-      if (cf_debugGen) console.log("the visitorIdWebGLV: " + visitorIdWebGLV);
+      if (rv_debugGen) console.log("the visitorIdWebGLV: " + visitorIdWebGLV);
   
       // NOTE: browser ind -- not ind for new MacOS
-      if (cf_debugGen) console.log("webGLRenderer", webGLRenderer);
-      //cf_browserInd.push(`'webGLRenderer':${webGLRenderer}`)
+      if (rv_debugGen) console.log("webGLRenderer", webGLRenderer);
+      //rv_browserInd.push(`'webGLRenderer':${webGLRenderer}`)
       var visitorIdWebGLR = x64hash128(`'webGLRenderer':${webGLRenderer}`)
-      if (cf_debugGen) console.log("the visitorIdWebGLR: " + visitorIdWebGLR);
+      if (rv_debugGen) console.log("the visitorIdWebGLR: " + visitorIdWebGLR);
   
       // NOTE: browser ind
-      if (cf_debugGen) console.log(device_webglSpecs);
-      cf_browserInd.push(`'device_webglSpecs':${device_webglSpecs}`)
+      if (rv_debugGen) console.log(device_webglSpecs);
+      rv_browserInd.push(`'device_webglSpecs':${device_webglSpecs}`)
       var visitorIdWebGLSpecs = x64hash128(`'device_webglSpecs':${device_webglSpecs}`)
-      if (cf_debugGen) console.log("the visitorIdWebGLSpecs: " + visitorIdWebGLSpecs);
+      if (rv_debugGen) console.log("the visitorIdWebGLSpecs: " + visitorIdWebGLSpecs);
   
       var visitorIdWebGL_device = x64hash128(`'webGLData_device':${webGLData_device}`)
-      if (cf_debugGen) console.log("the visitorIdWebGL_device: " + visitorIdWebGL_device);
+      if (rv_debugGen) console.log("the visitorIdWebGL_device: " + visitorIdWebGL_device);
       //console.log("the webGLData_device: " + webGLData_device);
   
       // NOTE: browser ind
       var audioFprint = audioFPrinting();
-      if (cf_debugGen) console.log("audioFprint", audioFprint);
-      cf_browserInd.push(`'audio_device':${audioFprint}`)
+      if (rv_debugGen) console.log("audioFprint", audioFprint);
+      rv_browserInd.push(`'audio_device':${audioFprint}`)
       var audio_device = x64hash128(`'audio_device':${audioFprint}`)
-      if (cf_debugGen) console.log("the audio_device: " + audio_device);
+      if (rv_debugGen) console.log("the audio_device: " + audio_device);
   
       // NOTE: browser ind
       var resFprint = getResolution();
-      if (cf_debugGen) console.log("resFprint", resFprint);
-      cf_browserInd.push(`'res_device':${resFprint}`)
+      if (rv_debugGen) console.log("resFprint", resFprint);
+      rv_browserInd.push(`'res_device':${resFprint}`)
       var res_device = x64hash128(`'res_device':${resFprint}`)
-      if (cf_debugGen) console.log("the res_device: " + res_device);
+      if (rv_debugGen) console.log("the res_device: " + res_device);
   
-      var cf_cpuCores = "-1";
+      var rv_cpuCores = "-1";
       if (navigator.hardwareConcurrency)
-        cf_cpuCores = navigator.hardwareConcurrency;
-      if (cf_debugGen) console.log("cf_cpuCores", cf_cpuCores);
-      cf_browserIdV2.push(`'cpu_device':${cf_cpuCores}`);
-      var cpu_device = x64hash128(`'cpu_device':${cf_cpuCores}`);
-      if (cf_debugGen) console.log("the cpu_device: " + cpu_device);
+        rv_cpuCores = navigator.hardwareConcurrency;
+      if (rv_debugGen) console.log("rv_cpuCores", rv_cpuCores);
+      rv_browserIdV2.push(`'cpu_device':${rv_cpuCores}`);
+      var cpu_device = x64hash128(`'cpu_device':${rv_cpuCores}`);
+      if (rv_debugGen) console.log("the cpu_device: " + cpu_device);
   
       var langFprint = get_writing_scripts();
-      if (cf_debugGen) console.log("langFprint", langFprint);
-      cf_browserIdV2.push(`'lang_device':${langFprint}`);
+      if (rv_debugGen) console.log("langFprint", langFprint);
+      rv_browserIdV2.push(`'lang_device':${langFprint}`);
       var lang_device = x64hash128(`'lang_device':${langFprint}`);
-      if (cf_debugGen) console.log("the lang_device: " + lang_device);
+      if (rv_debugGen) console.log("the lang_device: " + lang_device);
   
       // NOTE: browser ind
       var timeFprint = new Date().getTimezoneOffset();
-      if (cf_debugGen) console.log("timeFprint", timeFprint);
-      cf_browserInd.push(`'time_device':${timeFprint}`)
+      if (rv_debugGen) console.log("timeFprint", timeFprint);
+      rv_browserInd.push(`'time_device':${timeFprint}`)
       var time_device = x64hash128(`'time_device':${timeFprint}`)
-      if (cf_debugGen) console.log("the time_device: " + time_device);
+      if (rv_debugGen) console.log("the time_device: " + time_device);
   
       // NOTE: browser ind
-      var osFprint = JSON.stringify(cf_jscd);
-      if (cf_debugGen) console.log("osFprint", osFprint);
-      cf_browserInd.push(`'os_device':${osFprint}`);
+      var osFprint = JSON.stringify(rv_jscd);
+      if (rv_debugGen) console.log("osFprint", osFprint);
+      rv_browserInd.push(`'os_device':${osFprint}`);
       var os_device = x64hash128(`'os_device':${osFprint}`);
-      cf_browserIdLog.push(`'os_device':${osFprint}`);
-      if (cf_debugGen) console.log("the os_device: " + os_device);
+      rv_browserIdLog.push(`'os_device':${osFprint}`);
+      if (rv_debugGen) console.log("the os_device: " + os_device);
   
       // NOTE: browser ind
       var osLangFprint = getOSlanguage();
-      if (cf_debugGen) console.log("osLangFprint", osLangFprint);
-      cf_browserInd.push(`'osLang_device':${osLangFprint}`);
+      if (rv_debugGen) console.log("osLangFprint", osLangFprint);
+      rv_browserInd.push(`'osLang_device':${osLangFprint}`);
       var osLang_device = x64hash128(`'osLang_device':${osLangFprint}`);
-      cf_browserIdLog.push(`'osLang_device':${osLangFprint}`);
-      if (cf_debugGen) console.log("the osLang_device: " + osLang_device);
+      rv_browserIdLog.push(`'osLang_device':${osLangFprint}`);
+      if (rv_debugGen) console.log("the osLang_device: " + osLang_device);
   
-      cf_browserIdV2.push(`'browser_device':${cf_browser}`);
-      cf_browserIdLog.push(`'browser_device':${cf_browser}`);
+      rv_browserIdV2.push(`'browser_device':${rv_browser}`);
+      rv_browserIdLog.push(`'browser_device':${rv_browser}`);
   
-      var cf_ipstring = "null";
+      var rv_ipstring = "null";
   
       try {
         var RTCPeerConnection = window.RTCPeerConnection || webkitRTCPeerConnection || mozRTCPeerConnection;
@@ -952,64 +952,64 @@ function cf_callbody() {
         peerConn.onicecandidate = (e) => {
           if (e.candidate == null) {
             local_sdp = peerConn.localDescription.sdp;
-            cf_ipstring = /c=IN IP4 ([^\n]*)\n/.exec(local_sdp)[1].trim();
-            if (cf_debugGen) console.log(local_sdp);
+            rv_ipstring = /c=IN IP4 ([^\n]*)\n/.exec(local_sdp)[1].trim();
+            if (rv_debugGen) console.log(local_sdp);
             //sdp_ipstring2 = /a=candidate([^\n]*)\n/.exec(local_sdp)[0]
             sdp_ipstring2 = /[^\n]*? ((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)) [^\n]*? typ srflx raddr [^\n]*\n/.exec(local_sdp)[0]
-            cf_ipstring2 = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/.exec(sdp_ipstring2)[0];
-            if (cf_debugGen) console.log("you cf_ipstring:" + cf_ipstring);
-            if (cf_debugGen) console.log("your cf_ipstring2:" + cf_ipstring2);
-            if (cf_ipstring.trim() === '0.0.0.0') {
-              if (cf_debugGen) console.log("cf_ipstring is 0.0.0.0");
-              cf_ipstring = cf_ipstring2;
+            rv_ipstring2 = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/.exec(sdp_ipstring2)[0];
+            if (rv_debugGen) console.log("you rv_ipstring:" + rv_ipstring);
+            if (rv_debugGen) console.log("your rv_ipstring2:" + rv_ipstring2);
+            if (rv_ipstring.trim() === '0.0.0.0') {
+              if (rv_debugGen) console.log("rv_ipstring is 0.0.0.0");
+              rv_ipstring = rv_ipstring2;
             } else {
-              if (cf_debugGen) console.log("cf_ipstring is not 0.0.0.0");
+              if (rv_debugGen) console.log("rv_ipstring is not 0.0.0.0");
             }
             // NOTE: browser ind
-            var deviceIdIp = x64hash128(`'cf_ip':${cf_ipstring}`);
-            //var deviceIdIp = x64hash128(`'canvasData':${cf_ipstring2}'`)
-            cf_browserInd.push(`'cf_ip':${cf_ipstring}`);
-            cf_browserIdLog.push(`'cf_ip':${cf_ipstring}`);
-            if (cf_debugGen) console.log("your ip:" + cf_ipstring);
-            if (cf_debugGen) console.log("the device ip: " + deviceIdIp);
-            cf_browserIndStr = cf_browserInd.join("_");
-            cf_browserIdLogStr = cf_browserIdLog.join("_");
-            cf_finalDevId = x64hash128(cf_browserIndStr);
-            if (cf_debugGen) console.log(cf_browserIndStr);
-            console.log("the Device Id (cf_finalDevId): " + cf_finalDevId);
-            //$("#browser_fingerprint").html(cf_browserIndStr);
-            //document.getElementById("cf_demoDeepIDdevIdDebug").innerHTML = cf_browserIndStr;
-            if (cf_debugGen) document.getElementById("cf_demoDeepIDdevId").innerHTML = cf_finalDevId;
-            cf_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'cf_browserIndStr':${cf_browserIndStr}`;
-            cf_finalBrowserId = x64hash128(cf_browserIdStr);
-            console.log("the Browser Id (cf_finalBrowserId): " + cf_finalBrowserId);
+            var deviceIdIp = x64hash128(`'rv_ip':${rv_ipstring}`);
+            //var deviceIdIp = x64hash128(`'canvasData':${rv_ipstring2}'`)
+            rv_browserInd.push(`'rv_ip':${rv_ipstring}`);
+            rv_browserIdLog.push(`'rv_ip':${rv_ipstring}`);
+            if (rv_debugGen) console.log("your ip:" + rv_ipstring);
+            if (rv_debugGen) console.log("the device ip: " + deviceIdIp);
+            rv_browserIndStr = rv_browserInd.join("_");
+            rv_browserIdLogStr = rv_browserIdLog.join("_");
+            rv_finalDevId = x64hash128(rv_browserIndStr);
+            if (rv_debugGen) console.log(rv_browserIndStr);
+            console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+            //$("#browser_fingerprint").html(rv_browserIndStr);
+            //document.getElementById("rv_demoDeepIDdevIdDebug").innerHTML = rv_browserIndStr;
+            if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
+            rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
+            rv_finalBrowserId = x64hash128(rv_browserIdStr);
+            console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
   
-            cf_browserIdStrV2part = cf_browserIdV2.join("_");
-            cf_browserIdStrV2 = `'cf_browserIdStrV2part':${cf_browserIdStrV2part}|'cf_browserIdStr':${cf_browserIdStr}`;
-            cf_finalBrowserIdV2 = x64hash128(cf_browserIdStrV2);
-            console.log("the Browser Id V2 (cf_finalBrowserIdV2): " + cf_finalBrowserIdV2);
+            rv_browserIdStrV2part = rv_browserIdV2.join("_");
+            rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
+            rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
+            console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
   
 
           }
         };
       } else {
         // Inform user that webrtc fetch failed
-        if (cf_debugGen) console.log('Failed to fetch IP via WebRTC, perhaps your WebRTC is disabled?');
-        cf_browserIndStr = cf_browserInd.join("_");
-        cf_finalDevId = x64hash128(cf_browserIndStr);
-        if (cf_debugGen) console.log(cf_browserIndStr);
-        console.log("the Device Id (cf_finalDevId): " + cf_finalDevId);
-        //$("#browser_fingerprint").html(cf_browserIndStr);
-        //document.getElementById("cf_demoDeepIDdevIdDebug").innerHTML = cf_browserIndStr;
-        if (cf_debugGen) document.getElementById("cf_demoDeepIDdevId").innerHTML = cf_finalDevId;
-        cf_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'cf_browserIndStr':${cf_browserIndStr}`;
-        cf_finalBrowserId = x64hash128(cf_browserIdStr);
-        console.log("the Browser Id (cf_finalBrowserId): " + cf_finalBrowserId);
+        if (rv_debugGen) console.log('Failed to fetch IP via WebRTC, perhaps your WebRTC is disabled?');
+        rv_browserIndStr = rv_browserInd.join("_");
+        rv_finalDevId = x64hash128(rv_browserIndStr);
+        if (rv_debugGen) console.log(rv_browserIndStr);
+        console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+        //$("#browser_fingerprint").html(rv_browserIndStr);
+        //document.getElementById("rv_demoDeepIDdevIdDebug").innerHTML = rv_browserIndStr;
+        if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
+        rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
+        rv_finalBrowserId = x64hash128(rv_browserIdStr);
+        console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
   
-        cf_browserIdStrV2part = cf_browserIdV2.join("_");
-        cf_browserIdStrV2 = `'cf_browserIdStrV2part':${cf_browserIdStrV2part}|'cf_browserIdStr':${cf_browserIdStr}`;
-        cf_finalBrowserIdV2 = x64hash128(cf_browserIdStrV2);
-        console.log("the Browser Id V2 (cf_finalBrowserIdV2): " + cf_finalBrowserIdV2);
+        rv_browserIdStrV2part = rv_browserIdV2.join("_");
+        rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
+        rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
+        console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
 
 
       }
@@ -1018,9 +1018,9 @@ function cf_callbody() {
     })()
   };
   if (document.readyState !== 'loading') {
-    cf_callbody();
+    rv_callbody();
   } else {
     document.addEventListener('DOMContentLoaded', function () {
-      cf_callbody();
+      rv_callbody();
     });
   }

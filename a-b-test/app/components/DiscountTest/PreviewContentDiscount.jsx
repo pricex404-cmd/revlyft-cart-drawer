@@ -107,7 +107,7 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
         // Encrypt the hash value and test ID
         const encryptedHash = encryptValue(hashValue.toString());
         const encryptedTestId = encryptValue(testId);
-        return `https://${shop.domain}?cf_preview_hash=${encryptedHash}&cf_test_id=${encryptedTestId}`;
+        return `https://${shop.domain}?rv_preview_hash=${encryptedHash}&rv_test_id=${encryptedTestId}`;
     };
 
     const encryptValue = (value) => {

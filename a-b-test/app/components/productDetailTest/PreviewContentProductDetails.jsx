@@ -100,7 +100,7 @@ export const PreviewContentProductDetails = ({ testId, shop, currentTestData }) 
 
         // Encrypt the hash value
         const encryptedHash = encryptValue(hashValue.toString());
-        return `https://${shop.domain}?cf_preview_hash=${encryptedHash}`;
+        return `https://${shop.domain}?rv_preview_hash=${encryptedHash}`;
     };
 
     // Add encryption function
