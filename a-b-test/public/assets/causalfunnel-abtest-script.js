@@ -1,5 +1,5 @@
 // Add this to a JavaScript file in your theme or as a script tag
-console.log("🚀 CausalFunnel cart attribute script loaded");
+console.log("🚀 Revlyf cart attribute script loaded");
 console.log("🚀 Start");
 var cf_finalDevId;
 const timestamp = new Date().toISOString();
@@ -1186,7 +1186,7 @@ function generateConsistentHash(userId) {
 
 
 
-function saveCausalFunnelIdsToCart() {
+function saveRevlyfIdsToCart() {
     // Get IP from cookies
     const ip = getCookie('cf_UserIp');
 
@@ -1255,7 +1255,7 @@ async function updateCartWithIP(ip) {
 
     if (ip) {
         attributes.causal_funnel_user_ip = ip;
-        attributes.causal_funnel_hash_value = getCausalFunnelHashValue();
+        attributes.causal_funnel_hash_value = getRevlyfHashValue();
         attributes.causal_funnel_deep_id = getCookie('cf_finalDevId');
     }
 
@@ -1301,11 +1301,11 @@ async function updateCartWithIP(ip) {
             return response.json();
         })
         .then(data => {
-            console.log('🛒 CausalFunnel attributes saved to cart');
+            console.log('🛒 Revlyf attributes saved to cart');
             window.cfAttributesSet = true;
         })
         .catch(error => {
-            console.error('❌ Error saving CausalFunnel IP to cart:', error);
+            console.error('❌ Error saving Revlyf IP to cart:', error);
         });
 }
 
@@ -1514,7 +1514,7 @@ async function getStoreId() {
  * Get the hash value from session storage (for preview) or cookies
  * @returns {number} The hash value (0-100)
  */
-function getCausalFunnelHashValue() {
+function getRevlyfHashValue() {
     // First check session storage for preview hash
     const sessionHashValue = sessionStorage.getItem('cf_hashValue');
     if (sessionHashValue) {
@@ -1599,7 +1599,7 @@ async function applyABTestProductModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getCausalFunnelHashValue();
+    const hashValue = getRevlyfHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || activeTests.length === 0) {
@@ -1973,10 +1973,10 @@ function findProductElementsById(productId) {
 
 
 /**
- * Initialize CausalFunnel price modifications with proper timing and observer setup
+ * Initialize Revlyf price modifications with proper timing and observer setup
  */
 
-function initializeCausalFunnelPriceModifications() {
+function initializeRevlyfPriceModifications() {
     // Prevent multiple executions
     if (window.cfPriceModificationRunning || window.cfPriceModificationComplete) {
         return;
@@ -2091,7 +2091,7 @@ function initializeCausalFunnelPriceModifications() {
 /**
  * Generate and store consistent hash value in cookies
  */
-function storeCausalFunnelHashValue() {
+function storeRevlyfHashValue() {
     // Check for preview hash in URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const previewHash = urlParams.get('cf_preview_hash');
@@ -2165,7 +2165,7 @@ function storeCausalFunnelHashValue() {
 }
 
 // (function () {
-////console.log("CausalFunnel cart attribute script self-executing");
+////console.log("Revlyf cart attribute script self-executing");
 
 // Try to run immediately
 // initializeCFCartAttributes();
@@ -2187,7 +2187,7 @@ function storeCausalFunnelHashValue() {
 
 // function initializeCFCartAttributes() {
 
-//     saveCausalFunnelIdsToCart();
+//     saveRevlyfIdsToCart();
 
 // }
 // })();
@@ -2195,33 +2195,33 @@ function storeCausalFunnelHashValue() {
 
 
 // Call this function before initializing price modifications
-storeCausalFunnelHashValue();
-initializeCausalFunnelPriceModifications();
+storeRevlyfHashValue();
+initializeRevlyfPriceModifications();
 
 
 
 // Ensure initialization happens after DOM is loaded
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeCausalFunnel);
+    document.addEventListener('DOMContentLoaded', initializeRevlyf);
 } else {
-    initializeCausalFunnel();
+    initializeRevlyf();
 }
 
 // Also add load event listener as backup
 window.addEventListener('load', () => {
-    initializeCausalFunnel();
+    initializeRevlyf();
 });
 
 
 
 // Initialize everything when DOM is loaded
-function initializeCausalFunnel() {
+function initializeRevlyf() {
     // Prevent multiple initializations
     if (window.cfInitialized) {
         return;
     }
 
-    console.log('🚀 Initializing CausalFunnel...');
+    console.log('🚀 Initializing Revlyf...');
     window.cfInitialized = true;
 
     // Check for config parameters and mark script as detected
@@ -2230,10 +2230,10 @@ function initializeCausalFunnel() {
     });
 
     // Store device ID to cart attributes
-    saveCausalFunnelIdsToCart();
+    saveRevlyfIdsToCart();
 
     // Generate and store hash value
-    storeCausalFunnelHashValue();
+    storeRevlyfHashValue();
 
     // Apply product visibility modifications
     applyABTestProductModifications().catch(error => {
@@ -2248,8 +2248,8 @@ function initializeCausalFunnel() {
 }
 
 // Add cleanup function
-function cleanupCausalFunnel() {
-    console.log('🧹 Cleaning up CausalFunnel...');
+function cleanupRevlyf() {
+    console.log('🧹 Cleaning up Revlyf...');
 
     // Clear variant check interval
     if (window.cfVariantCheckInterval) {
@@ -2426,7 +2426,7 @@ function setupCartTracking() {
             }
 
             // Get hash value
-            const hashValue = getCausalFunnelHashValue();
+            const hashValue = getRevlyfHashValue();
             if (hashValue < 0) {
                 console.log('❌ No valid hash value found');
                 return;
@@ -3291,7 +3291,7 @@ async function applyABTestPriceModifications() {
     const activeTests = await fetchABTestData();
 
     // Get user's hash value
-    const hashValue = getCausalFunnelHashValue();
+    const hashValue = getRevlyfHashValue();
 
     // If no active tests or no hash value, return early
     if (!activeTests || Object.keys(activeTests).length === 0) {

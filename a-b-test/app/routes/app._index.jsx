@@ -1129,7 +1129,7 @@ export default function Index() {
 
   // Copy script functionality
   const handleCopyScript = async () => {
-    const scriptTemplate = `<!-- CausalFunnel A/B Testing Script -->
+    const scriptTemplate = `<!-- Revlyf A/B Testing Script -->
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-discount-abtest-script.js?shop=${shop}" defer></script>`;
@@ -1178,12 +1178,12 @@ export default function Index() {
         {/* Tests Table */}
         <TestsTable rows={rows.length > 0 ? modifyRowsWithActions() : []} testSessionsData={testSessionsData} testIds={testIds} />
 
-        {/* CausalFunnel Script Installation Instructions */}
+        {/* Revlyf Script Installation Instructions */}
         {/* <Card>
           <BlockStack gap="400">
-            <Text variant="headingMd" as="h2">CausalFunnel Script Installation</Text>
+            <Text variant="headingMd" as="h2">Revlyf Script Installation</Text>
             <Text variant="bodyMd" color="subdued">
-              To enable A/B testing functionality, you need to install the CausalFunnel script in your theme.
+              To enable A/B testing functionality, you need to install the Revlyf script in your theme.
             </Text>
 
             <BlockStack gap="300">
@@ -1202,14 +1202,14 @@ export default function Index() {
             </BlockStack>
 
             <BlockStack gap="200">
-              <Text variant="headingMd" as="h3">Your CausalFunnel Script:</Text>
+              <Text variant="headingMd" as="h3">Your Revlyf Script:</Text>
               <Text variant="bodyMd" color="subdued">
                 <strong>Ready to use:</strong> This script is automatically configured for your store: <Text as="span" fontFamily="mono" fontWeight="bold">{shop}</Text>
               </Text>
               <Card sectioned>
                 <BlockStack gap="300">
                   <Text variant="bodyMd" as="pre" fontFamily="mono">
-                    {`<!-- CausalFunnel A/B Testing Script -->
+                    {`<!-- Revlyf A/B Testing Script -->
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-price-query-selector-script.js?shop=${shop}" defer></script>
 <script src="https://abtest.causalfunnel.org/assets/causalfunnel-abtest-script.js?shop=${shop}" defer></script>`}
                   </Text>

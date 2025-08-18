@@ -15,7 +15,7 @@ query CartInput {
         }
       }
     }
-    # Individual cart attributes for CausalFunnel IDs
+    # Individual cart attributes for Revlyf IDs
     userIpAttribute: attribute(key: "causal_funnel_user_ip") {
       value
     }
