@@ -1260,7 +1260,7 @@ async function updateCartWithIP(ip) {
     }
 
     attributes.causal_funnel_current_time= timestamp
-    // Initialize causalfunneltest structure
+    // Initialize revlyftest structure
     const startTimeData = {};
     const cookies = document.cookie.split(';');
     for (const cookie of cookies) {
@@ -2105,9 +2105,9 @@ function storeRevlyfHashValue() {
             const decryptedTestId = decryptValue(previewTestId);
             if (decryptedTestId) {
                 console.log("🎯 Using decrypted preview test ID:", decryptedTestId);
-                sessionStorage.setItem('causalFunnel_testId', decryptedTestId);
+                sessionStorage.setItem('revlyf_testId', decryptedTestId);
                 // Also store in cookies for persistence across sessions (expires in 1 day)
-                // setCookie('causalFunnel_previewTestId', decryptedTestId, 1);
+                // setCookie('revlyf_previewTestId', decryptedTestId, 1);
             } else {
                 console.error("❌ Failed to decrypt preview test ID");
             }
@@ -3204,7 +3204,7 @@ function getDeviceType() {
  * @returns {boolean} True if test is in preview mode
  */
 function isTestInPreviewMode(testId) {
-    const previewTestIdSession = sessionStorage.getItem('causalFunnel_testId');
+    const previewTestIdSession = sessionStorage.getItem('revlyf_testId');
 
 
     return previewTestIdSession && previewTestIdSession === testId;

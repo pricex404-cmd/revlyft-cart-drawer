@@ -971,7 +971,7 @@ const observer = new MutationObserver((mutations) => {
 observer.observe(document.body, { childList: true, subtree: true });
 
 // Export functions
-window.causalFunnelDiscount = {
+window.revlyfDiscount = {
     getTimeRemaining,
     formatTime,
     manageDiscountCountdown,
