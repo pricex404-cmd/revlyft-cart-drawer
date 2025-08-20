@@ -75,7 +75,7 @@ import {
 import { checkIfModificationsMade, validateInventoryDistribution } from "../functions/productdetails";
 
 // Firebase configuration
-const FIREBASE_DB_URL = "https://abtest-6b299-default-rtdb.firebaseio.com";
+const FIREBASE_DB_URL = "https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 // Add an action for creating discounts (handles both cart and product discounts)
 export async function action({ request }) {

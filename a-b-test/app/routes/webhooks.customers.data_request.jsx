@@ -2,7 +2,7 @@ import { authenticate } from "../shopify.server";
 import path from 'path';
 import fs from 'fs';
 
-const FIREBASE_URL = "https://abtest-6b299-default-rtdb.firebaseio.com/";
+const FIREBASE_URL = "https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
 const logToFile = (message) => {
 

@@ -43,7 +43,7 @@ export const PreviewContentProductDetails = ({ testId, shop, currentTestData }) 
             setIsLoading(true);
             try {
                 const sanitizedDomain = shop.domain.replace(/\./g, '_');
-                const response = await fetch(`https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}.json`);
+                const response = await fetch(`https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/${testId}.json`);
                 const data = await response.json();
 
                 if (!data) {

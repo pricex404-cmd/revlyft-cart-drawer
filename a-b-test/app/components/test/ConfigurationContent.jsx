@@ -59,7 +59,7 @@ export const ConfigurationContent = ({ shop, testId }) => {
             if (!shop?.domain || !testId) return;
             const sanitizedDomain = shop.domain.replace(/\./g, '_');
             const response = await fetch(
-                `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`
+                `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/${testId}/basicInfo.json`
             );
             const data = await response.json();
             if (data) {
@@ -80,7 +80,7 @@ export const ConfigurationContent = ({ shop, testId }) => {
         if (!shop?.domain || !testId) return;
         const sanitizedDomain = shop.domain.replace(/\./g, '_');
         await fetch(
-            `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${sanitizedDomain}/${testId}/basicInfo.json`,
+            `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/${testId}/basicInfo.json`,
             {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },

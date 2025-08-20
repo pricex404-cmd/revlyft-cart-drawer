@@ -149,7 +149,7 @@ const checkUserMeetsTargeting = (testId, testType, testStatus, targetingData) =>
 const fetchABTestData = async (shopDomain) => {
     try {
         const storeId = shopDomain;
-        const firebaseUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${storeId}.json`;
+        const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${storeId}.json`;
 
         const response = await fetch(firebaseUrl);
         if (!response.ok) {
@@ -301,7 +301,7 @@ const trackAnalyticsEvent = async (eventType, browserIp, testId, variantIndex, s
             firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/${eventType}`;
         }
 
-        const analyticsUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/${firebasePath}.json`;
+        const analyticsUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/${firebasePath}.json`;
 
         // Fetch current analytics data
         const response = await fetch(analyticsUrl);
@@ -591,7 +591,7 @@ async function processWebhook(payload, shopDomain) {
                 };
 
                 // Read userBehavior node for this user
-                const userBehaviorUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
+                const userBehaviorUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
                 let userBehaviorData = {};
                 try {
                     const userBehaviorResp = await fetch(userBehaviorUrl);
@@ -629,7 +629,7 @@ async function processWebhook(payload, shopDomain) {
                 // Set saleDone in the correct experience node
                 userBehaviorData[targetIndex].saleDone = analyticsDetails;
                 // Save to Firebase under userBehavior node
-                const updateUrl = `https://abtest-6b299-default-rtdb.firebaseio.com/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
+                const updateUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${shopDomain}/${testId}/testGroups/${variantIndex}/analytics/userBehavior/${deepId}.json`;
                 const response = await fetch(updateUrl, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
