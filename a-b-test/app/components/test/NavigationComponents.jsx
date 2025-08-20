@@ -137,29 +137,30 @@ export const getNavigationItems = (currentTabId) => {
             icon: EditIcon,
             selected: currentTabId === 'modifications',
         },
-        {
-            id: 'targeting',
-            label: 'Targeting',
-            icon: TargetIcon,
-            selected: currentTabId === 'targeting',
-        },
+        // {
+        //     id: 'targeting',
+        //     label: 'Targeting',
+        //     icon: TargetIcon,
+        //     selected: currentTabId === 'targeting',
+        // },
         {
             id: 'preview',
             label: 'Preview',
             icon: ViewIcon,
             selected: currentTabId === 'preview',
         },
-        {
-            id: 'configuration',
-            label: 'Configuration',
-            icon: ChartLineIcon,
-            selected: currentTabId === 'configuration',
-        },
+       
         {
             id: 'results',
             label: 'Analytics',
             icon: TextInColumnsIcon,
             selected: currentTabId === 'results',
+        },
+        {
+            id: 'configuration',
+            label: 'Setup & Help',
+            icon: ChartLineIcon,
+            selected: currentTabId === 'configuration',
         },
     ];
 }; 
