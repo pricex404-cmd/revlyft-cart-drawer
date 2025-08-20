@@ -8,7 +8,7 @@ export {
     InventoryValidationModal
 } from './TestModals';
 export {
-    NavigationButtons,
+    PrevNextNavigationButtons,
     getNavigationItems,
     HorizontalNavigation
 } from './NavigationComponents';

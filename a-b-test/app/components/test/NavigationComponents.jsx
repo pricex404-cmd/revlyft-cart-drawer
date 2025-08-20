@@ -80,13 +80,12 @@ export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testSta
     );
 };
 
-export const NavigationButtons = ({
+export const PrevNextNavigationButtons = ({
     currentTabId,
     tabOrder,
     onNavigationChange,
     hasModifications
 }) => {
-    if (currentTabId === 'preview') return null;
 
     const currentIndex = tabOrder.indexOf(currentTabId);
     const prevTab = currentIndex > 0 ? tabOrder[currentIndex - 1] : null;

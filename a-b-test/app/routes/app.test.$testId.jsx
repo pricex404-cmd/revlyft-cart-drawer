@@ -46,7 +46,7 @@ import {
     WelcomeModal,
     StartTestConfirmationModal,
     InventoryValidationModal,
-    NavigationButtons,
+    PrevNextNavigationButtons,
     HorizontalNavigation
 } from "../components/test";
 
@@ -867,7 +867,7 @@ export default function Test() {
                         <Layout.Section>
                             <BlockStack gap="500">
                                 {contentPanels[currentTabId]}
-                                <NavigationButtons
+                                <PrevNextNavigationButtons
                                     currentTabId={currentTabId}
                                     tabOrder={tabOrder}
                                     onNavigationChange={handleNavigationChange}
