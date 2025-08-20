@@ -127,7 +127,7 @@ export const getNavigationItems = (currentTabId) => {
     return [
         {
             id: 'testGroups',
-            label: 'Test Groups',
+            label: 'Group Allocation',
             icon: CategoriesIcon,
             selected: currentTabId === 'testGroups',
         },
@@ -157,7 +157,7 @@ export const getNavigationItems = (currentTabId) => {
         },
         {
             id: 'results',
-            label: 'Results',
+            label: 'Analytics',
             icon: TextInColumnsIcon,
             selected: currentTabId === 'results',
         },
