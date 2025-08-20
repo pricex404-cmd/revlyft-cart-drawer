@@ -10,6 +10,76 @@ import {
     CategoriesIcon
 } from '@shopify/polaris-icons';
 
+// New horizontal navigation component
+export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testStatus }) => {
+    const navigationItems = getNavigationItems(currentTabId);
+
+    return (
+        <div style={{
+            borderBottom: '1px solid #e1e3e5',
+            backgroundColor: '#f6f6f7',
+            marginBottom: '2rem'
+        }}>
+            {/* Test Configuration Status */}
+            <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                borderBottom: '1px solid #e1e3e5'
+            }}>
+                <div style={{ 
+                    padding: '0.5rem 1rem', 
+
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    color: '#6d7175',
+
+                }}>
+                    TEST CONFIGURATION ({testStatus.charAt(0).toUpperCase() + testStatus.slice(1)})
+                </div>
+            </div>
+
+            {/* Navigation Buttons */}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'stretch',
+                alignItems: 'center',
+                padding: '1rem 1.5rem',
+                width: '100%'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    gap: '0.5rem',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    width: '100%'
+                }}>
+                    {navigationItems.map((item) => (
+                        <Button
+                            key={item.id}
+                            icon={item.icon}
+                            onClick={() => onNavigationChange(item.id)}
+                            variant={item.selected ? 'primary' : 'tertiary'}
+                            size="medium"
+                            style={{
+                                flex: '1',
+                                minWidth: '0',
+                                justifyContent: 'center',
+                                gap: '0.5rem',
+                                fontWeight: item.selected ? '600' : '400',
+                                border: item.selected ? '2px solid #5c6ac4' : '1px solid #c9cccf',
+                                borderRadius: '8px',
+                                padding: '0.75rem 1rem'
+                            }}
+                        >
+                            {item.label}
+                        </Button>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export const NavigationButtons = ({
     currentTabId,
     tabOrder,

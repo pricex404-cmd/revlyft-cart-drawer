@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-application_url = "https://studied-mason-announcement-circus.trycloudflare.com"
+application_url = "https://pathology-rates-pets-although.trycloudflare.com"
 embedded = true
 client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
 name = "ab-test"
@@ -43,9 +43,9 @@ scopes = "read_orders,read_script_tags,write_discounts,write_products,write_scri
 
 [auth]
 redirect_urls = [
-  "https://studied-mason-announcement-circus.trycloudflare.com/auth/callback",
-  "https://studied-mason-announcement-circus.trycloudflare.com/auth/shopify/callback",
-  "https://studied-mason-announcement-circus.trycloudflare.com/api/auth/callback"
+  "https://pathology-rates-pets-although.trycloudflare.com/auth/callback",
+  "https://pathology-rates-pets-although.trycloudflare.com/auth/shopify/callback",
+  "https://pathology-rates-pets-although.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
