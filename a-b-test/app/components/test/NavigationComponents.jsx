@@ -137,12 +137,12 @@ export const getNavigationItems = (currentTabId) => {
             icon: EditIcon,
             selected: currentTabId === 'modifications',
         },
-        // {
-        //     id: 'targeting',
-        //     label: 'Targeting',
-        //     icon: TargetIcon,
-        //     selected: currentTabId === 'targeting',
-        // },
+        {
+            id: 'targeting',
+            label: 'Targeting',
+            icon: TargetIcon,
+            selected: currentTabId === 'targeting',
+        },
         {
             id: 'preview',
             label: 'Preview',
