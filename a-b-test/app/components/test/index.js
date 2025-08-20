@@ -1,13 +1,16 @@
 // Export all test components from a single location
-export { TestTimer } from './TestTimer';
+export {
+    TestTimer
+} from './TestTimer';
 export {
     WelcomeModal,
     StartTestConfirmationModal,
     InventoryValidationModal
 } from './TestModals';
 export {
-    NavigationButtons,
-    getNavigationItems
+    PrevNextNavigationButtons,
+    getNavigationItems,
+    HorizontalNavigation
 } from './NavigationComponents';
 
 // Re-export existing test components for convenience

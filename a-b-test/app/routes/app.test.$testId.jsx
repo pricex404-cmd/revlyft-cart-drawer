@@ -9,9 +9,7 @@ import {
     InlineStack,
     Button,
     Toast,
-    Frame,
     Layout,
-    Navigation,
     Modal,
     Loading,
     Banner,
@@ -19,14 +17,7 @@ import {
     Card
 } from "@shopify/polaris";
 import {
-    TextInColumnsIcon,
-    ViewIcon,
-    ChartLineIcon,
-    TargetIcon,
-    EditIcon,
     ArrowLeftIcon,
-    CategoriesIcon,
-    MenuIcon,
     ArrowRightIcon,
     ClockIcon
 } from '@shopify/polaris-icons';
@@ -55,8 +46,8 @@ import {
     WelcomeModal,
     StartTestConfirmationModal,
     InventoryValidationModal,
-    NavigationButtons,
-    getNavigationItems
+    PrevNextNavigationButtons,
+    HorizontalNavigation
 } from "../components/test";
 
 // Import test functions
@@ -425,7 +416,6 @@ export default function Test() {
     const [isStartTestLoading, setIsStartTestLoading] = useState(false);
     const [isDiscountIdMissing, setIsDiscountIdMissing] = useState(false);
     const [isDiscountIdThere, setIsDiscountIdThere] = useState(false);
-    const [showMobileNavigation, setShowMobileNavigation] = useState(false);
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const [inventoryIssues, setInventoryIssues] = useState([]);
     const [isScriptDetected, setIsScriptDetected] = useState(null); // null = loading, true = detected, false = not detected
@@ -751,50 +741,38 @@ export default function Test() {
         </div>
     ) : null;
 
-    // Define navigation items
-    const navigationItems = getNavigationItems(currentTabId);
+
 
     return (
-        <Frame
-            navigation={
-                <Navigation location="/">
-                    <Navigation.Section
-                        items={[
-                            {
-                                url: '/app',
-                                label: 'Back to Tests',
-                                icon: ArrowLeftIcon
-                            }
-                        ]}
-                    />
-                    <Navigation.Section
-                        title={`TEST CONFIGURATION (${testStatus.charAt(0).toUpperCase() + testStatus.slice(1)})`}
-                        separator
-                        items={navigationItems.map(item => ({
-                            key: item.id,
-                            label: item.label,
-                            icon: item.icon,
-                            selected: item.selected,
-                            onClick: () => handleNavigationChange(item.id)
-                        }))}
-                    />
-                </Navigation>
-            }
-            showMobileNavigation={showMobileNavigation}
-            onNavigationDismiss={() => setShowMobileNavigation(false)}
-        >
+        <>
             {isStartTestLoading && <Loading />}
             <Page fullWidth>
-                {isSmallScreen && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '1rem' }}>
-                        <Button
-                            icon={ArrowRightIcon}
-                            onClick={() => setShowMobileNavigation(true)}
-                            accessibilityLabel="Toggle navigation menu"
-                            plain
-                        />
-                    </div>
-                )}
+                {/* Back to Tests button */}
+                <div style={{ 
+                    display: 'flex',
+                    alignItems: 'center', 
+                    padding: '1rem 0',
+                    justifyContent: 'space-between'
+                }}>
+                    <Button
+                        icon={ArrowLeftIcon}
+                        onClick={() => navigate('/app')}
+                        variant="tertiary"
+                        size="medium"
+                    >
+                        Back to Tests
+                    </Button>
+              
+                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1 1rem' }}>
+                    <TestTimer testData={testData} testStatus={testStatus} />
+                </div>
+                </div>
+                {/* Horizontal Navigation */}
+                <HorizontalNavigation 
+                    currentTabId={currentTabId}
+                    onNavigationChange={handleNavigationChange}
+                    testStatus={testStatus}
+                />
 
                 {/* Modals */}
                 <WelcomeModal
@@ -883,17 +861,13 @@ export default function Test() {
                 {/* Spacer when error banner is shown */}
                 {showToast && <div style={{ height: '80px', width: '100%' }} />}
 
-                {/* Test Timer - Show right below title bar */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1 1rem' }}>
-                    <TestTimer testData={testData} testStatus={testStatus} />
-                </div>
 
                 <BlockStack gap="500">
                     <Layout>
                         <Layout.Section>
                             <BlockStack gap="500">
                                 {contentPanels[currentTabId]}
-                                <NavigationButtons
+                                <PrevNextNavigationButtons
                                     currentTabId={currentTabId}
                                     tabOrder={tabOrder}
                                     onNavigationChange={handleNavigationChange}
@@ -904,6 +878,6 @@ export default function Test() {
                     </Layout>
                 </BlockStack>
             </Page>
-        </Frame>
+        </>
     );
 } 
