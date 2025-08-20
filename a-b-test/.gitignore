@@ -1,5 +1,7 @@
 node_modules
 logs
+logs/
+*.log
 /.cache
 /build
 /app/build
