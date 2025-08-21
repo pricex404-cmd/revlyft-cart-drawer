@@ -7,7 +7,7 @@ name = "ab-test"
 handle = "ab-test-18"
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 include_config_on_deploy = true
 
 [webhooks]
