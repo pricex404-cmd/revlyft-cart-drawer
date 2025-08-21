@@ -8,10 +8,6 @@ logs/
 /public/build/
 /public/_dev
 /app/public/build
-/prisma/dev.db
-/prisma/dev.db-journal
-/prisma/dev.sqlite
-/prisma/dev.sqlite-journal
 database.sqlite
 
 .env
