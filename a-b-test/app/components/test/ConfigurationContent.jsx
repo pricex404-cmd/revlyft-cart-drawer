@@ -137,7 +137,7 @@ export const ConfigurationContent = ({ shop, testId }) => {
             <BlockStack gap="400">
                 <TextContainer>
                     <Text variant="headingMd" as="h3">Need Help?</Text>
-                    <Text>Our team is here to help you set up and configure your price modifications. Please add growth@revlyf.com as a collaborator.</Text>
+                    <Text>Our team is here to help you set up and configure your price modifications. Please add pricex404@gmail.comas a collaborator.</Text>
                 </TextContainer>
                 <Button primary onClick={handleContactSupport}>Give us collaborator access</Button>
             </BlockStack>

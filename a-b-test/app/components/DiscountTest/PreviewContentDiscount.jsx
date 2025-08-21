@@ -203,7 +203,7 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
             <Banner title="Important Note" tone="info">
                 <p>You can test all active Discount Tests (Control & Test Groups).</p>
                 <p>The discount will be applied based on the {testData.discountConfig.type} threshold of {testData.discountConfig.threshold}.</p>
-                <p>Need help? Contact us at growth@revlyf.com for assistance with your discount test configuration.</p>
+                <p>Need help? Contact us at pricex404@gmail.comfor assistance with your discount test configuration.</p>
             </Banner>
 
             <BlockStack gap="400">
