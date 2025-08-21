@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-application_url = "https://a-btest-production.up.railway.app/"
+application_url = "https://app.revlyft.com/"
 embedded = true
 client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
 name = "ab-test"
@@ -43,9 +43,9 @@ scopes = "read_orders,read_script_tags,write_discounts,write_products,write_scri
 
 [auth]
 redirect_urls = [
-  "https://a-btest-production.up.railway.app/auth/callback",
-  "https://a-btest-production.up.railway.app/auth/shopify/callback",
-  "https://a-btest-production.up.railway.app/api/auth/callback"
+  "https://app.revlyft.com/auth/callback",
+  "https://app.revlyft.com/auth/shopify/callback",
+  "https://app.revlyft.com/api/auth/callback"
 ]
 
 [pos]
