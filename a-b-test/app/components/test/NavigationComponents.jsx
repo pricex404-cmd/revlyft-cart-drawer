@@ -9,9 +9,10 @@ import {
     EditIcon,
     CategoriesIcon
 } from '@shopify/polaris-icons';
+import { TestTimer } from './TestTimer';
 
 // New horizontal navigation component
-export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testStatus }) => {
+export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testStatus, testData }) => {
     const navigationItems = getNavigationItems(currentTabId);
 
     return (
@@ -24,18 +25,19 @@ export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testSta
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                borderBottom: '1px solid #e1e3e5'
+                justifyContent: 'space-between',
+                borderBottom: '1px solid #e1e3e5',
+                padding: '0 1rem'
             }}>
                 <div style={{ 
-                    padding: '0.5rem 1rem', 
-
+                    padding: '0.5rem 0', 
                     fontSize: '0.875rem',
                     fontWeight: '500',
                     color: '#6d7175',
-
                 }}>
                     TEST CONFIGURATION ({testStatus.charAt(0).toUpperCase() + testStatus.slice(1)})
                 </div>
+                <TestTimer testData={testData} testStatus={testStatus} />
             </div>
 
             {/* Navigation Buttons */}

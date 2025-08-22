@@ -42,7 +42,6 @@ import { PreviewContentDiscount } from "../components/DiscountTest/PreviewConten
 
 // Import extracted components
 import {
-    TestTimer,
     WelcomeModal,
     StartTestConfirmationModal,
     InventoryValidationModal,
@@ -751,8 +750,8 @@ export default function Test() {
                 <div style={{ 
                     display: 'flex',
                     alignItems: 'center', 
-                    padding: '1rem 0',
-                    justifyContent: 'space-between'
+                    padding: '0.2rem 0',
+                    justifyContent: 'flex-start'
                 }}>
                     <Button
                         icon={ArrowLeftIcon}
@@ -762,16 +761,13 @@ export default function Test() {
                     >
                         Back to Tests
                     </Button>
-              
-                <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1 1rem' }}>
-                    <TestTimer testData={testData} testStatus={testStatus} />
-                </div>
                 </div>
                 {/* Horizontal Navigation */}
                 <HorizontalNavigation 
                     currentTabId={currentTabId}
                     onNavigationChange={handleNavigationChange}
                     testStatus={testStatus}
+                    testData={testData}
                 />
 
                 {/* Modals */}

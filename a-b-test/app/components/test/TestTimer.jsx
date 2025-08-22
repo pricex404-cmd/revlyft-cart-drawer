@@ -34,8 +34,7 @@ export const TestTimer = ({ testData, testStatus }) => {
 
     return (
         <div style={{
-            marginLeft: '1rem',
-            padding: '0.5rem 1rem',
+            padding: '0.1rem 1rem',
             backgroundColor: isActive ? '#e8f5e8' : '#f8f9fa',
             borderRadius: '8px',
             border: `1px solid ${isActive ? '#4caf50' : '#e0e0e0'}`,
