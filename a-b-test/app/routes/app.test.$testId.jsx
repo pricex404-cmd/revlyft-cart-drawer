@@ -858,10 +858,6 @@ export default function Test() {
                 {/* Error banner - Show at the top for immediate visibility */}
                 {errorBannerMarkup}
 
-                {/* Spacer when error banner is shown */}
-                {showToast && <div style={{ height: '80px', width: '100%' }} />}
-
-
                 <BlockStack gap="500">
                     <Layout>
                         <Layout.Section>
