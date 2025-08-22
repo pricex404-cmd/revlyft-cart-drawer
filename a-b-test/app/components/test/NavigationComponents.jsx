@@ -19,7 +19,10 @@ export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testSta
         <div style={{
             borderBottom: '1px solid #e1e3e5',
             backgroundColor: '#f6f6f7',
-            marginBottom: '2rem'
+            marginBottom: '2rem',
+            position: 'sticky',
+            top: '0',
+            zIndex: '500'
         }}>
             {/* Test Configuration Status */}
             <div style={{
@@ -31,7 +34,7 @@ export const HorizontalNavigation = ({ currentTabId, onNavigationChange, testSta
             }}>
                 <div style={{ 
                     padding: '0.5rem 0', 
-                    fontSize: '0.875rem',
+                    fontSize: '0.8rem',
                     fontWeight: '500',
                     color: '#6d7175',
                 }}>
