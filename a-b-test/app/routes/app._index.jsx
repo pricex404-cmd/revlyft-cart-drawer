@@ -170,11 +170,11 @@ const SearchAndFilters = ({
           labelHidden
           options={[
             { label: 'All Types', value: 'all' },
-            { label: 'Pricing Test', value: 'pricing' },
-            { label: 'Shipping Test', value: 'shipping' },
-            { label: 'Discount Test', value: 'discount' },
-            { label: 'Product Details Test', value: 'productDetails' },
-            { label: 'Offers Test', value: 'offers' }
+            { label: 'Price Test', value: 'pricing' }
+            // { label: 'Shipping Test', value: 'shipping' },
+            // { label: 'Discount Test', value: 'discount' },
+            // { label: 'Product Details Test', value: 'productDetails' },
+            // { label: 'Offers Test', value: 'offers' }
           ]}
           value={testTypeFilter}
           onChange={onTestTypeFilterChange}
@@ -282,33 +282,33 @@ const CreateTestModal = ({
     {
       type: 'pricing',
       icon: CurrencyConvertIcon,
-      title: 'Pricing Test',
+      title: 'Price Test',
       description: 'Test the price of one or multiple products in your Shopify store.'
     },
-    {
-      type: 'shipping',
-      icon: DeliveryIcon,
-      title: 'Shipping Test',
-      description: 'Test the rates you charge for shipping, including free thresholds.'
-    },
-    {
-      type: 'discount',
-      icon: DiscountFilledIcon,
-      title: 'Discount Test',
-      description: 'Test different discount percentages on cart value across customer groups.'
-    },
-    {
-      type: 'productDetails',
-      icon: SandboxIcon,
-      title: 'Product Details Test',
-      description: 'Test the display contents on your Shopify store.'
-    },
-    {
-      type: 'offers',
-      icon: DiscountFilledIcon,
-      title: 'Offers Test',
-      description: 'Test different offers on your Shopify store.'
-    }
+    // {
+    //   type: 'shipping',
+    //   icon: DeliveryIcon,
+    //   title: 'Shipping Test',
+    //   description: 'Test the rates you charge for shipping, including free thresholds.'
+    // },
+    // {
+    //   type: 'discount',
+    //   icon: DiscountFilledIcon,
+    //   title: 'Discount Test',
+    //   description: 'Test different discount percentages on cart value across customer groups.'
+    // },
+    // {
+    //   type: 'productDetails',
+    //   icon: SandboxIcon,
+    //   title: 'Product Details Test',
+    //   description: 'Test the display contents on your Shopify store.'
+    // },
+    // {
+    //   type: 'offers',
+    //   icon: DiscountFilledIcon,
+    //   title: 'Offers Test',
+    //   description: 'Test different offers on your Shopify store.'
+    // }
   ];
 
   return (
@@ -387,7 +387,7 @@ export default function Index() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [testName, setTestName] = useState('');
   const [testDescription, setTestDescription] = useState('');
-  const [selectedTestType, setSelectedTestType] = useState('');
+  const [selectedTestType, setSelectedTestType] = useState('pricing');
   const [rows, setRows] = useState([]);
   const [allRows, setAllRows] = useState([]); // Store all rows for filtering
   const [testIds, setTestIds] = useState([]);
