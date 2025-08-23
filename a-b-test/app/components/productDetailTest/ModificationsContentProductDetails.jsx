@@ -257,18 +257,16 @@ export const ModificationsContentProductDetails = ({ products, testGroups, setTe
                 </div>
             )}
 
-            <InlineStack align="space-between">
-                <BlockStack gap="200">
-                    <Text variant="headingLg" as="h1">PRODUCT DETAILS</Text>
-                    <Text variant="bodyMd" as="p" color="subdued">
-                        Modify product details like title, description, and images for different test groups.
-                    </Text>
-                </BlockStack>
-            </InlineStack>
-
             <LegacyCard>
                 <LegacyCard.Section>
-                    <BlockStack gap="400" align="center">
+                    <BlockStack gap="400">
+                        <BlockStack gap="200">
+                            <Text variant="headingLg" as="h1">PRODUCT DETAILS</Text>
+                            <Text variant="bodyMd" as="p" color="subdued">
+                                Modify product details like title, description, and images for different test groups.
+                            </Text>
+                        </BlockStack>
+                        <BlockStack gap="400" align="center">
                         {showProductList ? (
                             <BlockStack gap="400">
                                 <InlineStack align="space-between">
@@ -419,6 +417,7 @@ export const ModificationsContentProductDetails = ({ products, testGroups, setTe
                             </BlockStack>
                         )}
                     </BlockStack>
+                </BlockStack>
                 </LegacyCard.Section>
             </LegacyCard>
         </BlockStack>

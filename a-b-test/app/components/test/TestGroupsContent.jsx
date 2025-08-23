@@ -180,14 +180,7 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
 
     return (
         <BlockStack gap="400">
-            <InlineStack align="space-between">
-                <BlockStack gap="200">
-                    <Text variant="headingLg" as="h1">TEST GROUPS</Text>
-                    <Text variant="bodyMd" as="p" color="subdued">
-                        Add up to 5 test groups, naming each one, and allocate a percent of site traffic to each.
-                    </Text>
-                </BlockStack>
-            </InlineStack>
+            
 
 
 
@@ -217,6 +210,13 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
 
             <LegacyCard>
                 <LegacyCard.Section>
+                <BlockStack gap="400">
+                    <BlockStack gap="200">
+                        <Text variant="headingLg" as="h1">TEST GROUPS</Text>
+                        <Text variant="bodyMd" as="p" color="subdued">
+                            Add up to 5 test groups, naming each one, and allocate a percent of site traffic to each.
+                        </Text>
+                    </BlockStack>
                     <BlockStack gap="400">
                         {/* Test Groups Visualization */}
                         <Box style={{
@@ -264,12 +264,13 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
                         />
 
                         {/* Group Labels */}
-                        <InlineStack align="space-between">
+                        <InlineStack align="space-between" gap="400">
                             {testGroups.map((group) => (
                                 <Text key={group.id} variant="bodyMd" as="p">{group.name}</Text>
                             ))}
                         </InlineStack>
                     </BlockStack>
+                </BlockStack>
                 </LegacyCard.Section>
             </LegacyCard>
         </BlockStack>

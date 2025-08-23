@@ -320,8 +320,10 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
 
     return (
         <BlockStack gap="400">
-            <Text variant="headingLg" as="h2">Test Results</Text>
-            <Card padding="0">
+            <Card>
+                <BlockStack gap="400">
+                    <Text variant="headingLg" as="h2">Test Results</Text>
+                    <Card padding="0">
                 <table style={tableStyles.table}>
                     <thead>
                         <tr style={tableStyles.headerRow}>
@@ -335,6 +337,8 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                         {renderHierarchicalTable()}
                     </tbody>
                 </table>
+                    </Card>
+                </BlockStack>
             </Card>
         </BlockStack>
     );

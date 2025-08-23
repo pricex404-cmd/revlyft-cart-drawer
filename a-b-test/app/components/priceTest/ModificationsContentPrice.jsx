@@ -859,20 +859,16 @@ if (typeof document !== 'undefined') {
                 setWarningMessage={setWarningMessage}
             />
 
-            <InlineStack align="space-between">
-                <BlockStack gap="200">
-                    <Text variant="headingLg" as="h1">PRICE</Text>
-                    <Text variant="bodyMd" as="p" color="subdued">
-                        Make specific price changes for one or more products based on target audience.
-                    </Text>
-                </BlockStack>
-            </InlineStack>
-
-
-
             <LegacyCard>
                 <LegacyCard.Section>
-                    <BlockStack gap="400" align="center">
+                    <BlockStack gap="400">
+                        <BlockStack gap="200">
+                            <Text variant="headingLg" as="h1">PRICE</Text>
+                            <Text variant="bodyMd" as="p" color="subdued">
+                                Make specific price changes for one or more products based on target audience.
+                            </Text>
+                        </BlockStack>
+                        <BlockStack gap="400" align="center">
                         {showProductList ? (
                             <ProductsList
                                 products={products}
@@ -907,9 +903,8 @@ if (typeof document !== 'undefined') {
                                 onProductPricingMethodChange={handleProductPricingMethodChange}
                             />
                         )}
-
-
                     </BlockStack>
+                </BlockStack>
                 </LegacyCard.Section>
             </LegacyCard>
         </BlockStack>
