@@ -1,4 +1,4 @@
-import { Text, BlockStack, Button, Box } from "@shopify/polaris";
+import { Text, BlockStack, Button, Box, LegacyCard } from "@shopify/polaris";
 import { useState, useEffect } from "react";
 
 // Color theme
@@ -86,16 +86,18 @@ export const TargetingContent = ({ targetingState, setTargetingState }) => {
 
     return (
         <BlockStack gap="800">
-            {/* Header */}
-            <BlockStack gap="200">
-                <Text variant="headingLg" as="h1">Audience</Text>
-                <Text variant="bodyMd" as="p" color="subdued">
-                    Show test only to certain visitors.
-                </Text>
-            </BlockStack>
+            <LegacyCard>
+                <LegacyCard.Section>
+                    <BlockStack gap="400">
+                        <BlockStack gap="200">
+                            <Text variant="headingLg" as="h1">Audience</Text>
+                            <Text variant="bodyMd" as="p" color="subdued">
+                                Show test only to certain visitors.
+                            </Text>
+                        </BlockStack>
 
-            {/* Device Type */}
-            <Box padding="400" background="bg-surface-secondary" borderRadius="200">
+                    {/* Device Type */}
+                    <Box padding="400" background="bg-surface-secondary" borderRadius="200">
                 <BlockStack gap="400">
                     <StyledHeading>DEVICE TYPE</StyledHeading>
                     <div style={{ display: 'flex', gap: '10px' }}>
@@ -191,6 +193,9 @@ export const TargetingContent = ({ targetingState, setTargetingState }) => {
             {/* <Text variant="bodyMd" as="p" color="subdued">
                 Visitors that do not match these conditions will receive the treatment of Control Group.
             </Text> */}
+                </BlockStack>
+                </LegacyCard.Section>
+            </LegacyCard>
         </BlockStack>
     );
 };

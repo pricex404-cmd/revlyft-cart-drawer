@@ -112,18 +112,18 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                 <p>Please save your test configuration to see the preview. Click the Save button at the top of the page to save your changes and view the preview.</p>
             </Banner>
 
-            <InlineStack align="space-between">
-                <BlockStack gap="200">
-                    <Text variant="headingLg" as="h1">
-                        Test Preview
-                    </Text>
-                    <Text variant="bodyMd" as="p" color="subdued">
-                        Preview your test groups and their product configurations
-                    </Text>
-                </BlockStack>
-            </InlineStack>
-
-            <BlockStack gap="400">
+            <LegacyCard>
+                <LegacyCard.Section>
+                    <BlockStack gap="400">
+                        <BlockStack gap="200">
+                            <Text variant="headingLg" as="h1">
+                                Test Preview
+                            </Text>
+                            <Text variant="bodyMd" as="p" color="subdued">
+                                Preview your test groups and their product configurations
+                            </Text>
+                        </BlockStack>
+                        <BlockStack gap="400">
                 {testData.testGroups.map((group) => (
                     <LegacyCard key={group.id}>
                         <LegacyCard.Section>
@@ -143,7 +143,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                                     if (!groupProductData) return null;
 
                                     return (
-                                        <Box key={product.productId} padding="400" background="bg-surface-secondary" style={{ borderRadius: '8px', border: '1px solid #e5e7eb',padding: '10px' }}>
+                                        <Box key={product.productId} padding="400" style={{ borderRadius: '8px', border: '1px solid #e5e7eb', padding: '4px', backgroundColor: '#f6f6f7' }}>
                                             <BlockStack gap="400">
                                                 <InlineStack align="space-between">
                                                     <InlineStack gap="400">
@@ -178,10 +178,10 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                                                 {/* Price details */}
                                                 {product.isMultiVariant && groupProductData.isMultiVariant ? (
                                                     // Multi-variant product pricing
-                                                    <BlockStack gap="200">
-                                                        <Text variant="bodyMd" as="h4" style={{ fontWeight: '500' }}>
-                                                            Variant Prices:
-                                                        </Text>
+                                                    <BlockStack gap="200">{product.variants?.length > 1 ? <Text variant="bodyMd" as="h4" style={{ fontWeight: '500' }}>
+                                                    Variant Prices:
+                                                </Text> : <></>}
+                                                       
                                                         {product.variants?.map(productVariant => {
                                                             const numericVariantId = extractShopifyProductId(productVariant.variantId);
                                                             const variantData = groupProductData.variants?.[numericVariantId];
@@ -220,7 +220,10 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                         </LegacyCard.Section>
                     </LegacyCard>
                 ))}
-            </BlockStack>
+                        </BlockStack>
+                    </BlockStack>
+                </LegacyCard.Section>
+            </LegacyCard>
         </BlockStack>
     );
 };
