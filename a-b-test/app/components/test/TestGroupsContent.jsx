@@ -45,6 +45,50 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
         if (removingGroupId !== null) return;
         
         if (testGroups && testGroups.length > 0) {
+            // Fix duplicate group names
+            const fixedGroups = testGroups.map((group, index) => {
+                if (group.name.toLowerCase().includes('new group')) {
+                    const match = group.name.match(/New Group (\d+)/);
+                    if (match) {
+                        const groupNumber = parseInt(match[1]);
+                        // Check if this number is already used by a previous group
+                        const isDuplicate = testGroups.slice(0, index).some(g => {
+                            const prevMatch = g.name.match(/New Group (\d+)/);
+                            return prevMatch && parseInt(prevMatch[1]) === groupNumber;
+                        });
+                        
+                        if (isDuplicate) {
+                            // Find the first available number
+                            const existingNumbers = testGroups
+                                .map(g => {
+                                    const m = g.name.match(/New Group (\d+)/);
+                                    return m ? parseInt(m[1]) : 0;
+                                })
+                                .filter(num => num > 0)
+                                .sort((a, b) => a - b);
+                            
+                            // Find the first missing number in the sequence
+                            let nextNumber = 1;
+                            for (let i = 0; i < existingNumbers.length; i++) {
+                                if (existingNumbers[i] !== i + 1) {
+                                    nextNumber = i + 1;
+                                    break;
+                                }
+                                nextNumber = i + 2;
+                            }
+                            return { ...group, name: `New Group ${nextNumber}` };
+                        }
+                    }
+                }
+                return group;
+            });
+            
+            // Update groups if names were fixed
+            if (JSON.stringify(fixedGroups) !== JSON.stringify(testGroups)) {
+                setTestGroups(fixedGroups);
+                return; // Don't proceed with percentage validation if we just fixed names
+            }
+            
             const totalPercentage = testGroups.reduce((sum, group) => sum + group.percentage, 0);
             if (totalPercentage !== 100) {
                 console.warn(`TestGroupsContent: Detected incorrect percentage total: ${totalPercentage}%`);
@@ -65,7 +109,25 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
     const handleAddGroup = () => {
         if (testGroups.length >= 5) return; // Maximum 5 groups
 
-        const newGroupNumber = testGroups.length;
+        // Find the first available group number by checking existing group names
+        const existingGroupNumbers = testGroups
+            .map(group => {
+                const match = group.name.match(/New Group (\d+)/);
+                return match ? parseInt(match[1]) : 0;
+            })
+            .filter(num => num > 0)
+            .sort((a, b) => a - b);
+        
+        // Find the first missing number in the sequence
+        let newGroupNumber = 1;
+        for (let i = 0; i < existingGroupNumbers.length; i++) {
+            if (existingGroupNumbers[i] !== i + 1) {
+                newGroupNumber = i + 1;
+                break;
+            }
+            newGroupNumber = i + 2; // If we reach here, the next number is the last + 1
+        }
+            
         const equalPercentage = Math.floor(100 / (testGroups.length + 1));
 
         // Update existing groups with new equal percentage
@@ -88,10 +150,10 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
             id: nextId,
             name: `New Group ${newGroupNumber}`,
             percentage: equalPercentage,
-            color: groupColors[newGroupNumber - 1],
+            color: groupColors[Math.min(newGroupNumber - 1, groupColors.length - 1)],
             style: {
-                backgroundColor: groupColors[newGroupNumber - 1],
-                border: `2px solid ${groupColors[newGroupNumber - 1]}`,
+                backgroundColor: groupColors[Math.min(newGroupNumber - 1, groupColors.length - 1)],
+                border: `2px solid ${groupColors[Math.min(newGroupNumber - 1, groupColors.length - 1)]}`,
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
             },
             products: {},
