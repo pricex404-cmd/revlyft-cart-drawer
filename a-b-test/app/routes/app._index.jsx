@@ -85,6 +85,7 @@ const TestTypeButton = ({ type, icon, title, description, isSelected, onSelect }
     pressed={isSelected}
     fullWidth
     textAlign="left"
+    variant={isSelected ? "primary" : "secondary"}
   >
     <BlockStack gap="200">
       <InlineStack gap="300">
@@ -320,7 +321,7 @@ const CreateTestModal = ({
       {validationMessage && (
         <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: 'white', borderBottom: '1px solid #e1e3e5' }}>
           <Modal.Section>
-            <Banner 
+            <Banner
               status="critical"
               onDismiss={() => setValidationMessage('')}
             >
@@ -349,6 +350,30 @@ const CreateTestModal = ({
           />
 
           <BlockStack gap="400">
+            <Text variant="bodyMd" as="p" fontWeight="bold">Test Type:</Text>
+            <Card>
+              <div style={{
+                backgroundColor: 'var(--p-color-bg-surface-secondary)',
+                borderRadius: '8px',
+                padding: '16px'
+              }}>
+                <BlockStack gap="200">
+                  <InlineStack gap="300">
+                    <div style={{ color: 'var(--p-color-text-success)' }}>
+                      <Icon source={CurrencyConvertIcon} />
+                    </div>
+                    <Text variant="headingMd" as="h2" style={{ color: 'var(--p-color-text-success)' }}>Price Test</Text>
+                  </InlineStack>
+                  <Text variant="bodyMd" as="p" color="subdued">
+                    Test the price of one or multiple products in your Shopify store.
+                  </Text>
+                </BlockStack>
+              </div>
+            </Card>
+          </BlockStack>
+
+          {/* Original selection UI - commented out for future use */}
+          {/* <BlockStack gap="400">
             <Text variant="bodyMd" as="p" fontWeight="bold">Select Test Type:</Text>
             <LegacyStack distribution="fillEvenly">
               {testTypes.map((test) => (
@@ -363,7 +388,7 @@ const CreateTestModal = ({
                 />
               ))}
             </LegacyStack>
-          </BlockStack>
+          </BlockStack> */}
         </BlockStack>
       </Modal.Section>
       <Modal.Section>
@@ -704,23 +729,25 @@ export default function Index() {
   };
 
   const handleTestTypeSelect = (type) => {
+    console.log('Test type selected:', type);
     setSelectedTestType(type);
   };
 
   const handleCreateTest = async () => {
     // Validation check - collect all missing fields
     const missingFields = [];
-    
+
     if (!testName.trim()) {
       missingFields.push("Test Name");
     }
     if (!testDescription.trim()) {
       missingFields.push("Test Description");
     }
-    if (!selectedTestType) {
-      missingFields.push("Test Type");
-    }
-    
+    // if (!selectedTestType) {
+    //   missingFields.push("Test Type");
+    // }
+    // Test type is always 'pricing' now, so no validation needed
+
     if (missingFields.length > 0) {
       const message = `Please complete the following required fields: ${missingFields.join(", ")}`;
       setValidationMessage(message);
