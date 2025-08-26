@@ -7,36 +7,7 @@ const colors = {
     surface: '#F9FAFB'
 };
 
-// CSS to remove spin arrows from number inputs
-const inputStyles = `
-  /* Remove spin arrows from number input fields */
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button, 
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-  }
 
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield !important;
-  }
-
-  /* Additional specificity for all browsers */
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none !important;
-    margin: 0 !important;
-  }
-`;
-
-// Inject styles into document head
-if (typeof document !== 'undefined') {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = inputStyles;
-    document.head.appendChild(styleSheet);
-}
 
 export const SingleVariantPricing = ({
     product,
@@ -62,11 +33,10 @@ export const SingleVariantPricing = ({
                                 {pricingMethod === 'percentage' ? (
                                     <div style={{ position: 'relative' }}>
                                         <input
-                                            type="number"
+                                            type="text"
                                             placeholder="Enter discount %"
                                             min="0"
                                             max="100"
-                                            step="0.1"
                                             value={group.products?.[numericProductId]?.discountPercentage || 0}
                                             onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, null, 'percentage')}
                                             disabled={isControlGroup || isTestStarted}

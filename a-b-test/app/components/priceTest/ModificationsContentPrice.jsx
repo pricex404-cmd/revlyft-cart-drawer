@@ -13,40 +13,6 @@ import EmptyProductsState from './modificationContentComponent/EmptyProductsStat
 import BulkDiscountModal from './modificationContentComponent/BulkDiscountModal';
 import useProductModifications from './useProductModifications';
 
-// Add CSS for animation and input styling
-const styles = `
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-
-  /* Remove spin arrows from number input fields */
-  /* Chrome, Safari, Edge, Opera */
-  input::-webkit-outer-spin-button, 
-  input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  /* Firefox */
-  input[type=number] {
-    -moz-appearance: textfield;
-  }
-`;
-
-// Inject styles into document head
-if (typeof document !== 'undefined') {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = styles;
-    document.head.appendChild(styleSheet);
-}
 
  const ModificationsContentPrice = ({
     products,
