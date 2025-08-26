@@ -5,6 +5,7 @@ import { ChevronDownIcon, ChevronRightIcon } from '@shopify/polaris-icons';
 export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
     const [expandedGroups, setExpandedGroups] = useState(new Set());
     const [expandedProducts, setExpandedProducts] = useState(new Set());
+    
     if (!testGroups || testGroups.length === 0) {
         return (
             <BlockStack gap="400">
@@ -18,12 +19,9 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
         );
     }
 
-
-
-    // Helper function to count analytics data
+    // Helper functions (unchanged)
     const countAnalytics = (analyticsData) => {
         if (!analyticsData) return 0;
-
         if (Array.isArray(analyticsData)) {
             return analyticsData.filter(a => a !== '').length;
         } else if (typeof analyticsData === 'object') {
@@ -38,10 +36,8 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
         return 0;
     };
 
-    // Helper function to count analytics for specific keys (products/variants)
     const countAnalyticsForKeys = (analyticsData, keyPattern) => {
         if (!analyticsData || typeof analyticsData !== 'object') return 0;
-
         let total = 0;
         Object.entries(analyticsData).forEach(([key, arr]) => {
             if (key.includes(keyPattern) && Array.isArray(arr)) {
@@ -51,21 +47,12 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
         return total;
     };
 
-    // Get product info by ID
     const getProductInfo = (productId) => {
         if (!selectedProducts || !productId) return null;
-
-        // Clean up product ID - remove GQL prefix if present
         const cleanProductId = productId.toString().replace('gid://shopify/Product/', '');
-
-        // Try to find the product by matching various ID formats
         return selectedProducts.find(p => {
             if (!p.productId) return false;
-
-            // Clean up the product's ID
             const cleanPId = p.productId.toString().replace('gid://shopify/Product/', '');
-
-            // Match by cleaned IDs or original IDs
             return cleanPId === cleanProductId ||
                 p.productId === productId ||
                 cleanPId === productId ||
@@ -73,12 +60,10 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
         });
     };
 
-    // Toggle functions for expand/collapse
     const toggleGroupProducts = (groupId) => {
         const newExpanded = new Set(expandedGroups);
         if (newExpanded.has(groupId)) {
             newExpanded.delete(groupId);
-            // Also collapse all products in this group
             const newExpandedProducts = new Set(expandedProducts);
             expandedProducts.forEach(productKey => {
                 if (productKey.startsWith(`${groupId}_`)) {
@@ -103,83 +88,123 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
         setExpandedProducts(newExpanded);
     };
 
+    // Updated styles for sticky header
     const tableStyles = {
+        container: {
+            position: 'relative',
+            height: '400px', // Set desired height
+            overflow: 'hidden',
+            border: '1px solid #e1e3e5',
+            borderRadius: '8px'
+        },
         table: {
             width: '100%',
-            borderCollapse: 'collapse',
-            border: '1px solid #e1e3e5',
-            borderRadius: '8px',
-            overflow: 'hidden'
+            borderCollapse: 'collapse'
+        },
+        thead: {
+            position: 'sticky',
+            top: 0,
+            zIndex: 10,
+            backgroundColor: '#f6f6f7'
+        },
+        tbody: {
+            display: 'block',
+            height: '340px', // Adjust based on header height
+            overflowY: 'auto',
+            overflowX: 'hidden'
         },
         headerRow: {
+            display: 'table',
+            width: '100%',
+            tableLayout: 'fixed',
             backgroundColor: '#f6f6f7',
             borderBottom: '2px solid #e1e3e5'
         },
         headerCell: {
+            display: 'table-cell',
             padding: '16px 20px',
             textAlign: 'left',
             fontWeight: '600',
             fontSize: '14px',
-            color: '#202223'
+            color: '#202223',
+            backgroundColor: '#f6f6f7',
+            borderBottom: '2px solid #e1e3e5'
         },
         headerCellCenter: {
+            display: 'table-cell',
             padding: '16px 20px',
             textAlign: 'center',
             fontWeight: '600',
             fontSize: '14px',
-            color: '#202223'
+            color: '#202223',
+            backgroundColor: '#f6f6f7',
+            borderBottom: '2px solid #e1e3e5'
+        },
+        bodyRow: {
+            display: 'table',
+            width: '100%',
+            tableLayout: 'fixed'
         },
         groupRow: {
+            display: 'table',
+            width: '100%',
+            tableLayout: 'fixed',
             backgroundColor: '#ffffff',
             borderBottom: '1px solid #e1e3e5',
             cursor: 'pointer'
         },
         productRow: {
+            display: 'table',
+            width: '100%',
+            tableLayout: 'fixed',
             backgroundColor: '#f8f9fa',
             borderBottom: '1px solid #e1e3e5'
         },
         variantRow: {
+            display: 'table',
+            width: '100%',
+            tableLayout: 'fixed',
             backgroundColor: '#f1f2f3',
             borderBottom: '1px solid #e1e3e5'
         },
         cell: {
+            display: 'table-cell',
             padding: '16px 20px',
             fontSize: '14px',
             color: '#202223'
         },
         cellCenter: {
+            display: 'table-cell',
             padding: '16px 20px',
             textAlign: 'center',
             fontSize: '14px',
             color: '#202223'
         },
         indentedCell: {
+            display: 'table-cell',
             padding: '16px 20px 16px 40px',
             fontSize: '14px',
             color: '#202223'
         },
         doubleIndentedCell: {
+            display: 'table-cell',
             padding: '16px 20px 16px 60px',
             fontSize: '14px',
             color: '#202223'
         }
     };
 
-    // Render the hierarchical table
     const renderHierarchicalTable = () => {
         const rows = [];
 
         testGroups.forEach((group) => {
-            // Calculate group totals
             const views = countAnalytics(group.analytics?.views) || 0;
             const addToCart = countAnalytics(group.analytics?.addToCart) || 0;
             const saleDone = countAnalytics(group.analytics?.saleDone) || 0;
-
             const isGroupExpanded = expandedGroups.has(group.id);
             const products = group.products || {};
             const hasProducts = Object.keys(products).length > 0;
 
-            // Group row
             rows.push(
                 <tr key={`group-${group.id}`} style={tableStyles.groupRow}>
                     <td style={tableStyles.cell}>
@@ -210,7 +235,6 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                 </tr>
             );
 
-            // Product rows (if group is expanded)
             if (isGroupExpanded && hasProducts) {
                 Object.entries(products).forEach(([productId, productData]) => {
                     const productInfo = getProductInfo(productId);
@@ -218,12 +242,10 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                     const isProductExpanded = expandedProducts.has(productKey);
                     const hasVariants = productInfo?.isMultiVariant && productData?.variants;
 
-                    // Calculate product analytics - sum up product-level + all variant analytics for this product
                     let productViews = countAnalyticsForKeys(group.analytics?.views, `productId_${productId}`);
                     let productAddToCart = countAnalyticsForKeys(group.analytics?.addToCart, `productId_${productId}`);
                     let productSaleDone = countAnalyticsForKeys(group.analytics?.saleDone, `productId_${productId}`);
 
-                    // Add analytics from all variants of this product
                     if (productData?.variants) {
                         Object.keys(productData.variants).forEach(variantKey => {
                             const variantId = productData.variants[variantKey]?.variantId?.replace('gid://shopify/ProductVariant/', '') || variantKey;
@@ -233,14 +255,12 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                         });
                     }
 
-                    // Use raw product metrics without validation
                     const productMetrics = {
                         views: productViews || 0,
                         addToCart: productAddToCart || 0,
                         saleDone: productSaleDone || 0
                     };
 
-                    // Product row
                     rows.push(
                         <tr key={`product-${group.id}-${productId}`} style={tableStyles.productRow}>
                             <td style={tableStyles.indentedCell}>
@@ -276,16 +296,12 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                         </tr>
                     );
 
-                    // Variant rows (if product is expanded and has variants)
                     if (isProductExpanded && hasVariants) {
                         Object.entries(productData.variants).forEach(([variantKey, variantData]) => {
                             const variantId = variantData.variantId?.replace('gid://shopify/ProductVariant/', '') || variantKey;
-
-                            // Calculate variant analytics
                             const variantViews = countAnalyticsForKeys(group.analytics?.views, `variantId_${variantId}`);
                             const variantAddToCart = countAnalyticsForKeys(group.analytics?.addToCart, `variantId_${variantId}`);
                             const variantSaleDone = countAnalyticsForKeys(group.analytics?.saleDone, `variantId_${variantId}`);
-                            // Use raw variant metrics without validation
                             const variantMetrics = {
                                 views: variantViews || 0,
                                 addToCart: variantAddToCart || 0,
@@ -324,19 +340,21 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                 <BlockStack gap="400">
                     <Text variant="headingLg" as="h2">Test Results</Text>
                     <Card padding="0">
-                <table style={tableStyles.table}>
-                    <thead>
-                        <tr style={tableStyles.headerRow}>
-                            <th style={tableStyles.headerCell}>Test Groups / Products / Variants</th>
-                            <th style={tableStyles.headerCellCenter}>Views</th>
-                            <th style={tableStyles.headerCellCenter}>Add to Cart</th>
-                            <th style={tableStyles.headerCellCenter}>Sale Done</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {renderHierarchicalTable()}
-                    </tbody>
-                </table>
+                        <div style={tableStyles.container}>
+                            <table style={tableStyles.table}>
+                                <thead style={tableStyles.thead}>
+                                    <tr style={tableStyles.headerRow}>
+                                        <th style={tableStyles.headerCell}>Test Groups / Products / Variants</th>
+                                        <th style={tableStyles.headerCellCenter}>Views</th>
+                                        <th style={tableStyles.headerCellCenter}>Add to Cart</th>
+                                        <th style={tableStyles.headerCellCenter}>Sale Done</th>
+                                    </tr>
+                                </thead>
+                                <tbody style={tableStyles.tbody}>
+                                    {renderHierarchicalTable()}
+                                </tbody>
+                            </table>
+                        </div>
                     </Card>
                 </BlockStack>
             </Card>
@@ -344,4 +362,4 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
     );
 };
 
-export default ResultsContent; 
+export default ResultsContent;
