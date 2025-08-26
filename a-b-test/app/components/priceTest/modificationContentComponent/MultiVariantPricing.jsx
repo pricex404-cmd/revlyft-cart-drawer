@@ -187,7 +187,7 @@ export const MultiVariantPricing = ({
                                                             {pricingMethod === 'percentage' ? (
                                                                 <div style={{ position: 'relative' }}>
                                                                     <input
-                                                                        type="number"
+                                                                        type="text"
                                                                         placeholder="Enter discount %"
                                                                         min="0"
                                                                         max="100"
