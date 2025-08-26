@@ -7,6 +7,37 @@ const colors = {
     surface: '#F9FAFB'
 };
 
+// CSS to remove spin arrows from number inputs
+const inputStyles = `
+  /* Remove spin arrows from number input fields */
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button, 
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield !important;
+  }
+
+  /* Additional specificity for all browsers */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+  }
+`;
+
+// Inject styles into document head
+if (typeof document !== 'undefined') {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = inputStyles;
+    document.head.appendChild(styleSheet);
+}
+
 export const SingleVariantPricing = ({
     product,
     testGroups,
@@ -44,7 +75,9 @@ export const SingleVariantPricing = ({
                                                 padding: '8px 24px 8px 8px',
                                                 border: `1px solid ${colors.border}`,
                                                 borderRadius: '4px',
-                                                backgroundColor: (isControlGroup || isTestStarted) ? colors.surface : 'white'
+                                                backgroundColor: (isControlGroup || isTestStarted) ? colors.surface : 'white',
+                                                WebkitAppearance: 'none !important',
+                                                MozAppearance: 'textfield !important'
                                             }}
                                         />
 
@@ -66,7 +99,9 @@ export const SingleVariantPricing = ({
                                                 padding: '8px',
                                                 border: `1px solid ${colors.border}`,
                                                 borderRadius: '4px',
-                                                backgroundColor: (isControlGroup || isTestStarted) ? colors.surface : 'white'
+                                                backgroundColor: (isControlGroup || isTestStarted) ? colors.surface : 'white',
+                                                WebkitAppearance: 'none !important',
+                                                MozAppearance: 'textfield !important'
                                             }}
                                         />
 

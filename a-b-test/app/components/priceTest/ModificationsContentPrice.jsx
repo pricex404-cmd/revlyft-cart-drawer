@@ -13,7 +13,7 @@ import EmptyProductsState from './modificationContentComponent/EmptyProductsStat
 import BulkDiscountModal from './modificationContentComponent/BulkDiscountModal';
 import useProductModifications from './useProductModifications';
 
-// Add CSS for animation
+// Add CSS for animation and input styling
 const styles = `
   @keyframes slideDown {
     from {
@@ -24,6 +24,19 @@ const styles = `
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
+  }
+
+  /* Remove spin arrows from number input fields */
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button, 
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 `;
 
