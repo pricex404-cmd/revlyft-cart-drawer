@@ -1,5 +1,5 @@
 import { BlockStack, Text, Box, InlineStack } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 // Color theme
 const colors = {
@@ -56,9 +56,9 @@ export const MultiVariantPricing = ({
                                             />
 
                                             {group.products?.[numericProductId]?.modifiedPrice !== undefined && (
-                                                <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
-                                                    Final price: {formatMoney(group.products[numericProductId].modifiedPrice, currency)}
-                                                </Text>
+                                                                                            <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
+                                                Final price: {getCurrencySymbol(currency)}{group.products[numericProductId].modifiedPrice?.toFixed(2) || '0.00'}
+                                            </Text>
                                             )}
                                         </div>
                                     ) : (
@@ -133,7 +133,7 @@ export const MultiVariantPricing = ({
                                         {variant.title}
                                     </Text>
                                     <Text variant="bodyMd" as="p" color="subdued">
-                                        Original Price: {formatMoney(variant.price, currency)}
+                                        Original Price: {getCurrencySymbol(currency)}{variant.price?.toFixed(2) || '0.00'}
                                     </Text>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@ export const MultiVariantPricing = ({
                                             <BlockStack gap="100">
                                                 <Text variant="headingSm" as="h3">{variant.title}</Text>
                                                 <Text variant="bodyMd" as="p" color="subdued">
-                                                    Original Price: {formatMoney(variant.price, currency)}
+                                                    Original Price: {getCurrencySymbol(currency)}{variant.price?.toFixed(2) || '0.00'}
                                                 </Text>
                                             </BlockStack>
                                         </InlineStack>
@@ -207,7 +207,7 @@ export const MultiVariantPricing = ({
 
                                                                     {group.products?.[numericProductId]?.variants?.[numericVariantId]?.modifiedPrice !== undefined && (
                                                                         <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
-                                                                            Final price: {formatMoney(group.products[numericProductId].variants[numericVariantId].modifiedPrice, currency)}
+                                                                            Final price: {getCurrencySymbol(currency)}{group.products[numericProductId].variants[numericVariantId].modifiedPrice?.toFixed(2) || '0.00'}
                                                                         </Text>
                                                                     )}
                                                                 </div>

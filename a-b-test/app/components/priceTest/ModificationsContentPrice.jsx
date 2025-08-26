@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Text, BlockStack, InlineStack, Box, LegacyCard } from "@shopify/polaris";
 import extractShopifyProductId from "../../utils/extractProductId";
-import { formatMoney } from "../../utils/formatMoney";
+import { getCurrencySymbol } from "../../utils/currencyFormatter";
 
 // Import new components
 import PricingMethodSelector from './modificationContentComponent/PricingMethodSelector';
@@ -463,7 +463,7 @@ import useProductModifications from './useProductModifications';
 
             // Validate that new price is not greater than original price
             if (newPrice > originalPrice) {
-                setWarningMessage(`Modified price cannot be greater than original price (${formatMoney(originalPrice, currency)})`);
+                setWarningMessage(`Modified price cannot be greater than original price (${getCurrencySymbol(currency)}${originalPrice?.toFixed(2) || '0.00'})`);
                 setShowPriceWarning(true);
                 setTimeout(() => setShowPriceWarning(false), 3000);
                 return;

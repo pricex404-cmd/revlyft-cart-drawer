@@ -13,7 +13,7 @@ import {
     Select,
     Filters
 } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 // Color theme
 const colors = {
@@ -97,7 +97,7 @@ export const ProductsList = ({
                 variantCount: variants.length,
                 priceInfo,
                 originalPrice,
-                formattedPrice: formatMoney(originalPrice, currency),
+                                        formattedPrice: getCurrencySymbol(currency) + (originalPrice?.toFixed(2) || '0.00'),
                 status: hasCompareAtPrice ? 'Has Compare Price' :
                     isInOtherTest ? 'In Other Test' :
                         isSelected ? 'Selected' : 'Available',

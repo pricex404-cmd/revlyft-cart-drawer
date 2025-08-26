@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Text, BlockStack, InlineStack, Box, Banner, Spinner, LegacyCard } from "@shopify/polaris";
 import extractShopifyProductId from "../../utils/extractProductId";
-import { formatMoney } from "../../utils/formatMoney";
+import { getCurrencySymbol } from "../../utils/currencyFormatter";
 
 export const PreviewContent = ({ testId, shop, currentTestData }) => {
     const [isTestSaved, setIsTestSaved] = useState(false);
@@ -168,7 +168,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                                                                 </Text>
                                                             ) : (
                                                                 <Text variant="bodyMd" as="p" color="subdued" style={{ fontWeight: '500' }}>
-                                                                    Original Price: {formatMoney(product.originalPrice, testData?.basicInfo?.currency)}
+                                                                    Original Price: {getCurrencySymbol(testData?.basicInfo?.currency)}{product.originalPrice?.toFixed(2) || '0.00'}
                                                                 </Text>
                                                             )}
                                                         </BlockStack>
@@ -195,7 +195,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                                                                         • {productVariant.title}
                                                                     </Text>
                                                                     <Text variant="bodyMd" style={{ fontWeight: '500' }}>
-                                                                        {formatMoney(modifiedPrice, testData?.basicInfo?.currency)}
+                                                                        {getCurrencySymbol(testData?.basicInfo?.currency)}{modifiedPrice?.toFixed(2) || '0.00'}
                                                                     </Text>
                                                                 </InlineStack>
                                                             );
@@ -208,7 +208,7 @@ export const PreviewContent = ({ testId, shop, currentTestData }) => {
                                                             Modified Price:
                                                         </Text>
                                                         <Text variant="bodyMd" style={{ fontWeight: '600', color: '#008060' }}>
-                                                            {formatMoney(groupProductData.modifiedPrice, testData?.basicInfo?.currency)}
+                                                            {getCurrencySymbol(testData?.basicInfo?.currency)}{groupProductData.modifiedPrice?.toFixed(2) || '0.00'}
                                                         </Text>
                                                     </InlineStack>
                                                 )}

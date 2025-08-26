@@ -1,5 +1,5 @@
 import { BlockStack, Text, InlineStack } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 // Color theme
 const colors = {
@@ -53,7 +53,7 @@ export const SingleVariantPricing = ({
 
                                         {group.products?.[numericProductId]?.modifiedPrice !== undefined && (
                                             <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
-                                                Final price: {formatMoney(group.products[numericProductId].modifiedPrice, currency)}
+                                                Final price: {getCurrencySymbol(currency)}{group.products[numericProductId].modifiedPrice?.toFixed(2) || '0.00'}
                                             </Text>
                                         )}
                                     </div>

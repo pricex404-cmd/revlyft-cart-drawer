@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BlockStack, Text, Box, InlineStack, Button, TextField } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
 import WarningBanners from './WarningBanners';
 import extractShopifyProductId from "../../../utils/extractProductId";
 

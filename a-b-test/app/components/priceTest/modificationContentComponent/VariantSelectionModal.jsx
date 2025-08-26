@@ -1,5 +1,5 @@
 import { BlockStack, Text, Box, InlineStack, Button } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 export const VariantSelectionModal = ({
     showVariantSelection,
@@ -64,7 +64,7 @@ export const VariantSelectionModal = ({
                                                 {variant.title}
                                             </Text>
                                             <Text variant="bodyMd" as="p" color="subdued">
-                                                Price: {formatMoney(variant.price, currency)}
+                                                Price: {getCurrencySymbol(currency)}{variant.price?.toFixed(2) || '0.00'}
                                             </Text>
                                         </BlockStack>
                                     </InlineStack>

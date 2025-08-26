@@ -1,5 +1,5 @@
 import { BlockStack, Text, Box, InlineStack, Button } from "@shopify/polaris";
-import { formatMoney } from "../../../utils/formatMoney";
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 // Color theme
 const colors = {
@@ -86,7 +86,7 @@ export const PricingMethodSelector = ({
                                 Fixed Price
                             </Text>
                             <Text variant="bodySm" as="p" color="subdued" style={{ margin: '2px 0 0 0' }}>
-                                Enter the exact price you want to test (e.g., {formatMoney(19.99, currency)})
+                                Enter the exact price you want to test (e.g., {getCurrencySymbol(currency)}19.99)
                             </Text>
                         </div>
                     </div>
@@ -167,7 +167,7 @@ export const ProductPricingMethodSelector = ({
                         gap: '4px'
                     }}
                 >
-                    <span style={{ fontSize: '14px', fontWeight: '700' }}>₹</span>
+                    <span style={{ fontSize: '14px', fontWeight: '700' }}>{getCurrencySymbol(currency)}</span>
                     <span>Fixed</span>
                 </button>
             </div>

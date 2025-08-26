@@ -2,6 +2,7 @@ import { BlockStack, Text, Box, InlineStack, Button } from "@shopify/polaris";
 import SingleVariantPricing from './SingleVariantPricing';
 import MultiVariantPricing from './MultiVariantPricing';
 import { ProductPricingMethodSelector } from './PricingMethodSelector';
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 
 export const ProductPricingInterface = ({
     selectedProducts,
@@ -58,7 +59,7 @@ export const ProductPricingInterface = ({
                                                     Multi-variant product (all {product.variants?.length || 0} variants selected)
                                                 </Text>
                                                 <Text variant="bodyMd" as="p" color="subdued" style={{ fontWeight: '500' }}>
-                                                    Original Price: ${product.originalPrice?.toFixed(2) || '0.00'}
+                                                    Original Price: {getCurrencySymbol(currency)}{product.originalPrice?.toFixed(2) || '0.00'}
                                                 </Text>
                                             </BlockStack>
                                         ) : product.isMultiVariant ? (
@@ -67,7 +68,7 @@ export const ProductPricingInterface = ({
                                             </Text>
                                         ) : (
                                             <Text variant="bodyMd" as="p" color="subdued" style={{ fontWeight: '500' }}>
-                                                Original Price: ${product.originalPrice?.toFixed(2) || '0.00'}
+                                                Original Price: {getCurrencySymbol(currency)}{product.originalPrice?.toFixed(2) || '0.00'}
                                             </Text>
                                         )}
                                     </BlockStack>
