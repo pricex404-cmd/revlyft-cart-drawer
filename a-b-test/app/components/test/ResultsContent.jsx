@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Text, BlockStack, Card, EmptyState, Button, InlineStack, Badge } from "@shopify/polaris";
 import { ChevronDownIcon, ChevronRightIcon } from '@shopify/polaris-icons';
+import extractShopifyProductId from "../../utils/extractProductId";
 
 export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
     const [expandedGroups, setExpandedGroups] = useState(new Set());
     const [expandedProducts, setExpandedProducts] = useState(new Set());
-    
+    console.log('aaa', testGroups);
+    console.log('bbb', selectedProducts);
     if (!testGroups || testGroups.length === 0) {
         return (
             <BlockStack gap="400">
@@ -49,14 +51,11 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
 
     const getProductInfo = (productId) => {
         if (!selectedProducts || !productId) return null;
-        const cleanProductId = productId.toString().replace('gid://shopify/Product/', '');
+        const cleanProductId = extractShopifyProductId(productId);
         return selectedProducts.find(p => {
             if (!p.productId) return false;
-            const cleanPId = p.productId.toString().replace('gid://shopify/Product/', '');
-            return cleanPId === cleanProductId ||
-                p.productId === productId ||
-                cleanPId === productId ||
-                p.productId === cleanProductId;
+            const cleanPId = extractShopifyProductId(p.productId);
+            return cleanPId === cleanProductId;
         });
     };
 

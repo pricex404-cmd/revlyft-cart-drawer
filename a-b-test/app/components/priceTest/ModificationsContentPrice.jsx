@@ -248,13 +248,14 @@ if (typeof document !== 'undefined') {
             setSelectedProducts(selectedProducts.filter(p => p.productId !== product.id));
 
             // Remove product prices from all test groups
-            const updatedGroups = testGroups.map(group => ({
-                ...group,
-                products: {
-                    ...group.products,
-                    [extractShopifyProductId(product.id)]: undefined // Remove the price for this product
-                }
-            }));
+            const updatedGroups = testGroups.map(group => {
+                const productKey = extractShopifyProductId(product.id);
+                const { [productKey]: removed, ...remainingProducts } = group.products || {};
+                return {
+                    ...group,
+                    products: remainingProducts
+                };
+            });
             setTestGroups(updatedGroups);
             return;
         }
@@ -430,13 +431,14 @@ if (typeof document !== 'undefined') {
         setSelectedProducts(selectedProducts.filter(p => p.productId !== product.productId));
 
         // Remove product prices from all test groups
-        const updatedGroups = testGroups.map(group => ({
-            ...group,
-            products: {
-                ...group.products,
-                [extractShopifyProductId(product.productId)]: undefined // Remove the price for this product
-            }
-        }));
+        const updatedGroups = testGroups.map(group => {
+            const productKey = extractShopifyProductId(product.productId);
+            const { [productKey]: removed, ...remainingProducts } = group.products || {};
+            return {
+                ...group,
+                products: remainingProducts
+            };
+        });
         setTestGroups(updatedGroups);
     };
 

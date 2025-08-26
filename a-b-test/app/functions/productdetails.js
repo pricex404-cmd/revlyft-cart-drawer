@@ -32,13 +32,14 @@ export const handleProductSelect = (product, selectedProducts, setSelectedProduc
         setSelectedProducts(selectedProducts.filter(p => p.productId !== product.id));
 
         // Remove product data from all test groups
-        const updatedGroups = testGroups.map(group => ({
-            ...group,
-            products: {
-                ...group.products,
-                [extractShopifyProductId(product.id)]: undefined
-            }
-        }));
+        const updatedGroups = testGroups.map(group => {
+            const productKey = extractShopifyProductId(product.id);
+            const { [productKey]: removed, ...remainingProducts } = group.products || {};
+            return {
+                ...group,
+                products: remainingProducts
+            };
+        });
         setTestGroups(updatedGroups);
     } else {
         // Get the first variant ID
@@ -96,13 +97,14 @@ export const handleProductSelect = (product, selectedProducts, setSelectedProduc
 export const handleRemoveProduct = (product, selectedProducts, setSelectedProducts, testGroups, setTestGroups) => {
     setSelectedProducts(selectedProducts.filter(p => p.productId !== product.productId));
 
-    const updatedGroups = testGroups.map(group => ({
-        ...group,
-        products: {
-            ...group.products,
-            [extractShopifyProductId(product.productId)]: undefined
-        }
-    }));
+    const updatedGroups = testGroups.map(group => {
+        const productKey = extractShopifyProductId(product.productId);
+        const { [productKey]: removed, ...remainingProducts } = group.products || {};
+        return {
+            ...group,
+            products: remainingProducts
+        };
+    });
     setTestGroups(updatedGroups);
 };
 
