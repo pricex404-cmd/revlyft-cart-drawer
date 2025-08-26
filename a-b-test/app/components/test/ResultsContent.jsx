@@ -335,16 +335,13 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
     };
 
     return (
-        <BlockStack gap="400">
-            <Card>
-                <BlockStack gap="400">
-                    <Text variant="headingLg" as="h2">Test Results</Text>
+        <BlockStack gap="200">
                     <Card padding="0">
                         <div style={tableStyles.container}>
                             <table style={tableStyles.table}>
                                 <thead style={tableStyles.thead}>
                                     <tr style={tableStyles.headerRow}>
-                                        <th style={tableStyles.headerCell}>Test Groups / Products / Variants</th>
+                                        <th style={tableStyles.headerCell}>Test Groups </th>
                                         <th style={tableStyles.headerCellCenter}>Views</th>
                                         <th style={tableStyles.headerCellCenter}>Add to Cart</th>
                                         <th style={tableStyles.headerCellCenter}>Sale Done</th>
@@ -356,8 +353,7 @@ export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
                             </table>
                         </div>
                     </Card>
-                </BlockStack>
-            </Card>
+            
         </BlockStack>
     );
 };
