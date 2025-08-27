@@ -8,6 +8,7 @@ const colors = {
     border: '#D1D5DB',
     surface: '#F9FAFB'
 };
+import { formatNumberInput, numberInputCSS, formatDisplayValue } from "../../../utils/numberInputUtils";
 
 
 export const MultiVariantPricing = ({
@@ -24,6 +25,7 @@ export const MultiVariantPricing = ({
         // Same price multi-variant: show simple interface like normal product
         return (
             <div style={{ overflowX: 'auto' }}>
+                <style>{numberInputCSS}</style>
                 <InlineStack gap="400" wrap={false}>
                     {testGroups.map(group => {
                         const numericProductId = extractShopifyProductId(product.productId);
@@ -37,12 +39,18 @@ export const MultiVariantPricing = ({
                                     {pricingMethod === 'percentage' ? (
                                         <div style={{ position: 'relative' }}>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 placeholder="Enter discount %"
                                                 min="0"
                                                 max="100"
-                                                value={group.products?.[numericProductId]?.discountPercentage || 0}
+                                                value={formatDisplayValue(group.products?.[numericProductId]?.discountPercentage)}
                                                 onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, null, 'percentage')}
+                                                onBlur={(e) => {
+                                                    const formattedValue = formatNumberInput(e.target.value);
+                                                    if (formattedValue !== e.target.value) {
+                                                        onPriceChange(product.productId, group.id, formattedValue, null, 'percentage');
+                                                    }
+                                                }}
                                                 disabled={isControlGroup || isTestStarted}
                                                 style={{
                                                     width: '100%',
@@ -65,8 +73,14 @@ export const MultiVariantPricing = ({
                                         <div>
                                             <input
                                                 type="number"
-                                                value={currentPrice || 0}
+                                                value={formatDisplayValue(currentPrice)}
                                                 onChange={(e) => onPriceChange(product.productId, group.id, e.target.value)}
+                                                onBlur={(e) => {
+                                                    const formattedValue = formatNumberInput(e.target.value);
+                                                    if (formattedValue !== e.target.value) {
+                                                        onPriceChange(product.productId, group.id, formattedValue);
+                                                    }
+                                                }}
                                                 disabled={isControlGroup || isTestStarted}
                                                 style={{
                                                     width: '100%',
@@ -96,6 +110,7 @@ export const MultiVariantPricing = ({
     // Different prices multi-variant: show variant selection and pricing
     return (
         <BlockStack gap="400">
+            <style>{numberInputCSS}</style>
             <Text variant="headingSm" as="h4" style={{ color: colors.primary }}>
                 Select variants to include in test:
             </Text>
@@ -187,12 +202,18 @@ export const MultiVariantPricing = ({
                                                             {pricingMethod === 'percentage' ? (
                                                                 <div style={{ position: 'relative' }}>
                                                                     <input
-                                                                        type="text"
+                                                                        type="number"
                                                                         placeholder="Enter discount %"
                                                                         min="0"
                                                                         max="100"
-                                                                        value={group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage || 0}
+                                                                        value={formatDisplayValue(group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage)}
                                                                         onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, variant.variantId, 'percentage')}
+                                                                        onBlur={(e) => {
+                                                                            const formattedValue = formatNumberInput(e.target.value);
+                                                                            if (formattedValue !== e.target.value) {
+                                                                                onPriceChange(product.productId, group.id, formattedValue, variant.variantId, 'percentage');
+                                                                            }
+                                                                        }}
                                                                         disabled={isControlGroup || isTestStarted}
                                                                         style={{
                                                                             width: '100%',
@@ -215,8 +236,14 @@ export const MultiVariantPricing = ({
                                                                 <div>
                                                                     <input
                                                                         type="number"
-                                                                        value={currentPrice || 0}
+                                                                        value={formatDisplayValue(currentPrice)}
                                                                         onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, variant.variantId)}
+                                                                        onBlur={(e) => {
+                                                                            const formattedValue = formatNumberInput(e.target.value);
+                                                                            if (formattedValue !== e.target.value) {
+                                                                                onPriceChange(product.productId, group.id, formattedValue, variant.variantId);
+                                                                            }
+                                                                        }}
                                                                         disabled={isControlGroup || isTestStarted}
                                                                         style={{
                                                                             width: '100%',
