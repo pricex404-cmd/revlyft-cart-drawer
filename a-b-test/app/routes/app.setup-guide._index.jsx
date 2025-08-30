@@ -34,7 +34,7 @@ export default function SetupGuide() {
             if (option === 'manual') {
                 navigate('/app/setup-guide/script-installation');
             } else if (option === 'contact') {
-                window.open('mailto:support@revlyf.com?subject=A/B Test Setup Assistance', '_blank');
+                window.open('mailto:pricex404@gmail.com?subject=A/B Test Setup Assistance', '_blank');
             }
         }, 500);
     };
