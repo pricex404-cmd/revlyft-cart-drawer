@@ -3,7 +3,7 @@
 application_url = "https://app.revlyft.com/"
 embedded = true
 client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
-name = "ab-test"
+name = "RevLyf"
 handle = "ab-test-18"
 
 [build]
