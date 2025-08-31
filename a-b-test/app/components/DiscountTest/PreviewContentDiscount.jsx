@@ -111,7 +111,7 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
     };
 
     const encryptValue = (value) => {
-        const ENCRYPTION_KEY = 'revlyf-secret-key-2024';
+        const ENCRYPTION_KEY = 'revlyft-secret-key-2024';
         const paddedValue = value.toString().padStart(3, '0');
         const prefix = generateRandomString(4);
         const suffix = generateRandomString(4);

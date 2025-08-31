@@ -1156,10 +1156,10 @@ export default function Index() {
 
   // Copy script functionality
   const handleCopyScript = async () => {
-    const scriptTemplate = `<!-- Revlyf A/B Testing Script -->
-<script src="https://app.revlyft.com/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyf-discount-abtest-script.js?shop=${shop}" defer></script>`;
+    const scriptTemplate = `<!-- Revlyft tA/B Testing Script -->
+<script src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-discount-abtest-script.js?shop=${shop}" defer></script>`;
     console.log("scriptTemplate", scriptTemplate);
     try {
       await navigator.clipboard.writeText(scriptTemplate);
@@ -1205,12 +1205,12 @@ export default function Index() {
         {/* Tests Table */}
         <TestsTable rows={rows.length > 0 ? modifyRowsWithActions() : []} testSessionsData={testSessionsData} testIds={testIds} />
 
-        {/* Revlyf Script Installation Instructions */}
+        {/* revlyft Script Installation Instructions */}
         {/* <Card>
           <BlockStack gap="400">
-            <Text variant="headingMd" as="h2">Revlyf Script Installation</Text>
+            <Text variant="headingMd" as="h2">revlyft Script Installation</Text>
             <Text variant="bodyMd" color="subdued">
-              To enable A/B testing functionality, you need to install the Revlyf script in your theme.
+              To enable A/B testing functionality, you need to install the revlyft script in your theme.
             </Text>
 
             <BlockStack gap="300">
@@ -1229,16 +1229,16 @@ export default function Index() {
             </BlockStack>
 
             <BlockStack gap="200">
-              <Text variant="headingMd" as="h3">Your Revlyf Script:</Text>
+              <Text variant="headingMd" as="h3">Your revlyft Script:</Text>
               <Text variant="bodyMd" color="subdued">
                 <strong>Ready to use:</strong> This script is automatically configured for your store: <Text as="span" fontFamily="mono" fontWeight="bold">{shop}</Text>
               </Text>
               <Card sectioned>
                 <BlockStack gap="300">
                   <Text variant="bodyMd" as="pre" fontFamily="mono">
-                    {`<!-- Revlyf A/B Testing Script -->
-<script src="https://app.revlyft.com/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>`}
+                    {`<!-- revlyftA/B Testing Script -->
+<script src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop=${shop}" defer></script>`}
                   </Text>
                   <InlineStack align="end">
                     <Button

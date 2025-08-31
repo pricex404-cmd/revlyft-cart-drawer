@@ -1,5 +1,5 @@
 // Add this to a JavaScript file in your theme or as a script tag
-console.log("🚀 Revlyf cart attribute script loaded");
+console.log("🚀 revlyft cart attribute script loaded");
 console.log("🚀 Start");
 var rv_finalDevId;
 const timestamp = new Date().toISOString();
@@ -1301,11 +1301,11 @@ async function updateCartWithIP(ip) {
             return response.json();
         })
         .then(data => {
-            console.log('🛒 Revlyf attributes saved to cart');
+            console.log('🛒 revlyftattributes saved to cart');
             window.rv_AttributesSet = true;
         })
         .catch(error => {
-            console.error('❌ Error saving Revlyf IP to cart:', error);
+            console.error('❌ Error saving revlyftIP to cart:', error);
         });
 }
 
@@ -1973,7 +1973,7 @@ function findProductElementsById(productId) {
 
 
 /**
- * Initialize Revlyf price modifications with proper timing and observer setup
+ * Initialize revlyftprice modifications with proper timing and observer setup
  */
 
 function initializeRevlyfPriceModifications() {
@@ -2165,7 +2165,7 @@ function storeRevlyfHashValue() {
 }
 
 // (function () {
-////console.log("Revlyf cart attribute script self-executing");
+////console.log("revlyftcart attribute script self-executing");
 
 // Try to run immediately
 // initializerv_CartAttributes();

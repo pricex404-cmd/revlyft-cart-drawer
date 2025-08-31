@@ -46,10 +46,10 @@ export default function ScriptInstallation() {
         navigator.clipboard.writeText(text);
     };
 
-    const combinedScript = `<!-- Revlyf A/B Testing Script -->
-<script src="https://app.revlyft.com/assets/revlyf-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyf-abtest-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyf-discount-abtest-script.js?shop=${shop}" defer></script>`;
+    const combinedScript = `<!-- Revlyft A/B Testing Script -->
+<script src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop=${shop}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop=${shop}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-discount-abtest-script.js?shop=${shop}" defer></script>`;
 
     const handleNextStep = () => {
         navigate('/app/setup-guide/dom-injection');
@@ -76,7 +76,7 @@ export default function ScriptInstallation() {
                             <BlockStack gap="400">
                                 <Text variant="headingMd" as="h2">Complete Script Installation Guide</Text>
                                 <Text>
-                                    This guide will walk you through installing the Revlyf A/B testing script in your Shopify theme.
+                                    This guide will walk you through installing the revlyft A/B testing script in your Shopify theme.
                                     Follow each section to ensure proper functionality.
                                 </Text>
                                 <Box background="bg-surface-brand" padding="400" borderRadius="200">
@@ -114,12 +114,12 @@ export default function ScriptInstallation() {
                                         <Collapsible open={openSections['step1-1']}>
                                             <BlockStack gap="300">
                                                 <Text>
-                                                    Your Revlyf script is ready to use with your store domain automatically configured.
+                                                    Your revlyft script is ready to use with your store domain automatically configured.
                                                 </Text>
 
                                                 <Box padding="300" borderRadius="200">
                                                     <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Copy Your Revlyf Script</Text>
+                                                        <Text variant="headingSm" as="h4">Copy Your revlyft Script</Text>
                                                         <Text variant="bodyMd">
                                                             The script below is automatically configured for your store: <Text as="span" fontFamily="mono" fontWeight="bold">{shop}</Text>
                                                         </Text>
@@ -142,7 +142,7 @@ export default function ScriptInstallation() {
                                                 <Box padding="300" borderRadius="200">
                                                     <BlockStack gap="200">
                                                         <InlineStack align="space-between" blockAlign="center">
-                                                            <Text variant="headingSm" as="h4">Your Revlyf Script:</Text>
+                                                            <Text variant="headingSm" as="h4">Your revlyft Script:</Text>
                                                             <Button
                                                                 size="micro"
                                                                 icon={DuplicateIcon}
@@ -220,14 +220,14 @@ export default function ScriptInstallation() {
                                         <Collapsible open={openSections['step1-3']}>
                                             <BlockStack gap="300">
                                                 <Text>
-                                                    Add the Revlyf script to your theme files and save your changes.
+                                                    Add the revlyft script to your theme files and save your changes.
                                                 </Text>
 
                                                 <Box padding="300" borderRadius="200">
                                                     <BlockStack gap="200">
                                                         <Text variant="headingSm" as="h4">Add Script to Theme Files</Text>
                                                         <Text variant="bodyMd">
-                                                            Paste the Revlyf script in the <Text as="span" fontFamily="mono">&lt;head&gt;</Text> section of these files:
+                                                            Paste the revlyft script in the <Text as="span" fontFamily="mono">&lt;head&gt;</Text> section of these files:
                                                         </Text>
                                                         <List type="bullet">
                                                             <List.Item><Text as="span" fontFamily="mono">layout/theme.liquid</Text> (required)</List.Item>
@@ -244,7 +244,7 @@ export default function ScriptInstallation() {
                                                     <BlockStack gap="200">
                                                         <Text variant="headingSm" as="h4">Save Your Changes</Text>
                                                         <Text variant="bodyMd">
-                                                            Click <strong>"Save"</strong> for each file you've modified. Your Revlyf script is now installed!
+                                                            Click <strong>"Save"</strong> for each file you've modified. Your revlyft script is now installed!
                                                         </Text>
                                                     </BlockStack>
                                                 </Box>
@@ -306,14 +306,14 @@ export default function ScriptInstallation() {
                                                             </Button>
                                                         </InlineStack>
                                                         <Text variant="bodyMd" color="subdued" tone="subdued">
-                                                            After clicking, check the browser console for "Revlyf initialized" message to confirm successful installation.
+                                                            After clicking, check the browser console for "revlyft initialized" message to confirm successful installation.
                                                         </Text>
                                                     </BlockStack>
                                                 </Box>
 
                                                 <Banner tone="success">
                                                     <Text variant="bodyMd">
-                                                        <strong>Success!</strong> If you see "Revlyf initialized" in the console, your script is working correctly and ready for A/B testing!
+                                                        <strong>Success!</strong> If you see "revlyft initialized" in the console, your script is working correctly and ready for A/B testing!
                                                     </Text>
                                                 </Banner>
                                             </BlockStack>
