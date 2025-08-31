@@ -16,22 +16,20 @@ query CartInput {
       }
     }
     # Individual cart attributes for revlyft IDs
-    userIpAttribute: attribute(key: "causal_funnel_user_ip") {
+    userIpAttribute: attribute(key: "revlyft_user_ip") {
       value
     }
-    hashValueAttribute: attribute(key: "causal_funnel_hash_value") {
+    hashValueAttribute: attribute(key: "revlyft_hash_value") {
       value
     }
-    testTargetingAttribute: attribute(
-      key: "causal_funnel_tests_targeting_data"
-    ) {
+    testTargetingAttribute: attribute(key: "revlyft_tests_targeting_data") {
       value
     }
-    testTimerAttribute: attribute(key: "causal_funnel_tests_start_time_data") {
+    testTimerAttribute: attribute(key: "revlyft_tests_start_time_data") {
       value
     }
     # Current time from frontend
-    currentTimeAttribute: attribute(key: "causal_funnel_current_time") {
+    currentTimeAttribute: attribute(key: "revlyft_current_time") {
       value
     }
   }

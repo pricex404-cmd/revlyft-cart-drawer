@@ -417,12 +417,12 @@ async function processWebhook(payload, shopDomain) {
         };
 
         // Get device ID and hash value
-        const userIp = findAttributeValue('causal_funnel_user_ip');
-        const deepId = findAttributeValue('causal_funnel_deep_id');
-        const fetchhashValue = findAttributeValue('causal_funnel_hash_value');
-        const testTargetingAttribute = findAttributeValue('causal_funnel_tests_targeting_data');
-        const testTimerAttribute = findAttributeValue('causal_funnel_tests_start_time_data');
-        const currentTimeStr = findAttributeValue('causal_funnel_current_time');
+        const userIp = findAttributeValue('revlyft_user_ip');
+        const deepId = findAttributeValue('revlyft_deep_id');
+        const fetchhashValue = findAttributeValue('revlyft_hash_value');
+        const testTargetingAttribute = findAttributeValue('revlyft_tests_targeting_data');
+        const testTimerAttribute = findAttributeValue('revlyft_tests_start_time_data');
+        const currentTimeStr = findAttributeValue('revlyft_current_time');
 
         // Use userIp from attributes if available, otherwise fallback to browser_ip
         const browserIp = userIp || payload.browser_ip;

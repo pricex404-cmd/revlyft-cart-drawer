@@ -39,15 +39,13 @@ query RunInput {
       }
     }
     # Individual cart attributes for revlyft IDs
-    userIpAttribute: attribute(key: "causal_funnel_user_ip") {
+    userIpAttribute: attribute(key: "revlyft_user_ip") {
       value
     }
-    hashValueAttribute: attribute(key: "causal_funnel_hash_value") {
+    hashValueAttribute: attribute(key: "revlyft_hash_value") {
       value
     }
-    testTargetingAttribute: attribute(
-      key: "causal_funnel_tests_targeting_data"
-    ) {
+    testTargetingAttribute: attribute(key: "revlyft_tests_targeting_data") {
       value
     }
   }

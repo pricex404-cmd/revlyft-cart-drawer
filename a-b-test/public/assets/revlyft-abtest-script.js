@@ -1239,7 +1239,7 @@ async function getTargetingInfoForCart() {
         }
 
         // Add single cart attribute with all test data as JSON string
-        targetingInfo.causal_funnel_tests_targeting_data = JSON.stringify(testData);
+        targetingInfo.revlyft_tests_targeting_data = JSON.stringify(testData);
 
         console.log('🎯 Targeting info for cart:', targetingInfo);
         return targetingInfo;
@@ -1254,12 +1254,12 @@ async function updateCartWithIP(ip) {
     let attributes = {};
 
     if (ip) {
-        attributes.causal_funnel_user_ip = ip;
-        attributes.causal_funnel_hash_value = getRevlyfHashValue();
-        attributes.causal_funnel_deep_id = getCookie('rv_finalDevId');
+        attributes.revlyft_user_ip = ip;
+        attributes.revlyft_hash_value = getRevlyfHashValue();
+        attributes.revlyft_deep_id = getCookie('rv_finalDevId');
     }
 
-    attributes.causal_funnel_current_time= timestamp
+    attributes.revlyft_current_time= timestamp
     // Initialize revlyftest structure
     const startTimeData = {};
     const cookies = document.cookie.split(';');
@@ -1276,7 +1276,7 @@ async function updateCartWithIP(ip) {
         }
     }
     if (Object.keys(startTimeData).length > 0) {
-        attributes.causal_funnel_tests_start_time_data = JSON.stringify(startTimeData);
+        attributes.revlyft_tests_start_time_data = JSON.stringify(startTimeData);
     }
 
     // Add targeting criteria information for all active tests
