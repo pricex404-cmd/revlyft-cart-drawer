@@ -3132,54 +3132,66 @@ async function checkConfigParamsAndMarkScriptDetected() {
 }
 
 /**
- * Check if user is a returning visitor by looking up unique ID in Firebase
+ * Check if user is a returning visitor using localStorage and cookies
  * @returns {Promise<boolean>} True if returning visitor, false if new
  */
 async function isReturningVisitor() {
     try {
-        // Wait for fingerprinting to complete
-        let uniqueId = rv_finalDevId;
-        let attempts = 0;
-        const maxAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
+        const now = Date.now();
+        const twentyFourHrs =  60 * 1000;
+        let data;
 
-        // Wait for rv_finalDevId to be set (not dummy value) or fingerprinting to complete
-        while (!window.rv_fingerprintComplete && (!uniqueId) && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
-            uniqueId = rv_finalDevId;
-            attempts++;
+        // Read stored visitor data from cookies
+        const visitorCookie = getCookie('rv_visitor_status');
+        const firstVisitCookie = getCookie('rv_first_visit');
+        
+        console.log('🔍 Cookie values:', { visitorCookie, firstVisitCookie });
+        
+        if (visitorCookie && firstVisitCookie) {
+            try {
+                const status = visitorCookie;
+                const firstVisit = parseInt(firstVisitCookie);
+                data = { firstVisit: firstVisit, status: status };
+                console.log('🔍 Found existing data:', data);
+            } catch (e) {
+
+            }
         }
 
-        console.log("🔍 uniqueIddd", uniqueId);
-        console.log('🔍 Using unique ID for visitor check:', uniqueId);
+        // If no data, first-ever visit
+        if (!data) {
 
-        // If still no valid unique ID, assume new visitor
-        if (!uniqueId) {
-            console.log('🆕 No unique ID available after waiting - treating as new visitor');
-            return false;
+            data = { firstVisit: now, status: 'new' };
+            // Store in two separate cookies
+            setCookie('rv_first_visit', now.toString(), 365);
+            setCookie('rv_visitor_status', 'new', 365);
+
+            return false; // new visitor
         }
 
-        const firebaseUrl = `https://revlyf-21-leightworks-prodv1-20jul2022.firebaseio.com/cronuploads/devXbrowserId/${uniqueId}.json`;
+        // Compute elapsed time since firstVisit
+        const elapsed = now - data.firstVisit;
+        
 
-        const response = await fetch(firebaseUrl);
-        if (!response.ok) {
-            console.log('🆕 API call failed - treating as new visitor');
-            return false; // New visitor if API call fails
+        
+        // If within 24h, still new
+        if (elapsed < twentyFourHrs) {
+
+            data.status = 'new';
+        } else if (data.status === 'new') {
+
+            // After 24h, mark returning
+            data.status = 'returning';
         }
 
-        const data = await response.json();
+        // Persist updated status in two separate cookies
+        setCookie('rv_first_visit', data.firstVisit.toString(), 365);
+        setCookie('rv_visitor_status', data.status, 365);
 
-        // Simple check: if data is null, it's a first time visitor
-        // If data exists (any value), it's a returning visitor
-        if (data === null) {
-            console.log('🆕 API returned null - new visitor');
-            return false; // New visitor
-        } else {
-            console.log('🔄 API returned data - returning visitor');
-            return true; // Returning visitor
-        }
+        return data.status === 'returning';
     } catch (error) {
-        console.error('❌ Error checking returning visitor status:', error);
-        return false; // Assume new visitor on error
+        console.error('Error in isReturningVisitor:', error);
+        return false;
     }
 }
 
