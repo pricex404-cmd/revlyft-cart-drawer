@@ -3138,7 +3138,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
 async function isReturningVisitor() {
     try {
         const now = Date.now();
-        const twentyFourHrs = 60 * 1000;
+        const twentyFourHrs =24 * 60 * 60 * 1000;
         let data;
 
         // Read stored visitor data from cookies
@@ -3260,9 +3260,9 @@ async function isReturningVisitor() {
 }
 
 // Helper function to save visitor data to Firebase database
-async function saveVisitorToFirebase(devId, firstVisit, status) {
+async function saveVisitorToFirebase(devId, firstVisit, storeId) {
     try {
-        const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/dev-store-z_myshopify_com/${devId}.json`;
+        const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${devId}.json`;
         
         // Store only the timestamp value, not an object
         const response = await fetch(firebaseUrl, {
