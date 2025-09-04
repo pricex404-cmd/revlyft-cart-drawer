@@ -3135,10 +3135,10 @@ async function checkConfigParamsAndMarkScriptDetected() {
  * Check if user is a returning visitor using localStorage and cookies
  * @returns {Promise<boolean>} True if returning visitor, false if new
  */
-async function isReturningVisitor() {
+async function isReturningVisitor(storeId) {
     try {
         const now = Date.now();
-        const twentyFourHrs =24 * 60 * 60 * 1000;
+        const twentyFourHrs =30 * 60 * 1000;
         let data;
 
         // Read stored visitor data from cookies
@@ -3346,10 +3346,10 @@ async function checkTargetingCriteria(test, testId = null) {
             }
         }
     }
-
+    const storeId = await getStoreId();
     // Check visitor type
     if (targeting.visitorType) {
-        const userIsReturning = await isReturningVisitor();
+        const userIsReturning = await isReturningVisitor(storeId);
         const userVisitorType = userIsReturning ? 'returning' : 'new';
 
         // If targeting is set to "all", allow both new and returning visitors
