@@ -3138,7 +3138,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
 async function isReturningVisitor(storeId) {
     try {
         const now = Date.now();
-        const twentyFourHrs =30 * 60 * 1000;
+        const thirtyMinute =30 * 60 * 1000;
         let data;
 
         // Read stored visitor data from cookies
@@ -3234,23 +3234,21 @@ async function isReturningVisitor(storeId) {
 
         // Compute elapsed time since firstVisit
         const elapsed = now - data.firstVisit;
-        console.log('🔍 Time data:', { now, firstVisit: data.firstVisit, elapsed, twentyFourHrs, currentStatus: data.status });
+        console.log('🔍 Time data:', { now, firstVisit: data.firstVisit, elapsed, thirtyMinute, currentStatus: data.status });
         
         // If within 24h, still new
-        if (elapsed < twentyFourHrs) {
+        if (elapsed < thirtyMinute) {
             console.log('🔄 User is new, still within 24 hours');
             data.status = 'new';
         } else if (data.status === 'new') {
             console.log('🔄 User is new, marking as returning after 24 hours');
             // After 24h, mark returning
             data.status = 'returning';
+            setCookie('rv_visitor_status', data.status, 365);
+
         }
         
         console.log('🔍 Final status:', data.status);
-        
-        // Persist updated status in two separate cookies
-        setCookie('rv_first_visit', data.firstVisit.toString(), 365);
-        setCookie('rv_visitor_status', data.status, 365);
 
         return data.status === 'returning';
     } catch (error) {
