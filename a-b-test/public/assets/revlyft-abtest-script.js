@@ -3138,137 +3138,140 @@ async function checkConfigParamsAndMarkScriptDetected() {
 async function isReturningVisitor(storeId) {
     try {
         const now = Date.now();
-        const thirtyMinute =30 * 60 * 1000;
-        let data;
-
+        const THIRTY_MINUTES = 1 * 60 * 1000;
+        
         // Read stored visitor data from cookies
         const visitorCookie = getCookie('rv_visitor_status');
         const firstVisitCookie = getCookie('rv_first_visit');
         
         console.log('🔍 Cookie values:', { visitorCookie, firstVisitCookie });
         
+        // Handle existing cookie data
         if (visitorCookie && firstVisitCookie) {
             try {
-                const status = visitorCookie;
                 const firstVisit = parseInt(firstVisitCookie);
-                data = { firstVisit: firstVisit, status: status };
-                console.log('🔍 Found existing data in cookies:', data);
+                const status = visitorCookie;
+                const elapsed = now - firstVisit;
+                
+                console.log('🔍 Found existing data in cookies:', { firstVisit, status, elapsed });
+                
+                // Only update if status should change from 'new' to 'returning'
+                if (elapsed >= THIRTY_MINUTES && status === 'new') {
+                    console.log('🔄 Time exceeded, updating to returning visitor');
+                    setCookie('rv_visitor_status', 'returning', 365);
+                    return true;
+                }
+                
+                // No update needed, return current status
+                console.log('🔍 No change needed, current status:', status);
+                return status === 'returning';
+                
             } catch (e) {
                 console.error('Error parsing visitor cookies:', e);
+                // Continue to database check
             }
         }
 
-        // If no data in cookies, check database using rv_finalDevId
-        if (!data) {
-            console.log('no data in cookies');
-            const finalDevId = getCookie('rv_finalDevId');
-            console.log('🔍 No cookies found, checking database with devId:', finalDevId);
+        // No valid cookie data - check database or create new
+        console.log('No data in cookies, checking database');
+        const finalDevId = getCookie('rv_finalDevId');
+        
+        if (!finalDevId || finalDevId === 'dummy_devid') {
+            console.log('🆕 No valid devId, creating new visitor');
+            setVisitorStatusToCookie(now, 'new');
+            return false;
+        }
+
+        // Check Firebase database
+        try {
+            const dbData = await fetchVistorsFromFirebase(storeId, finalDevId);
             
-            if (finalDevId && finalDevId !== 'dummy_devid') {
-                try {
-                    // Check if user exists in Firebase database
-                    const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${finalDevId}.json`;
-                    console.log('🔍 Checking Firebase database:', firebaseUrl);
-                    
-                    const response = await fetch(firebaseUrl);
-                    if (response.ok) {
-                        const dbData = await response.json();
-                        
-                        if (dbData && typeof dbData === 'number') {
-                            // User found in database, restore cookies
-                            data = { 
-                                firstVisit: dbData, 
-                                status: 'new' // Default status for existing users
-                            };
-                            console.log('🔍 Found user in Firebase database, restoring cookies:', data);
-                            
-                            // Restore cookies from database data
-                            setCookie('rv_first_visit', data.firstVisit.toString(), 365);
-                            setCookie('rv_visitor_status', data.status, 365);
-                        } else {
-                            // User not in database, first time visitor
-                            console.log('🆕 User not found in Firebase database, creating new visitor record');
-                            data = { firstVisit: now, status: 'new' };
-                            
-                            // Save to Firebase database
-                            await saveVisitorToFirebase(finalDevId, now, 'new');
-                            
-                            // Store in cookies
-                            setCookie('rv_first_visit', now.toString(), 365);
-                            setCookie('rv_visitor_status', 'new', 365);
-                        }
-                    } else {
-                        console.log('❌ Firebase API call failed, treating as new visitor');
-                        data = { firstVisit: now, status: 'new' };
-                        
-                        // Try to save to Firebase database anyway
-                        await saveVisitorToFirebase(finalDevId, now, 'new');
-                        
-                        // Store in cookies
-                        setCookie('rv_first_visit', now.toString(), 365);
-                        setCookie('rv_visitor_status', 'new', 365);
-                    }
-                } catch (error) {
-                    console.error('❌ Error checking Firebase database:', error);
-                    data = { firstVisit: now, status: 'new' };
-                    
-                    // Try to save to Firebase database anyway
-                    await saveVisitorToFirebase(finalDevId, now, 'new');
-                    
-                    // Store in cookies
-                    setCookie('rv_first_visit', now.toString(), 365);
-                    setCookie('rv_visitor_status', 'new', 365);
-                }
-            } else {
-                // No valid devId, treat as new visitor
-                console.log('🆕 No valid devId, creating new visitor');
-                data = { firstVisit: now, status: 'new' };
+            if (dbData && typeof dbData === 'number') {
+                // ✅ FIXED: Calculate status BEFORE setting cookies
+                const elapsed = now - dbData;
+                const correctStatus = elapsed >= THIRTY_MINUTES ? 'returning' : 'new';
                 
-                // Store in cookies only
-                setCookie('rv_first_visit', now.toString(), 365);
-                setCookie('rv_visitor_status', 'new', 365);
+                console.log('🔍 Found user in database:', { 
+                    firstVisit: dbData, 
+                    elapsed, 
+                    calculatedStatus: correctStatus 
+                });
+                
+                // Set cookies ONCE with correct status
+                setVisitorStatusToCookie(dbData, correctStatus);
+                return correctStatus === 'returning';
+                
+            } else {
+                // New user - save to database and set cookies
+                console.log('🆕 User not found in database, creating new record');
+                await saveVisitorToFirebase(finalDevId, now, storeId);
+                setVisitorStatusToCookie(now, 'new');
+                return false;
             }
             
-            return false; // new visitor
-        }
-
-        // Compute elapsed time since firstVisit
-        const elapsed = now - data.firstVisit;
-        console.log('🔍 Time data:', { now, firstVisit: data.firstVisit, elapsed, thirtyMinute, currentStatus: data.status });
-        
-        // If within 24h, still new
-        if (elapsed < thirtyMinute) {
-            console.log('🔄 User is new, still within 24 hours');
-            data.status = 'new';
-        } else if (data.status === 'new') {
-            console.log('🔄 User is new, marking as returning after 24 hours');
-            // After 24h, mark returning
-            data.status = 'returning';
-            setCookie('rv_visitor_status', data.status, 365);
-
+        } catch (error) {
+            console.error('❌ Error checking Firebase database:', error);
+            // Fallback - create new visitor
+            setVisitorStatusToCookie(now, 'new');
+            
+            // Background save (don't wait)
+            saveVisitorToFirebase(finalDevId, now, storeId)
+                .catch(err => console.error('Background save failed:', err));
+            
+            return false;
         }
         
-        console.log('🔍 Final status:', data.status);
-
-        return data.status === 'returning';
     } catch (error) {
         console.error('Error in isReturningVisitor:', error);
         return false;
     }
 }
 
-// Helper function to save visitor data to Firebase database
+/**
+ * Helper to set cookies only once with final status
+ * @param {number} firstVisit - First visit timestamp
+ * @param {string} status - Final calculated status
+ */
+function setVisitorStatusToCookie(firstVisit, status) {
+    setCookie('rv_first_visit', firstVisit.toString(), 365);
+    setCookie('rv_visitor_status', status, 365);
+    console.log('🔍 Cookies set once:', { firstVisit, status });
+}
+
+/**
+ * Helper to fetch data from Firebase
+ * @param {string} storeId - Store ID  
+ * @param {string} finalDevId - Device ID
+ * @returns {Promise<any>} Database response
+ */
+async function fetchVistorsFromFirebase(storeId, finalDevId) {
+    const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${finalDevId}.json`;
+    console.log('🔍 Checking Firebase database:', firebaseUrl);
+    
+    const response = await fetch(firebaseUrl);
+    if (!response.ok) {
+        throw new Error(`Firebase API failed: ${response.status}`);
+    }
+    
+    return await response.json();
+}
+
+/**
+ * Helper function to save visitor data to Firebase database
+ * @param {string} devId - Device ID
+ * @param {number} firstVisit - First visit timestamp
+ * @param {string} storeId - Store ID
+ */
 async function saveVisitorToFirebase(devId, firstVisit, storeId) {
     try {
         const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${devId}.json`;
         
-        // Store only the timestamp value, not an object
         const response = await fetch(firebaseUrl, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(firstVisit) // Store just the timestamp value
+            body: JSON.stringify(firstVisit)
         });
         
         if (response.ok) {
@@ -3280,6 +3283,7 @@ async function saveVisitorToFirebase(devId, firstVisit, storeId) {
         console.error('❌ Error saving visitor data to Firebase database:', error);
     }
 }
+
 
 /**
  * Check device type (mobile vs desktop)
