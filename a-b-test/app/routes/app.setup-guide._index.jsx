@@ -35,6 +35,10 @@ export default function SetupGuide() {
                 navigate('/app/setup-guide/script-installation');
             } else if (option === 'contact') {
                 window.open('mailto:pricex404@gmail.com?subject=A/B Test Setup Assistance', '_blank');
+                // Reset loading state after 1 second for contact option
+                setTimeout(() => {
+                    setSelectedOption(null);
+                }, 100);
             }
         }, 500);
     };

@@ -3132,56 +3132,158 @@ async function checkConfigParamsAndMarkScriptDetected() {
 }
 
 /**
- * Check if user is a returning visitor by looking up unique ID in Firebase
+ * Check if user is a returning visitor using localStorage and cookies
  * @returns {Promise<boolean>} True if returning visitor, false if new
  */
-async function isReturningVisitor() {
+async function isReturningVisitor(storeId) {
     try {
-        // Wait for fingerprinting to complete
-        let uniqueId = rv_finalDevId;
-        let attempts = 0;
-        const maxAttempts = 20; // Wait up to 10 seconds (20 * 500ms)
-
-        // Wait for rv_finalDevId to be set (not dummy value) or fingerprinting to complete
-        while (!window.rv_fingerprintComplete && (!uniqueId) && attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
-            uniqueId = rv_finalDevId;
-            attempts++;
+        const now = Date.now();
+        const THIRTY_MINUTES = 30 * 60 * 1000;
+        
+        // Read stored visitor data from cookies
+        const visitorCookie = getCookie('rv_visitor_status');
+        const firstVisitCookie = getCookie('rv_first_visit');
+        
+        console.log('🔍 Cookie values:', { visitorCookie, firstVisitCookie });
+        
+        // Handle existing cookie data
+        if (visitorCookie && firstVisitCookie) {
+            try {
+                const firstVisit = parseInt(firstVisitCookie);
+                const status = visitorCookie;
+                const elapsed = now - firstVisit;
+                
+                console.log('🔍 Found existing data in cookies:', { firstVisit, status, elapsed });
+                
+                // Only update if status should change from 'new' to 'returning'
+                if (elapsed >= THIRTY_MINUTES && status === 'new') {
+                    console.log('🔄 Time exceeded, updating to returning visitor');
+                    setCookie('rv_visitor_status', 'returning', 365);
+                    return true;
+                }
+                
+                // No update needed, return current status
+                console.log('🔍 No change needed, current status:', status);
+                return status === 'returning';
+                
+            } catch (e) {
+                console.error('Error parsing visitor cookies:', e);
+                // Continue to database check
+            }
         }
 
-        console.log("🔍 uniqueIddd", uniqueId);
-        console.log('🔍 Using unique ID for visitor check:', uniqueId);
-
-        // If still no valid unique ID, assume new visitor
-        if (!uniqueId) {
-            console.log('🆕 No unique ID available after waiting - treating as new visitor');
+        // No valid cookie data - check database or create new
+        console.log('No data in cookies, checking database');
+        const finalDevId = getCookie('rv_finalDevId');
+        
+        if (!finalDevId || finalDevId === 'dummy_devid') {
+            console.log('🆕 No valid devId, creating new visitor');
+            setVisitorStatusToCookie(now, 'new');
             return false;
         }
 
-        const firebaseUrl = `https://revlyf-21-leightworks-prodv1-20jul2022.firebaseio.com/cronuploads/devXbrowserId/${uniqueId}.json`;
-
-        const response = await fetch(firebaseUrl);
-        if (!response.ok) {
-            console.log('🆕 API call failed - treating as new visitor');
-            return false; // New visitor if API call fails
+        // Check Firebase database
+        try {
+            const dbData = await fetchVistorsFromFirebase(storeId, finalDevId);
+            
+            if (dbData && typeof dbData === 'number') {
+                // ✅ FIXED: Calculate status BEFORE setting cookies
+                const elapsed = now - dbData;
+                const correctStatus = elapsed >= THIRTY_MINUTES ? 'returning' : 'new';
+                
+                console.log('🔍 Found user in database:', { 
+                    firstVisit: dbData, 
+                    elapsed, 
+                    calculatedStatus: correctStatus 
+                });
+                
+                // Set cookies ONCE with correct status
+                setVisitorStatusToCookie(dbData, correctStatus);
+                return correctStatus === 'returning';
+                
+            } else {
+                // New user - save to database and set cookies
+                console.log('🆕 User not found in database, creating new record');
+                await saveVisitorToFirebase(finalDevId, now, storeId);
+                setVisitorStatusToCookie(now, 'new');
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('❌ Error checking Firebase database:', error);
+            // Fallback - create new visitor
+            setVisitorStatusToCookie(now, 'new');
+            
+            // Background save (don't wait)
+            saveVisitorToFirebase(finalDevId, now, storeId)
+                .catch(err => console.error('Background save failed:', err));
+            
+            return false;
         }
-
-        const data = await response.json();
-
-        // Simple check: if data is null, it's a first time visitor
-        // If data exists (any value), it's a returning visitor
-        if (data === null) {
-            console.log('🆕 API returned null - new visitor');
-            return false; // New visitor
-        } else {
-            console.log('🔄 API returned data - returning visitor');
-            return true; // Returning visitor
-        }
+        
     } catch (error) {
-        console.error('❌ Error checking returning visitor status:', error);
-        return false; // Assume new visitor on error
+        console.error('Error in isReturningVisitor:', error);
+        return false;
     }
 }
+
+/**
+ * Helper to set cookies only once with final status
+ * @param {number} firstVisit - First visit timestamp
+ * @param {string} status - Final calculated status
+ */
+function setVisitorStatusToCookie(firstVisit, status) {
+    setCookie('rv_first_visit', firstVisit.toString(), 365);
+    setCookie('rv_visitor_status', status, 365);
+    console.log('🔍 Cookies set once:', { firstVisit, status });
+}
+
+/**
+ * Helper to fetch data from Firebase
+ * @param {string} storeId - Store ID  
+ * @param {string} finalDevId - Device ID
+ * @returns {Promise<any>} Database response
+ */
+async function fetchVistorsFromFirebase(storeId, finalDevId) {
+    const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${finalDevId}.json`;
+    console.log('🔍 Checking Firebase database:', firebaseUrl);
+    
+    const response = await fetch(firebaseUrl);
+    if (!response.ok) {
+        throw new Error(`Firebase API failed: ${response.status}`);
+    }
+    
+    return await response.json();
+}
+
+/**
+ * Helper function to save visitor data to Firebase database
+ * @param {string} devId - Device ID
+ * @param {number} firstVisit - First visit timestamp
+ * @param {string} storeId - Store ID
+ */
+async function saveVisitorToFirebase(devId, firstVisit, storeId) {
+    try {
+        const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${devId}.json`;
+        
+        const response = await fetch(firebaseUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(firstVisit)
+        });
+        
+        if (response.ok) {
+            console.log('✅ Visitor timestamp saved to Firebase database:', firstVisit);
+        } else {
+            console.error('❌ Failed to save visitor data to Firebase database');
+        }
+    } catch (error) {
+        console.error('❌ Error saving visitor data to Firebase database:', error);
+    }
+}
+
 
 /**
  * Check device type (mobile vs desktop)
@@ -3246,10 +3348,10 @@ async function checkTargetingCriteria(test, testId = null) {
             }
         }
     }
-
+    const storeId = await getStoreId();
     // Check visitor type
     if (targeting.visitorType) {
-        const userIsReturning = await isReturningVisitor();
+        const userIsReturning = await isReturningVisitor(storeId);
         const userVisitorType = userIsReturning ? 'returning' : 'new';
 
         // If targeting is set to "all", allow both new and returning visitors
