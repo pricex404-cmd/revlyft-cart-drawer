@@ -3138,7 +3138,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
 async function isReturningVisitor(storeId) {
     try {
         const now = Date.now();
-        const THIRTY_MINUTES = 1 * 60 * 1000;
+        const THIRTY_MINUTES = 30 * 60 * 1000;
         
         // Read stored visitor data from cookies
         const visitorCookie = getCookie('rv_visitor_status');
