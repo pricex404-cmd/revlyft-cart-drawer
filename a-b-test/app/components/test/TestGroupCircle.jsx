@@ -1,25 +1,46 @@
 import { Text, Button, InlineStack, Icon, TextField } from "@shopify/polaris";
 import { EditIcon } from '@shopify/polaris-icons';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export const TestGroupCircle = ({ percentage, name, color, onEdit, onRemove, totalGroups, disabled }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState(name);
+    const [hasError, setHasError] = useState(false);
+
+    // Update editedName when name prop changes
+    useEffect(() => {
+        setEditedName(name);
+    }, [name]);
 
     const handleEditClick = () => {
         if (disabled) return;
         if (isEditing) {
-            onEdit(editedName);
+            // Validate that the name is not empty or just whitespace
+            const trimmedName = editedName.trim();
+            if (!trimmedName) {
+                setHasError(true);
+                return; // Don't save if name is empty
+            }
+            setHasError(false);
+            onEdit(trimmedName);
         }
         setIsEditing(!isEditing);
     };
 
     const handleKeyPress = (e) => {
         if (e.key === 'Enter') {
-            onEdit(editedName);
+            // Validate that the name is not empty or just whitespace
+            const trimmedName = editedName.trim();
+            if (!trimmedName) {
+                setHasError(true);
+                return; // Don't save if name is empty
+            }
+            setHasError(false);
+            onEdit(trimmedName);
             setIsEditing(false);
         } else if (e.key === 'Escape') {
             setEditedName(name);
+            setHasError(false);
             setIsEditing(false);
         }
     };
@@ -51,26 +72,32 @@ export const TestGroupCircle = ({ percentage, name, color, onEdit, onRemove, tot
                 <Text variant="headingXl" as="h2" style={{ color: color, fontWeight: 'bold' }}>
                     {percentage}%
                 </Text>
-                <InlineStack gap="100" align="center">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                     {isEditing ? (
-                        <TextField
-                            value={editedName}
-                            onChange={setEditedName}
-                            onKeyUp={handleKeyPress}
-                            autoFocus
-                            maxLength={20}
-                            size="small"
-                            style={{
-                                border: `2px solid ${color}`,
-                                borderRadius: '4px'
-                            }}
-                            disabled={disabled}
-                        />
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <TextField
+                                value={editedName}
+                                onChange={(value) => {
+                                    setEditedName(value);
+                                    setHasError(false); // Clear error when user starts typing
+                                }}
+                                onKeyUp={handleKeyPress}
+                                autoFocus
+                                maxLength={20}
+                                size="small"
+                                error={hasError ? 'Group name cannot be empty' : undefined}
+                                style={{
+                                    border: `2px solid ${hasError ? '#FF5722' : color}`,
+                                    borderRadius: '4px'
+                                }}
+                                disabled={disabled}
+                            />
+                        </div>
                     ) : (
                         <Text variant="bodyMd" as="p" style={{ color: color, fontWeight: '500' }}>{name}</Text>
                     )}
-                    <InlineStack gap="100">
-                        {name !== 'Control Group' && (
+                    {name !== 'Control Group' && (
+                        <InlineStack gap="100">
                             <Button
                                 plain
                                 onClick={handleEditClick}
@@ -79,19 +106,19 @@ export const TestGroupCircle = ({ percentage, name, color, onEdit, onRemove, tot
                             >
                                 {isEditing ? 'Save' : ''}
                             </Button>
-                        )}
-                        {name !== 'Control Group' && !isEditing && totalGroups > 2 && (
-                            <Button
-                                plain
-                                onClick={onRemove}
-                                destructive
-                                disabled={disabled}
-                            >
-                                ×
-                            </Button>
-                        )}
-                    </InlineStack>
-                </InlineStack>
+                            {!isEditing && totalGroups > 2 && (
+                                <Button
+                                    plain
+                                    onClick={onRemove}
+                                    destructive
+                                    disabled={disabled}
+                                >
+                                    ×
+                                </Button>
+                            )}
+                        </InlineStack>
+                    )}
+                </div>
             </div>
         </div>
     );
