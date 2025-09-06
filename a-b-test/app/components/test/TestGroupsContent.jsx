@@ -195,9 +195,16 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
     };
 
     const handleEdit = (groupId, newName) => {
+        // Validate that the name is not empty or just whitespace
+        const trimmedName = newName.trim();
+        if (!trimmedName) {
+            // Don't update if name is empty - this will prevent saving empty names
+            return;
+        }
+        
         const updatedGroups = testGroups.map(group =>
             group.id === groupId
-                ? { ...group, name: newName }
+                ? { ...group, name: trimmedName }
                 : group
         );
         setTestGroups(updatedGroups);
