@@ -1,0 +1,12 @@
+
+name = "revlyft-ab-testing"
+type = "theme"
+
+[settings]
+icon = "logo.png"
+
+[[settings.blocks]]
+type = "revlyft_scripts"
+name = "Revlyft Scripts"
+target = "head"
+

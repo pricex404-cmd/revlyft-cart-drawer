@@ -1,0 +1,37 @@
+{%- comment -%}
+  Revlyft A/B Testing Scripts
+  Theme App Extension - Loads on every page without conditions
+{%- endcomment -%}
+
+{%- liquid
+  assign shop_domain = shop.permanent_domain
+-%}
+
+<!-- Revlyft A/B Testing Scripts - Loads on every page -->
+<script
+  src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop={{ shop_domain }}"
+  defer
+></script>
+<script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop={{ shop_domain }}" defer></script>
+<script src="https://app.revlyft.com/assets/revlyft-discount-abtest-script.js?shop={{ shop_domain }}" defer></script>
+
+{%- comment -%}
+  Verification script - logs to console when ?config=verification is in URL for testing
+{%- endcomment -%}
+{% comment %}
+  <script>
+    window.addEventListener('load', function () {
+      if (typeof console !== 'undefined' && window.location.search.includes('config=verification')) {
+        console.log('revlyft initialized - Theme App Extension working correctly!');
+      }
+    });
+  </script>
+{% endcomment %}
+
+{% schema %}
+{
+  "name": "Revlyft Scripts",
+  "target": "head",
+  "settings": []
+}
+{% endschema %}

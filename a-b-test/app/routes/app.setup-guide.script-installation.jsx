@@ -15,10 +15,7 @@ import {
     Collapsible
 } from "@shopify/polaris";
 import {
-    CodeIcon,
     CheckCircleIcon,
-    AlertTriangleIcon,
-    DuplicateIcon,
     ViewIcon,
     ChevronDownIcon,
     ChevronUpIcon
@@ -33,7 +30,7 @@ export const loader = async ({ request }) => {
 export default function ScriptInstallation() {
     const navigate = useNavigate();
     const { shop } = useLoaderData();
-    const [openSections, setOpenSections] = useState({});
+    const [openSections, setOpenSections] = useState({ step1: true });
 
     const toggleSection = (sectionId) => {
         setOpenSections(prev => ({
@@ -41,15 +38,6 @@ export default function ScriptInstallation() {
             [sectionId]: !prev[sectionId]
         }));
     };
-
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text);
-    };
-
-    const combinedScript = `<!-- Revlyft A/B Testing Script -->
-<script src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop=${shop}" defer></script>
-<script src="https://app.revlyft.com/assets/revlyft-discount-abtest-script.js?shop=${shop}" defer></script>`;
 
     const handleNextStep = () => {
         navigate('/app/setup-guide/dom-injection');
@@ -61,290 +49,178 @@ export default function ScriptInstallation() {
                 <Layout.Section>
                     <BlockStack gap="500">
                         {/* Header */}
-                        <Banner status="info">
+                        <Banner status="success">
                             <BlockStack gap="200">
-                                <Text variant="headingMd" as="h2">Script Installation</Text>
+                                <Text variant="headingMd" as="h2">
+                                    <Icon source={CheckCircleIcon} tone="success" /> 
+                                    Revlyft Script Installation
+                                </Text>
                                 <Text>
-                                    Install the required JavaScript files to enable A/B testing functionality on your Shopify store.
-                                    These scripts will track user interactions and apply test variations automatically.
+                                    Install Revlyft's A/B testing scripts to start running experiments on your store.
+                                    Follow the simple steps below to get started.
                                 </Text>
                             </BlockStack>
                         </Banner>
 
-                        {/* Overview Card */}
+                        {/* Installation Steps */}
                         <Card>
-                            <BlockStack gap="400">
-                                <Text variant="headingMd" as="h2">Complete Script Installation Guide</Text>
-                                <Text>
-                                    This guide will walk you through installing the revlyft A/B testing script in your Shopify theme.
-                                    Follow each section to ensure proper functionality.
-                                </Text>
-                                <Box background="bg-surface-brand" padding="400" borderRadius="200">
-                                    <InlineStack gap="200">
-                                        <Icon source={AlertTriangleIcon} tone="info" />
-                                        <Text variant="bodyMd" tone="subdued">
-                                            <strong>What this script does:</strong> Enables A/B testing on your store by tracking user interactions,
-                                            managing test variations, and collecting analytics data for your experiments.
-                                        </Text>
+                            <BlockStack gap="300">
+                                <Button
+                                    plain
+                                    onClick={() => toggleSection('step1')}
+                                    fullWidth
+                                    textAlign="left"
+                                >
+                                    <InlineStack gap="200" blockAlign="center">
+                                        <Icon source={openSections['step1'] ? ChevronDownIcon : ChevronUpIcon} />
+                                        <Text variant="headingMd" as="h3">Step 1: Enable Revlyft Scripts</Text>
                                     </InlineStack>
+                                </Button>
+
+                                <Collapsible open={openSections['step1']}>
+                                    <BlockStack gap="300">
+                                        <Box padding="300" borderRadius="200">
+                                            <BlockStack gap="200">
+                                                <Text variant="headingSm" as="h4">Go to Your Theme Customizer</Text>
+                                                <List type="number">
+                                                    <List.Item>Go to <strong>Online Store → Themes</strong></List.Item>
+                                                    <List.Item>Click <strong>"Customize"</strong> on your active theme</List.Item>
+                                                </List>
+                                            </BlockStack>
+                                        </Box>
+
+                                        <Box padding="300" borderRadius="200">
+                                            <BlockStack gap="200">
+                                                <Text variant="headingSm" as="h4">Find App Embeds</Text>
+                                                <List type="number">
+                                                    <List.Item>Look for <strong>"App embeds"</strong> in the left sidebar</List.Item>
+                                                    <List.Item>Click on it to open the section</List.Item>
+                                                </List>
+                                            </BlockStack>
+                                        </Box>
+
+                                        <Box padding="300" borderRadius="200">
+                                            <BlockStack gap="200">
+                                                <Text variant="headingSm" as="h4">Enable Revlyft Scripts</Text>
+                                                <List type="number">
+                                                    <List.Item>Find <strong>"Revlyft Scripts"</strong> in the list</List.Item>
+                                                    <List.Item>Toggle the switch to <strong>ON</strong></List.Item>
+                                                    <List.Item>Click <strong>"Save"</strong></List.Item>
+                                                </List>
+                                            </BlockStack>
+                                        </Box>
+
+                                        <Banner tone="success">
+                                            <Text>
+                                                <strong>Done!</strong> Your Revlyft scripts are now active on your store.
+                                            </Text>
+                                        </Banner>
+                                    </BlockStack>
+                                </Collapsible>
+                            </BlockStack>
+                        </Card>
+
+                        {/* Verification */}
+                        <Card>
+                            <BlockStack gap="300">
+                                <Button
+                                    plain
+                                    onClick={() => toggleSection('step2')}
+                                    fullWidth
+                                    textAlign="left"
+                                >
+                                    <InlineStack gap="200" blockAlign="center">
+                                        <Icon source={openSections['step2'] ? ChevronDownIcon : ChevronUpIcon} />
+                                        <Text variant="headingMd" as="h3">Step 2: Test Installation</Text>
+                                    </InlineStack>
+                                </Button>
+
+                                <Collapsible open={openSections['step2']}>
+                                    <BlockStack gap="300">
+                                        <Box padding="300" borderRadius="200">
+                                            <BlockStack gap="200">
+                                                <Text variant="headingSm" as="h4">Verify Scripts Are Working</Text>
+                                                <Text>
+                                                    Click the button below to test your installation.
+                                                </Text>
+                                                <InlineStack align="start">
+                                                    <Button
+                                                        icon={ViewIcon}
+                                                        url={`https://${shop}?config=verification`}
+                                                        external
+                                                        target="_blank"
+                                                    >
+                                                        Test Installation
+                                                    </Button>
+                                                </InlineStack>
+                                            </BlockStack>
+                                        </Box>
+
+                                        <Box padding="300" borderRadius="200">
+                                            <BlockStack gap="200">
+                                                <Text variant="headingSm" as="h4">Check Results</Text>
+                                                <List type="number">
+                                                    <List.Item>Your store will open in a new tab</List.Item>
+                                                    <List.Item>Press <strong>F12</strong> to open developer tools</List.Item>
+                                                    <List.Item>Click the <strong>"Console"</strong> tab</List.Item>
+                                                    <List.Item>Look for: <Text as="span" fontFamily="mono">"revlyft initialized - Theme App Extension working correctly!"</Text></List.Item>
+                                                </List>
+                                            </BlockStack>
+                                        </Box>
+
+                                        <Banner tone="success">
+                                            <Text>
+                                                <strong>Perfect!</strong> If you see the message, your scripts are working and ready for A/B testing.
+                                            </Text>
+                                        </Banner>
+                                    </BlockStack>
+                                </Collapsible>
+                            </BlockStack>
+                        </Card>
+
+                        {/* What's Next */}
+                        <Card>
+                            <BlockStack gap="300">
+                                <Text variant="headingMd" as="h2">What's Next?</Text>
+                                
+                                <Box padding="300" borderRadius="200">
+                                    <BlockStack gap="200">
+                                        <Text variant="headingSm" as="h4">Your Scripts Are Now Active</Text>
+                                        <List type="bullet">
+                                            <List.Item><strong>Price Testing:</strong> Ready to test different product prices</List.Item>
+                                            <List.Item><strong>A/B Testing:</strong> Ready to run experiments on your store</List.Item>
+                                            <List.Item><strong>Discount Testing:</strong> Ready to test discount strategies</List.Item>
+                                        </List>
+                                    </BlockStack>
+                                </Box>
+
+                                <Box padding="300" borderRadius="200">
+                                    <BlockStack gap="200">
+                                        <Text variant="headingSm" as="h4">Easy Management</Text>
+                                        <List type="bullet">
+                                            <List.Item>Turn scripts ON/OFF anytime in theme customizer</List.Item>
+                                            <List.Item>No need to edit theme files</List.Item>
+                                            <List.Item>Uninstalling the app removes all scripts automatically</List.Item>
+                                        </List>
+                                    </BlockStack>
                                 </Box>
                             </BlockStack>
                         </Card>
 
-                        {/* Step 1: Script Installation Process */}
-                        <Card>
-                            <BlockStack gap="400">
-                                <Text variant="headingLg" as="h2">Step 1: Script Installation Process</Text>
-
-                                {/* Step 1.1: Script Preparation */}
-                                <Card>
-                                    <BlockStack gap="300">
-                                        <Button
-                                            plain
-                                            onClick={() => toggleSection('step1-1')}
-                                            fullWidth
-                                            textAlign="left"
-                                        >
-                                            <InlineStack gap="200" blockAlign="center">
-                                                <Icon source={openSections['step1-1'] ? ChevronDownIcon : ChevronUpIcon} />
-                                                <Text variant="headingMd" as="h3">Step 1.1: Ready-to-use Script</Text>
-                                            </InlineStack>
-                                        </Button>
-
-                                        <Collapsible open={openSections['step1-1']}>
-                                            <BlockStack gap="300">
-                                                <Text>
-                                                    Your revlyft script is ready to use with your store domain automatically configured.
-                                                </Text>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Copy Your revlyft Script</Text>
-                                                        <Text variant="bodyMd">
-                                                            The script below is automatically configured for your store: <Text as="span" fontFamily="mono" fontWeight="bold">{shop}</Text>
-                                                        </Text>
-                                                        <Banner tone="success">
-                                                            <Text variant="bodyMd">
-                                                                ✅ No customization needed! This script is ready to use with your store domain.
-                                                            </Text>
-                                                        </Banner>
-                                                        <InlineStack align="start">
-                                                            <Button
-                                                                icon={DuplicateIcon}
-                                                                onClick={() => copyToClipboard(combinedScript)}
-                                                            >
-                                                                Copy Ready Script
-                                                            </Button>
-                                                        </InlineStack>
-                                                    </BlockStack>
-                                                </Box>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <InlineStack align="space-between" blockAlign="center">
-                                                            <Text variant="headingSm" as="h4">Your revlyft Script:</Text>
-                                                            <Button
-                                                                size="micro"
-                                                                icon={DuplicateIcon}
-                                                                onClick={() => copyToClipboard(combinedScript)}
-                                                            >
-                                                                Copy Script
-                                                            </Button>
-                                                        </InlineStack>
-                                                        <Text variant="bodyMd" tone="subdued">
-                                                            <strong>Ready to use:</strong> This script is configured for your store domain: <Text as="span" fontFamily="mono">{shop}</Text>
-                                                        </Text>
-                                                        <Box padding="200" borderRadius="100">
-                                                            <pre style={{ fontSize: '12px', lineHeight: '1.4', margin: 0, overflow: 'auto' }}>
-                                                                <code>{combinedScript}</code>
-                                                            </pre>
-                                                        </Box>
-                                                    </BlockStack>
-                                                </Box>
-                                            </BlockStack>
-                                        </Collapsible>
-                                    </BlockStack>
-                                </Card>
-
-                                {/* Step 1.2: Theme Editor Access */}
-                                <Card>
-                                    <BlockStack gap="300">
-                                        <Button
-                                            plain
-                                            onClick={() => toggleSection('step1-2')}
-                                            fullWidth
-                                            textAlign="left"
-                                        >
-                                            <InlineStack gap="200" blockAlign="center">
-                                                <Icon source={openSections['step1-2'] ? ChevronDownIcon : ChevronUpIcon} />
-                                                <Text variant="headingMd" as="h3">Step 1.2: Theme Editor Access</Text>
-                                            </InlineStack>
-                                        </Button>
-
-                                        <Collapsible open={openSections['step1-2']}>
-                                            <BlockStack gap="300">
-                                                <Text>
-                                                    Navigate to your Shopify theme editor to access the code files.
-                                                </Text>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Navigate to Your Theme Editor</Text>
-                                                        <List type="number">
-                                                            <List.Item>Go to your <strong>Shopify Admin</strong></List.Item>
-                                                            <List.Item>Navigate to <strong>Online Store → Themes</strong></List.Item>
-                                                            <List.Item>Find your active theme and click <strong>"Actions" → "Edit code"</strong></List.Item>
-                                                        </List>
-                                                    </BlockStack>
-                                                </Box>
-                                            </BlockStack>
-                                        </Collapsible>
-                                    </BlockStack>
-                                </Card>
-
-                                {/* Step 1.3: Script Installation */}
-                                <Card>
-                                    <BlockStack gap="300">
-                                        <Button
-                                            plain
-                                            onClick={() => toggleSection('step1-3')}
-                                            fullWidth
-                                            textAlign="left"
-                                        >
-                                            <InlineStack gap="200" blockAlign="center">
-                                                <Icon source={openSections['step1-3'] ? ChevronDownIcon : ChevronUpIcon} />
-                                                <Text variant="headingMd" as="h3">Step 1.3: Script Installation</Text>
-                                            </InlineStack>
-                                        </Button>
-
-                                        <Collapsible open={openSections['step1-3']}>
-                                            <BlockStack gap="300">
-                                                <Text>
-                                                    Add the revlyft script to your theme files and save your changes.
-                                                </Text>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Add Script to Theme Files</Text>
-                                                        <Text variant="bodyMd">
-                                                            Paste the revlyft script in the <Text as="span" fontFamily="mono">&lt;head&gt;</Text> section of these files:
-                                                        </Text>
-                                                        <List type="bullet">
-                                                            <List.Item><Text as="span" fontFamily="mono">layout/theme.liquid</Text> (required)</List.Item>
-                                                            <List.Item>Any other <Text as="span" fontFamily="mono">theme.*.liquid</Text> files (e.g., theme.gempages.liquid if you have this file)</List.Item>
-                                                            <List.Item><Text as="span" fontFamily="mono">layout/checkout.liquid</Text> (if you have this file; most themes do not)</List.Item>
-                                                        </List>
-                                                        <Text variant="bodyMd" color="subdued">
-                                                            <strong>Important:</strong> Make sure to paste the script just before the closing <Text as="span" fontFamily="mono">&lt;/head&gt;</Text> tag in each file.
-                                                        </Text>
-                                                    </BlockStack>
-                                                </Box>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Save Your Changes</Text>
-                                                        <Text variant="bodyMd">
-                                                            Click <strong>"Save"</strong> for each file you've modified. Your revlyft script is now installed!
-                                                        </Text>
-                                                    </BlockStack>
-                                                </Box>
-                                            </BlockStack>
-                                        </Collapsible>
-                                    </BlockStack>
-                                </Card>
-
-                                {/* Step 1.4: Verification */}
-                                <Card>
-                                    <BlockStack gap="300">
-                                        <Button
-                                            plain
-                                            onClick={() => toggleSection('step1-4')}
-                                            fullWidth
-                                            textAlign="left"
-                                        >
-                                            <InlineStack gap="200" blockAlign="center">
-                                                <Icon source={openSections['step1-4'] ? ChevronDownIcon : ChevronUpIcon} />
-                                                <Text variant="headingMd" as="h3">Step 1.4: Installation Verification</Text>
-                                            </InlineStack>
-                                        </Button>
-
-                                        <Collapsible open={openSections['step1-4']}>
-                                            <BlockStack gap="300">
-                                                <Text>
-                                                    Verify that your script installation is working correctly.
-                                                </Text>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Verify Installation</Text>
-                                                        <Text variant="bodyMd" color="subdued">
-                                                            After installing the script, verify it's working correctly:
-                                                        </Text>
-                                                        <List type="bullet">
-                                                            <List.Item>Open your store in a new browser tab</List.Item>
-                                                            <List.Item>Open browser developer tools (F12 or right-click → Inspect)</List.Item>
-                                                            <List.Item>Check for the script in elements</List.Item>
-
-                                                        </List>
-                                                    </BlockStack>
-                                                </Box>
-
-                                                <Box padding="300" borderRadius="200">
-                                                    <BlockStack gap="200">
-                                                        <Text variant="headingSm" as="h4">Test Script Installation</Text>
-                                                        <Text variant="bodyMd" color="subdued">
-                                                            Click the button below to test your script installation. This will open your store with special parameters that verify the script is working.
-                                                        </Text>
-                                                        <InlineStack align="start">
-                                                            <Button
-                                                                icon={ViewIcon}
-                                                                url={`https://${shop}?config=verification`}
-                                                                external
-                                                                target="_blank"
-                                                            >
-                                                                Test Script Installation
-                                                            </Button>
-                                                        </InlineStack>
-                                                        <Text variant="bodyMd" color="subdued" tone="subdued">
-                                                            After clicking, check the browser console for "revlyft initialized" message to confirm successful installation.
-                                                        </Text>
-                                                    </BlockStack>
-                                                </Box>
-
-                                                <Banner tone="success">
-                                                    <Text variant="bodyMd">
-                                                        <strong>Success!</strong> If you see "revlyft initialized" in the console, your script is working correctly and ready for A/B testing!
-                                                    </Text>
-                                                </Banner>
-                                            </BlockStack>
-                                        </Collapsible>
-                                    </BlockStack>
-                                </Card>
-                            </BlockStack>
-                        </Card>
-
-
-
                         {/* Navigation */}
                         <Card>
                             <InlineStack align="space-between">
-                                <Button
-                                    onClick={() => navigate('/app/setup-guide')}
-                                >
+                                <Button onClick={() => navigate('/app/setup-guide')}>
                                     ← Back to Setup Guide
                                 </Button>
-                                <Button
-                                    variant="primary"
-                                    onClick={handleNextStep}
-                                >
+                                <Button variant="primary" onClick={handleNextStep}>
                                     Next: Configure query selectors →
                                 </Button>
                             </InlineStack>
                         </Card>
-
                     </BlockStack>
                 </Layout.Section>
             </Layout>
         </Page>
     );
-} 
+}
