@@ -8,7 +8,7 @@ const colors = {
     border: '#D1D5DB',
     surface: '#F9FAFB'
 };
-import { formatNumberInput, numberInputCSS, formatDisplayValue } from "../../../utils/numberInputUtils";
+import { formatNumberInput, formatPriceInput, handlePriceInputChange, handlePercentageInputChange, numberInputCSS, formatDisplayValue } from "../../../utils/numberInputUtils";
 
 
 export const MultiVariantPricing = ({
@@ -43,8 +43,9 @@ export const MultiVariantPricing = ({
                                                 placeholder="Enter discount %"
                                                 min="0"
                                                 max="99"
+                                                step="0.01"
                                                 value={formatDisplayValue(group.products?.[numericProductId]?.discountPercentage)}
-                                                onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, null, 'percentage')}
+                                                onChange={(e) => handlePercentageInputChange(e.target.value, (value) => onPriceChange(product.productId, group.id, value, null, 'percentage'))}
                                                 onBlur={(e) => {
                                                     const formattedValue = formatNumberInput(e.target.value);
                                                     if (formattedValue !== e.target.value) {
@@ -73,10 +74,11 @@ export const MultiVariantPricing = ({
                                         <div>
                                             <input
                                                 type="number"
+                                                step="0.01"
                                                 value={formatDisplayValue(currentPrice)}
-                                                onChange={(e) => onPriceChange(product.productId, group.id, e.target.value)}
+                                                onChange={(e) => handlePriceInputChange(e.target.value, (value) => onPriceChange(product.productId, group.id, value))}
                                                 onBlur={(e) => {
-                                                    const formattedValue = formatNumberInput(e.target.value);
+                                                    const formattedValue = formatPriceInput(e.target.value);
                                                     if (formattedValue !== e.target.value) {
                                                         onPriceChange(product.productId, group.id, formattedValue);
                                                     }
@@ -94,7 +96,7 @@ export const MultiVariantPricing = ({
                                             />
 
                                             <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
-                                                Discount: {(group?.products?.[numericProductId]?.discountPercentage) ? group.products[numericProductId].discountPercentage.toFixed(1) : 0}<span style={{ fontSize: '0.9em' }}>%</span>
+                                                Discount: {(group?.products?.[numericProductId]?.discountPercentage) ? group.products[numericProductId].discountPercentage.toFixed(2) : 0}<span style={{ fontSize: '0.9em' }}>%</span>
                                             </Text>
                                         </div>
                                     )}
@@ -206,8 +208,9 @@ export const MultiVariantPricing = ({
                                                                         placeholder="Enter discount %"
                                                                         min="0"
                                                                         max="99"
+                                                                        step="0.01"
                                                                         value={formatDisplayValue(group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage)}
-                                                                        onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, variant.variantId, 'percentage')}
+                                                                        onChange={(e) => handlePercentageInputChange(e.target.value, (value) => onPriceChange(product.productId, group.id, value, variant.variantId, 'percentage'))}
                                                                         onBlur={(e) => {
                                                                             const formattedValue = formatNumberInput(e.target.value);
                                                                             if (formattedValue !== e.target.value) {
@@ -236,10 +239,11 @@ export const MultiVariantPricing = ({
                                                                 <div>
                                                                     <input
                                                                         type="number"
+                                                                        step="0.01"
                                                                         value={formatDisplayValue(currentPrice)}
-                                                                        onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, variant.variantId)}
+                                                                        onChange={(e) => handlePriceInputChange(e.target.value, (value) => onPriceChange(product.productId, group.id, value, variant.variantId))}
                                                                         onBlur={(e) => {
-                                                                            const formattedValue = formatNumberInput(e.target.value);
+                                                                            const formattedValue = formatPriceInput(e.target.value);
                                                                             if (formattedValue !== e.target.value) {
                                                                                 onPriceChange(product.productId, group.id, formattedValue, variant.variantId);
                                                                             }
@@ -257,7 +261,7 @@ export const MultiVariantPricing = ({
                                                                     />
 
                                                                     <Text variant="bodySm" as="p" color="subdued" style={{ marginTop: '4px' }}>
-                                                                        Discount: {(group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage) ? group.products[numericProductId].variants[numericVariantId].discountPercentage.toFixed(1) : 0}<span style={{ fontSize: '0.9em' }}>%</span>
+                                                                        Discount: {(group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage) ? group.products[numericProductId].variants[numericVariantId].discountPercentage.toFixed(2) : 0}<span style={{ fontSize: '0.9em' }}>%</span>
                                                                     </Text>
                                                                 </div>
                                                             )}
