@@ -414,6 +414,7 @@ import useProductModifications from './useProductModifications';
             handleModificationAttempt();
             return;
         }
+        
 
         const numericProductId = extractShopifyProductId(productId);
         const product = selectedProducts.find(p => extractShopifyProductId(p.productId) === numericProductId);
@@ -445,10 +446,20 @@ import useProductModifications from './useProductModifications';
             }
 
             newPrice = originalPrice * (1 - discountPercentage / 100);
+            
+            // Round to 2 decimal places to prevent floating point precision issues
+            newPrice = Math.round(newPrice * 100) / 100;
         } else {
             // User entered fixed price, calculate discount percentage
             newPrice = parseFloat(newValue) || 0;
+            
+            // Round to 2 decimal places to prevent floating point precision issues
+            newPrice = Math.round(newPrice * 100) / 100;
+            
             discountPercentage = calculateDiscountPercentage(originalPrice, newPrice);
+            
+            // Round discount percentage to prevent precision issues
+            discountPercentage = Math.round(discountPercentage * 100) / 100;
         }
 
         // Validate price (only for fixed price mode)
@@ -464,6 +475,14 @@ import useProductModifications from './useProductModifications';
             // Validate that new price is not greater than original price
             if (newPrice > originalPrice) {
                 setWarningMessage(`Modified price cannot be greater than original price (${getCurrencySymbol(currency)}${originalPrice?.toFixed(2) || '0.00'})`);
+                setShowPriceWarning(true);
+                setTimeout(() => setShowPriceWarning(false), 3000);
+                return;
+            }
+            
+            // Validate that the resulting discount is not 100% or more
+            if (discountPercentage >= 100) {
+                setWarningMessage('Price too low - would result in 100% discount. Please enter a higher price.');
                 setShowPriceWarning(true);
                 setTimeout(() => setShowPriceWarning(false), 3000);
                 return;
