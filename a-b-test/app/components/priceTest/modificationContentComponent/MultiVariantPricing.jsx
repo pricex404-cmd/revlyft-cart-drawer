@@ -42,7 +42,7 @@ export const MultiVariantPricing = ({
                                                 type="number"
                                                 placeholder="Enter discount %"
                                                 min="0"
-                                                max="100"
+                                                max="99"
                                                 value={formatDisplayValue(group.products?.[numericProductId]?.discountPercentage)}
                                                 onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, null, 'percentage')}
                                                 onBlur={(e) => {
@@ -205,7 +205,7 @@ export const MultiVariantPricing = ({
                                                                         type="number"
                                                                         placeholder="Enter discount %"
                                                                         min="0"
-                                                                        max="100"
+                                                                        max="99"
                                                                         value={formatDisplayValue(group.products?.[numericProductId]?.variants?.[numericVariantId]?.discountPercentage)}
                                                                         onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, variant.variantId, 'percentage')}
                                                                         onBlur={(e) => {

@@ -39,7 +39,7 @@ export const SingleVariantPricing = ({
                                             type="number"
                                             placeholder="Enter discount %"
                                             min="0"
-                                            max="100"
+                                            max="99"
                                             value={formatDisplayValue(group.products?.[numericProductId]?.discountPercentage)}
                                             onChange={(e) => onPriceChange(product.productId, group.id, e.target.value, null, 'percentage')}
                                             onBlur={(e) => {

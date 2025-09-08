@@ -95,7 +95,7 @@ export function ModificationsContentDiscount({
                 return {
                     ...group,
                     discountPercentageValue: value,
-                    discountError: (value === "" || isNaN(numValue) || numValue < 0 || numValue > 100)
+                    discountError: (value === "" || isNaN(numValue) || numValue < 0 || numValue >= 100)
                         ? "Please enter a valid discount percentage (0-100)"
                         : ""
                 };

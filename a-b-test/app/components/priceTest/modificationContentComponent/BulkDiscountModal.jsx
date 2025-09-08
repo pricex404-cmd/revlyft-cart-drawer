@@ -55,12 +55,12 @@ export const BulkDiscountModal = ({
         // Convert to number for validation
         const numericValue = parseFloat(value);
 
-        // Don't allow values greater than 100
-        if (numericValue > 100) {
-            setWarningMessage('Discount percentage cannot be greater than 100%.');
+        // Don't allow values greater than or equal to 100
+        if (numericValue >= 100) {
+            setWarningMessage('Discount percentage cannot be 100% or greater.');
             setShowPriceWarning(true);
             setTimeout(() => setShowPriceWarning(false), 3000);
-            return; // Don't update if over 100%
+            return; // Don't update if 100% or over
         }
 
         // Don't allow negative values (this is handled by the regex above, but being explicit)
