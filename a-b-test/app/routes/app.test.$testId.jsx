@@ -418,6 +418,7 @@ export default function Test() {
     const [isSmallScreen, setIsSmallScreen] = useState(false);
     const [inventoryIssues, setInventoryIssues] = useState([]);
     const [isScriptDetected, setIsScriptDetected] = useState(null); // null = loading, true = detected, false = not detected
+    const [isRefreshingScriptStatus, setIsRefreshingScriptStatus] = useState(false);
 
     // Set document title for App Bridge title bar
     useEffect(() => {
@@ -608,27 +609,54 @@ export default function Test() {
     }, [testData?.discountConfig]);
 
     // Check script detection status
-    useEffect(() => {
-        const checkScriptDetection = async () => {
-            try {
-                const sanitizedDomain = sanitizeShopDomain(shop.domain);
-                const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}/isScriptDetected.json`);
+    const checkScriptDetection = async (showLoading = false) => {
+        try {
+            if (showLoading) {
+                setIsRefreshingScriptStatus(true);
+            }
+            
+            const sanitizedDomain = sanitizeShopDomain(shop.domain);
+            const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}/isScriptDetected.json`);
 
-                if (!response.ok) {
-                    setIsScriptDetected(false);
-                    return;
-                }
-
-                const isDetected = await response.json();
-                setIsScriptDetected(isDetected === true);
-            } catch (error) {
-                console.error('Error checking script detection:', error);
+            if (!response.ok) {
                 setIsScriptDetected(false);
+                return;
+            }
+
+            const isDetected = await response.json();
+            setIsScriptDetected(isDetected === true);
+        } catch (error) {
+            console.error('Error checking script detection:', error);
+            setIsScriptDetected(false);
+        } finally {
+            if (showLoading) {
+                setIsRefreshingScriptStatus(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        checkScriptDetection();
+    }, [shop.domain]);
+
+    // Add window focus event listener to refresh script detection when user returns to tab
+    useEffect(() => {
+        const handleWindowFocus = () => {
+            // Only refresh if script is currently not detected
+            if (isScriptDetected === false) {
+                console.log('🔄 Tab focused - refreshing script detection status...');
+                checkScriptDetection(true); // Show loading state
             }
         };
 
-        checkScriptDetection();
-    }, [shop.domain]);
+        // Add event listener for window focus
+        window.addEventListener('focus', handleWindowFocus);
+
+        // Cleanup event listener on component unmount
+        return () => {
+            window.removeEventListener('focus', handleWindowFocus);
+        };
+    }, [isScriptDetected, shop.domain]);
 
     // Content panels mapping
     const contentPanels = {
@@ -799,25 +827,17 @@ export default function Test() {
                     {isScriptDetected === false ? (
                         <>
                             <button
-                                variant="plain"
                                 onClick={() => navigate('/app/setup-guide/script-installation')}
-                                size="micro"
-                                style={{ marginLeft: '8px' }}
+                                disabled={isRefreshingScriptStatus}
                             >
                                 Go to Setup Guide for more clarity
                             </button>
                             <button
                                 variant="primary"
                                 onClick={() => window.open(`https://${shop.primaryDomain?.url?.replace('https://', '') || shop.domain}?config=verification`, '_blank')}
-                                style={{
-                                    backgroundColor: '#ff6b35',
-                                    borderColor: '#ff6b35',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    animation: 'pulse 2s infinite'
-                                }}
+                                disabled={isRefreshingScriptStatus}
                             >
-                                ⚠️ Test Script Installation Required
+                                {isRefreshingScriptStatus ? '🔄 Checking Status...' : '⚠️ Test Script Installation Required'}
                             </button>
                         </>
                     ) : (
