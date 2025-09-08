@@ -436,8 +436,8 @@ import useProductModifications from './useProductModifications';
             // User entered discount percentage, calculate modified price
             discountPercentage = parseFloat(newValue) || 0;
 
-            // Validate percentage is between 0 and 100
-            if (discountPercentage < 0 || discountPercentage > 100) {
+            // Validate percentage is between 0 and 99 (less than 100%)
+            if (discountPercentage < 0 || discountPercentage >= 100) {
                 setWarningMessage('Discount percentage must be between 0% and 100%');
                 setShowPriceWarning(true);
                 setTimeout(() => setShowPriceWarning(false), 3000);
