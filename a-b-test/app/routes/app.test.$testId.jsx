@@ -639,24 +639,43 @@ export default function Test() {
         checkScriptDetection();
     }, [shop.domain]);
 
-    // Add window focus event listener to refresh script detection when user returns to tab
+    // Add event listener to refresh script detection when user returns to tab
     useEffect(() => {
-        const handleWindowFocus = () => {
-            // Only refresh if script is currently not detected
-            if (isScriptDetected === false) {
-                console.log('🔄 Tab focused - refreshing script detection status...');
-                checkScriptDetection(true); // Show loading state
+        const handleTabFocus = () => {
+            console.log('🔄 Tab focused - running focus handler...');
+            console.log('🔄 Current isScriptDetected state:', isScriptDetected);
+            
+            // Always refresh script detection when returning to tab
+            checkScriptDetection(true); // Show loading state
+        };
+
+        // Try multiple event listeners for better browser compatibility
+        window.addEventListener('focus', handleTabFocus);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('📄 Document became visible - running handler...');
+                handleTabFocus();
             }
-        };
+        });
+        
+        // Also try pageshow event as backup
+        window.addEventListener('pageshow', (event) => {
+            if (!event.persisted) {
+                console.log('📄 Page shown - running handler...');
+                handleTabFocus();
+            }
+        });
 
-        // Add event listener for window focus
-        window.addEventListener('focus', handleWindowFocus);
+        console.log('✅ Multiple focus event listeners added');
 
-        // Cleanup event listener on component unmount
+        // Cleanup event listeners on component unmount
         return () => {
-            window.removeEventListener('focus', handleWindowFocus);
+            window.removeEventListener('focus', handleTabFocus);
+            document.removeEventListener('visibilitychange', handleTabFocus);
+            window.removeEventListener('pageshow', handleTabFocus);
+            console.log('🧹 All focus event listeners removed');
         };
-    }, [isScriptDetected, shop.domain]);
+    }, [checkScriptDetection, isScriptDetected]);
 
     // Content panels mapping
     const contentPanels = {
