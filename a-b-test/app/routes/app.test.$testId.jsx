@@ -827,7 +827,7 @@ export default function Test() {
                     {isScriptDetected === false ? (
                         <>
                             <button
-                                onClick={() => navigate('/app/setup-guide/script-installation')}
+                                onClick={() => navigate('/app/setup-guide')}
                                 disabled={isRefreshingScriptStatus}
                             >
                                 Go to Setup Guide for more clarity
