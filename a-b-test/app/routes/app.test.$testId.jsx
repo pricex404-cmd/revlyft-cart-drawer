@@ -827,10 +827,7 @@ export default function Test() {
                     {isScriptDetected === false ? (
                         <>
                             <button
-                                variant="plain"
                                 onClick={() => navigate('/app/setup-guide/script-installation')}
-                                size="micro"
-                                style={{ marginLeft: '8px' }}
                                 disabled={isRefreshingScriptStatus}
                             >
                                 Go to Setup Guide for more clarity
@@ -838,14 +835,6 @@ export default function Test() {
                             <button
                                 variant="primary"
                                 onClick={() => window.open(`https://${shop.primaryDomain?.url?.replace('https://', '') || shop.domain}?config=verification`, '_blank')}
-                                style={{
-                                    backgroundColor: isRefreshingScriptStatus ? '#ccc' : '#ff6b35',
-                                    borderColor: isRefreshingScriptStatus ? '#ccc' : '#ff6b35',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    animation: isRefreshingScriptStatus ? 'none' : 'pulse 2s infinite',
-                                    opacity: isRefreshingScriptStatus ? 0.7 : 1
-                                }}
                                 disabled={isRefreshingScriptStatus}
                             >
                                 {isRefreshingScriptStatus ? '🔄 Checking Status...' : '⚠️ Test Script Installation Required'}
