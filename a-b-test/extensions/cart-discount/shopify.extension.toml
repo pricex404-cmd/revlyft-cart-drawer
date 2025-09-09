@@ -3,6 +3,7 @@ api_version = "2025-04"
 [[extensions]]
 name = "t:name"
 handle = "cart-discount"
+uid = "d933e5e9-e8d6-e4ff-96d0-95e054789c88db4909d8"
 type = "function"
 api_version = "2025-04"
 
