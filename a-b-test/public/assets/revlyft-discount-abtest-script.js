@@ -86,7 +86,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     if (window.rv_DiscountMessageRetryLimitReached) {
         return;
     }
-    console.log('🔄 Updating timer UI');
+    // console.log('🔄 Updating timer UI');
     let timerDiv = document.getElementById('rv-discount-timer');
 
     if (!timerDiv) {
@@ -157,7 +157,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     const textSpan = document.getElementById('rv-discount-timer-text');
     if (textSpan) {
         textSpan.textContent = `⚡ Hurry! This special offer expires in ${timeString}`;
-        console.log('✅ Timer text updated:', timeString);
+        // console.log('✅ Timer text updated:', timeString);
     }
 }
 
@@ -205,12 +205,13 @@ function manageDiscountCountdown() {
         }
         // Fetch AB test data to get testGroups
         fetchABTestData().then(async function (abTestsData) {
-            const storeId = await getStoreId();
-            if (!abTestsData || !abTestsData[storeId] || !abTestsData[storeId][testId] || !abTestsData[storeId][testId].testGroups) {
-                console.log('❌ No AB test data or testGroups found for testId', testId, 'in store', storeId);
+          
+            console.warn("hhhh",abTestsData)
+            if (!abTestsData || !abTestsData[testId] ) {
+                console.log('❌ No AB test data or testGroups found for testId', testId,);
                 return;
             }
-            const testGroups = abTestsData[storeId][testId].testGroups;
+            const testGroups = abTestsData[testId].testGroups;
             const userVariant = getVariantForUser(testGroups, hashValue);
             const variantIndex = testGroups.findIndex(group => group.id.toString() === userVariant.id.toString());
             if (variantIndex === 0) {
