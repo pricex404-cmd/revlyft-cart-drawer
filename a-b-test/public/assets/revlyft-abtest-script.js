@@ -1070,7 +1070,7 @@ var rv_cachedShopifyDomain = null;
 
 
 // Secret key for encryption/decryption (in production, this should be stored securely)
-var ENCRYPTION_KEY = 'revlyf-secret-key-2024';
+var ENCRYPTION_KEY = 'revlyft-secret-key-2024';
 
 /**
  * Generate a random string of specified length
@@ -1351,7 +1351,7 @@ function getAppDomain() {
         // Find the current script tag by looking for addCartAttribute.js
         const scripts = document.getElementsByTagName('script');
         for (const script of scripts) {
-            if (script.src && script.src.includes('revlyf-abtest-script.js')) {
+            if (script.src && script.src.includes('revlyft-abtest-script.js')) {
                 const url = new URL(script.src);
                 return url.origin;
             }
@@ -1381,7 +1381,7 @@ function getShopifyDomainFromScript() {
     try {
         // Method 0: Try document.currentScript first (most reliable)
         if (document.currentScript && document.currentScript.src) {
-            if (document.currentScript.src.includes('revlyf-abtest-script.js')) {
+            if (document.currentScript.src.includes('revlyft-abtest-script.js')) {
                 try {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
@@ -1399,7 +1399,7 @@ function getShopifyDomainFromScript() {
         const scripts = document.getElementsByTagName('script');
 
         for (const script of scripts) {
-            if (script.src && script.src.includes('revlyf-abtest-script.js')) {
+            if (script.src && script.src.includes('revlyft-abtest-script.js')) {
                 try {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
@@ -2105,9 +2105,9 @@ function storeRevlyfHashValue() {
             const decryptedTestId = decryptValue(previewTestId);
             if (decryptedTestId) {
                 console.log("🎯 Using decrypted preview test ID:", decryptedTestId);
-                sessionStorage.setItem('revlyf_testId', decryptedTestId);
+                sessionStorage.setItem('revlyft_testId', decryptedTestId);
                 // Also store in cookies for persistence across sessions (expires in 1 day)
-                // setCookie('revlyf_previewTestId', decryptedTestId, 1);
+                // setCookie('revlyft_previewTestId', decryptedTestId, 1);
             } else {
                 console.error("❌ Failed to decrypt preview test ID");
             }
@@ -3306,7 +3306,7 @@ function getDeviceType() {
  * @returns {boolean} True if test is in preview mode
  */
 function isTestInPreviewMode(testId) {
-    const previewTestIdSession = sessionStorage.getItem('revlyf_testId');
+    const previewTestIdSession = sessionStorage.getItem('revlyft_testId');
 
 
     return previewTestIdSession && previewTestIdSession === testId;

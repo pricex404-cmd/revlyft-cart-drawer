@@ -82,7 +82,7 @@ const shopify = shopifyApp({
 
       //   // logToFile(`Making API call to notify about installation with data: ${JSON.stringify(webhookData)}`);
 
-      //   // const apiResponse = await fetch('https://us-central1-revlyf-21.cloudfunctions.net/ShopifyPluginWebHook/', {
+      //   // const apiResponse = await fetch('https://us-central1-revlyft-21.cloudfunctions.net/ShopifyPluginWebHook/', {
       //   //   method: 'POST',
       //   //   headers: {
       //   //     'Content-Type': 'application/json',
