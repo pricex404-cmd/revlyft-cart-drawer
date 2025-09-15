@@ -1,5 +1,5 @@
 import { TextField } from "@shopify/polaris";
-
+import { getCurrencySymbol } from "../../../utils/currencyFormatter";
 export function ThresholdInput({
     discountType,
     threshold,
@@ -12,7 +12,7 @@ export function ThresholdInput({
             type="number"
             value={threshold}
             onChange={onThresholdChange}
-            prefix={discountType === "value" ? currency : ""}
+            prefix={discountType === "value" ? getCurrencySymbol(currency) : ""}
             helpText={
                 discountType === "value"
                     ? "Enter the minimum cart value to trigger discount"
