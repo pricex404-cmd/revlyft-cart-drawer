@@ -171,11 +171,11 @@ const SearchAndFilters = ({
           labelHidden
           options={[
             { label: 'All Types', value: 'all' },
-            { label: 'Price Test', value: 'pricing' }
-            // { label: 'Shipping Test', value: 'shipping' },
-            // { label: 'Discount Test', value: 'discount' },
-            // { label: 'Product Details Test', value: 'productDetails' },
-            // { label: 'Offers Test', value: 'offers' }
+            { label: 'Price Test', value: 'pricing' },
+            { label: 'Shipping Test', value: 'shipping' },
+            { label: 'Discount Test', value: 'discount' },
+            { label: 'Product Details Test', value: 'productDetails' },
+            { label: 'Offers Test', value: 'offers' }
           ]}
           value={testTypeFilter}
           onChange={onTestTypeFilterChange}
@@ -286,30 +286,30 @@ const CreateTestModal = ({
       title: 'Price Test',
       description: 'Test the price of one or multiple products in your Shopify store.'
     },
-    // {
-    //   type: 'shipping',
-    //   icon: DeliveryIcon,
-    //   title: 'Shipping Test',
-    //   description: 'Test the rates you charge for shipping, including free thresholds.'
-    // },
-    // {
-    //   type: 'discount',
-    //   icon: DiscountFilledIcon,
-    //   title: 'Discount Test',
-    //   description: 'Test different discount percentages on cart value across customer groups.'
-    // },
-    // {
-    //   type: 'productDetails',
-    //   icon: SandboxIcon,
-    //   title: 'Product Details Test',
-    //   description: 'Test the display contents on your Shopify store.'
-    // },
-    // {
-    //   type: 'offers',
-    //   icon: DiscountFilledIcon,
-    //   title: 'Offers Test',
-    //   description: 'Test different offers on your Shopify store.'
-    // }
+    {
+      type: 'shipping',
+      icon: DeliveryIcon,
+      title: 'Shipping Test',
+      description: 'Test the rates you charge for shipping, including free thresholds.'
+    },
+    {
+      type: 'discount',
+      icon: DiscountFilledIcon,
+      title: 'Discount Test',
+      description: 'Test different discount percentages on cart value across customer groups.'
+    },
+    {
+      type: 'productDetails',
+      icon: SandboxIcon,
+      title: 'Product Details Test',
+      description: 'Test the display contents on your Shopify store.'
+    },
+    {
+      type: 'offers',
+      icon: DiscountFilledIcon,
+      title: 'Offers Test',
+      description: 'Test different offers on your Shopify store.'
+    }
   ];
 
   return (
@@ -350,30 +350,6 @@ const CreateTestModal = ({
           />
 
           <BlockStack gap="400">
-            <Text variant="bodyMd" as="p" fontWeight="bold">Test Type:</Text>
-            <Card>
-              <div style={{
-                backgroundColor: 'var(--p-color-bg-surface-secondary)',
-                borderRadius: '8px',
-                padding: '16px'
-              }}>
-                <BlockStack gap="200">
-                  <InlineStack gap="300">
-                    <div style={{ color: 'var(--p-color-text-success)' }}>
-                      <Icon source={CurrencyConvertIcon} />
-                    </div>
-                    <Text variant="headingMd" as="h2" style={{ color: 'var(--p-color-text-success)' }}>Price Test</Text>
-                  </InlineStack>
-                  <Text variant="bodyMd" as="p" color="subdued">
-                    Test the price of one or multiple products in your Shopify store.
-                  </Text>
-                </BlockStack>
-              </div>
-            </Card>
-          </BlockStack>
-
-          {/* Original selection UI - commented out for future use */}
-          {/* <BlockStack gap="400">
             <Text variant="bodyMd" as="p" fontWeight="bold">Select Test Type:</Text>
             <LegacyStack distribution="fillEvenly">
               {testTypes.map((test) => (
@@ -388,7 +364,8 @@ const CreateTestModal = ({
                 />
               ))}
             </LegacyStack>
-          </BlockStack> */}
+          </BlockStack>
+
         </BlockStack>
       </Modal.Section>
       <Modal.Section>
@@ -412,7 +389,7 @@ export default function Index() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [testName, setTestName] = useState('');
   const [testDescription, setTestDescription] = useState('');
-  const [selectedTestType, setSelectedTestType] = useState('pricing');
+  const [selectedTestType, setSelectedTestType] = useState('');
   const [rows, setRows] = useState([]);
   const [allRows, setAllRows] = useState([]); // Store all rows for filtering
   const [testIds, setTestIds] = useState([]);
@@ -743,10 +720,9 @@ export default function Index() {
     if (!testDescription.trim()) {
       missingFields.push("Test Description");
     }
-    // if (!selectedTestType) {
-    //   missingFields.push("Test Type");
-    // }
-    // Test type is always 'pricing' now, so no validation needed
+    if (!selectedTestType) {
+      missingFields.push("Test Type");
+    }
 
     if (missingFields.length > 0) {
       const message = `Please complete the following required fields: ${missingFields.join(", ")}`;
