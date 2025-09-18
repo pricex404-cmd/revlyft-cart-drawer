@@ -671,7 +671,9 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
       })),
       discountConfig: {
         type: discountConfig.type || 'value',
-        threshold: discountConfig.threshold || ''
+        threshold: discountConfig.threshold || '',
+        showTimer: typeof discountConfig.showTimer === 'boolean' ? discountConfig.showTimer : false,
+        timerMinutes: discountConfig.timerMinutes ?? '30'
       }
     };
 
@@ -682,7 +684,9 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
         percentage: v.percentage
       })),
       discountType: metafieldConfig.discountConfig.type,
-      threshold: metafieldConfig.discountConfig.threshold
+      threshold: metafieldConfig.discountConfig.threshold,
+      showTimer: metafieldConfig.discountConfig.showTimer,
+      timerMinutes: metafieldConfig.discountConfig.timerMinutes
     });
 
     // Convert to JSON string and properly escape for GraphQL
