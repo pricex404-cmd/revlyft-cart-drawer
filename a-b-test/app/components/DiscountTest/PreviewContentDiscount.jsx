@@ -203,6 +203,13 @@ export const PreviewContentDiscount = ({ testId, shop, currentTestData }) => {
             <Banner title="Important Note" tone="info">
                 <p>You can test all active Discount Tests (Control & Test Groups).</p>
                 <p>The discount will be applied based on the {testData.discountConfig.type} threshold of {testData.discountConfig.threshold}.</p>
+                {testData.discountConfig.showTimer === false ? (
+                    <p>Timer: disabled</p>
+                ) : (
+                    testData.discountConfig.timerMinutes && (
+                        <p>Timer duration: {testData.discountConfig.timerMinutes} minute(s).</p>
+                    )
+                )}
                 <p>Need help? Contact us at pricex404@gmail.comfor assistance with your discount test configuration.</p>
             </Banner>
 
