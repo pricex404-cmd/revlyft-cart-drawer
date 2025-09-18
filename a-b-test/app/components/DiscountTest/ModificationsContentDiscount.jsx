@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { BlockStack } from "@shopify/polaris";
+import { BlockStack, Checkbox } from "@shopify/polaris";
 import { DiscountTypeSelector } from "./modificationContentComponent/DiscountTypeSelector";
 import { ThresholdInput } from "./modificationContentComponent/ThresholdInput";
 import { GroupDiscountConfig } from "./modificationContentComponent/GroupDiscountConfig";
+import { TimerInput } from "./modificationContentComponent/TimerInput";
 
 export function ModificationsContentDiscount({
     testGroups,
@@ -14,6 +15,8 @@ export function ModificationsContentDiscount({
     // Use props instead of local state
     const discountType = discountConfig?.type || "value";
     const threshold = discountConfig?.threshold || "";
+    const timerMinutes = discountConfig?.timerMinutes || "30";
+    const showTimer = discountConfig?.showTimer !== undefined ? discountConfig.showTimer : true;
 
     // Initialize groups with 0% discount if they don't have a value set
     useEffect(() => {
@@ -105,6 +108,20 @@ export function ModificationsContentDiscount({
         onTestGroupsChange(updatedGroups);
     };
 
+    const handleTimerChange = (value) => {
+        setDiscountConfig(prev => ({
+            ...prev,
+            timerMinutes: value
+        }));
+    };
+
+    const handleShowTimerChange = (checked) => {
+        setDiscountConfig(prev => ({
+            ...prev,
+            showTimer: checked
+        }));
+    };
+
     return (
         <BlockStack gap="500">
             <DiscountTypeSelector
@@ -125,6 +142,20 @@ export function ModificationsContentDiscount({
                 discountType={discountType}
                 threshold={threshold}
             />
+
+            <Checkbox
+                label="Show countdown timer"
+                checked={!!showTimer}
+                onChange={handleShowTimerChange}
+            />
+
+            {showTimer && (
+                <TimerInput
+                    timerMinutes={timerMinutes}
+                    onTimerChange={handleTimerChange}
+                    disabled={!showTimer}
+                />
+            )}
         </BlockStack>
     );
 }

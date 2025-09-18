@@ -83,7 +83,9 @@ export const createSaveTestHandler = (
             if (basicInfo?.type === 'discount') {
                 const configToSave = {
                     type: discountConfig?.type || 'value',
-                    threshold: discountConfig?.threshold || ''
+                    threshold: discountConfig?.threshold || '',
+                    timerMinutes: (discountConfig?.timerMinutes && discountConfig.timerMinutes !== "") ? discountConfig.timerMinutes : "30",
+                    showTimer: (discountConfig?.showTimer === false) ? false : true
                 };
                 currentTestData.discountConfig = configToSave;
             }
@@ -164,7 +166,9 @@ export const createStartTestHandler = (
             if (basicInfo?.type === 'discount') {
                 const configToSave = {
                     type: discountConfig?.type || 'value',
-                    threshold: discountConfig?.threshold || ''
+                    threshold: discountConfig?.threshold || '',
+                    timerMinutes: (discountConfig?.timerMinutes && discountConfig.timerMinutes !== "") ? discountConfig.timerMinutes : "30",
+                    showTimer: (discountConfig?.showTimer === false) ? false : true
                 };
                 currentTestData.discountConfig = configToSave;
             }
