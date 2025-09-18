@@ -19,7 +19,9 @@ export function cartLinesDiscountsGenerateRun(input) {
   // Get the test configuration from the metafield
   const configuration = JSON.parse(input.discount.metafield?.value ?? "{}");
   const testVariants = configuration.testVariants ?? [];
-  const timeFrame = configuration.timeFrame ?? 30;
+  const { showTimer = false, timerMinutes } = configuration.discountConfig || {};
+  const parsedTimerMinutes = Number(timerMinutes);
+  const timeFrame = Number.isFinite(parsedTimerMinutes) && parsedTimerMinutes > 0 ? parsedTimerMinutes : 30;
   // Log which discount is being processed
   console.log('Processing discount with configuration:', JSON.stringify({
     testVariants: testVariants.map(v => ({
@@ -49,58 +51,64 @@ export function cartLinesDiscountsGenerateRun(input) {
     return { operations: [] };
   }
 
-  // Check if we're within the 30-minute test window using frontend-provided current time
-  const testTimer = input.cart.testTimerAttribute?.value;
-  const currentTimeStr = input.cart.currentTimeAttribute?.value;
+  // Timer enforcement (only when enabled via metafield config)
+  const shouldEnforceTimer = showTimer === true && Number.isFinite(parsedTimerMinutes) && parsedTimerMinutes > 0;
+  if (shouldEnforceTimer) {
+    // Check if we're within the configured test window using frontend-provided current time
+    const testTimer = input.cart.testTimerAttribute?.value;
+    const currentTimeStr = input.cart.currentTimeAttribute?.value;
 
-  if (!testTimer || !currentTimeStr) {
-    console.log('No discount applied: Missing test timer or current time');
-    return { operations: [] };
-  }
-
-  try {
-    // Parse the timer JSON structure (now flat)
-    const timerData = JSON.parse(testTimer);
-    // Find the active discount test key
-    const activeDiscountKey = Object.entries(testData)
-      .find(([key, value]) => key.includes('discount_active') && value === "true")?.[0];
-    if (!activeDiscountKey) {
-      console.log('No discount applied: No active discount test key found');
-      return { operations: [] };
-    }
-    const startTime = timerData[activeDiscountKey];
-    if (!startTime) {
-      console.log('No discount applied: No start time found for this discount test');
+    if (!testTimer || !currentTimeStr) {
+      console.log('No discount applied: Missing test timer or current time');
       return { operations: [] };
     }
 
-    const testStartTime = new Date(startTime);
-    const currentTime = new Date(currentTimeStr);
+    try {
+      // Parse the timer JSON structure (now flat)
+      const timerData = JSON.parse(testTimer);
+      // Find the active discount test key
+      const activeDiscountKey = Object.entries(testData)
+        .find(([key, value]) => key.includes('discount_active') && value === "true")?.[0];
+      if (!activeDiscountKey) {
+        console.log('No discount applied: No active discount test key found');
+        return { operations: [] };
+      }
+      const startTime = timerData[activeDiscountKey];
+      if (!startTime) {
+        console.log('No discount applied: No start time found for this discount test');
+        return { operations: [] };
+      }
 
-    // Calculate time difference in minutes
-    const timeDifferenceMinutes = Math.abs(currentTime.getTime() - testStartTime.getTime()) / (1000 * 60);
+      const testStartTime = new Date(startTime);
+      const currentTime = new Date(currentTimeStr);
 
-    console.log('Timer check details:', {
-      testStartTime: testStartTime.toISOString(),
-      currentTime: currentTime.toISOString(),
-      timeDifferenceMinutes: Math.floor(timeDifferenceMinutes),
-      isWithinWindow: timeDifferenceMinutes <= timeFrame
-    });
+      // Calculate time difference in minutes
+      const timeDifferenceMinutes = Math.abs(currentTime.getTime() - testStartTime.getTime()) / (1000 * 60);
 
-    // Check if within 30 minutes
-    if (timeDifferenceMinutes > timeFrame) {
-      console.log(`No discount applied: Test timer exceeded ${timeFrame} minutes`, {
+      console.log('Timer check details:', {
         testStartTime: testStartTime.toISOString(),
         currentTime: currentTime.toISOString(),
-        timeDifferenceMinutes: Math.floor(timeDifferenceMinutes)
+        timeDifferenceMinutes: Math.floor(timeDifferenceMinutes),
+        isWithinWindow: timeDifferenceMinutes <= timeFrame
       });
+
+      // Check if within allowed minutes
+      if (timeDifferenceMinutes > timeFrame) {
+        console.log(`No discount appliedd: Test timer exceeded ${timeFrame} minutes`, {
+          testStartTime: testStartTime.toISOString(),
+          currentTime: currentTime.toISOString(),
+          timeDifferenceMinutes: Math.floor(timeDifferenceMinutes)
+        });
+        return { operations: [] };
+      }
+
+      console.log('Test timer check passed - discount will be applied');
+    } catch (error) {
+      console.log('Error processing test timer:', error.message);
       return { operations: [] };
     }
-
-    console.log('Test timer check passed - discount will be applied');
-  } catch (error) {
-    console.log('Error processing test timer:', error.message);
-    return { operations: [] };
+  } else {
+    console.log('Timer disabled or not configured; skipping timer checks');
   }
 
   // Get the device ID and hash value from cart attributes
