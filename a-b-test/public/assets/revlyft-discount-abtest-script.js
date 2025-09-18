@@ -7,12 +7,12 @@ if (window.sessionStorage && window.sessionStorage.getItem('rv_hashValue')) {
     hashValue = getCookie('rv_hashValue');
 }
 
-function getTimeRemaining(startTime) {
-    const thirtyMinutes = 30 * 60 * 1000; // 30 minutes in milliseconds
+function getTimeRemaining(startTime, timerMinutes = 30) {
+    const timerDurationMs = (parseInt(timerMinutes, 10) || 30) * 60 * 1000; // timer minutes in milliseconds
     const now = new Date().getTime();
     const start = new Date(startTime).getTime();
     const timeElapsed = now - start;
-    const timeRemaining = thirtyMinutes - timeElapsed;
+    const timeRemaining = timerDurationMs - timeElapsed;
 
     if (timeRemaining <= 0) {
         return null;
@@ -195,33 +195,52 @@ function manageDiscountCountdown() {
         // Get hashValue from cookie if available
         if (hashValue) hashValue = parseInt(hashValue, 10);
 
-        if (!discountStartTime) {
-            console.log('❌ No discount timer cookie found');
-            return;
-        }
-        if (!testId) {
-            console.log('❌ No testId found from discount timer cookie');
-            return;
-        }
-        // Fetch AB test data to get testGroups
+        // Fetch AB test data to get testGroups and timer config
         fetchABTestData().then(async function (abTestsData) {
-          
-            console.warn("hhhh",abTestsData)
-            if (!abTestsData || !abTestsData[testId] ) {
-                console.log('❌ No AB test data or testGroups found for testId', testId,);
+            // If we didn't find a cookie/testId, try to infer active discount test
+            if ((!discountStartTime || !testId) && abTestsData) {
+                for (const [tid, test] of Object.entries(abTestsData)) {
+                    if (test.basicInfo?.type === 'discount' && test.basicInfo?.status === 'active') {
+                        testId = tid;
+                        break;
+                    }
+                }
+            }
+
+            if (!abTestsData || !testId || !abTestsData[testId]) {
+                console.log('❌ No AB test data or active test found for timer initialization');
                 return;
             }
-            const testGroups = abTestsData[testId].testGroups;
+
+            const testData = abTestsData[testId];
+            const testGroups = testData.testGroups;
+            // Read timer config from DB
+            const showTimer = !!(testData.discountConfig && testData.discountConfig.showTimer);
+            const timerMinutes = parseInt(testData.discountConfig && testData.discountConfig.timerMinutes) || 30;
             const userVariant = getVariantForUser(testGroups, hashValue);
             const variantIndex = testGroups.findIndex(group => group.id.toString() === userVariant.id.toString());
             if (variantIndex === 0) {
                 console.log('🛑 User is in control group (variant index 0), skipping timer UI and DOM lookups.');
                 return;
             }
+            // Respect showTimer flag from DB
+            if (!showTimer) {
+                console.log('⏹️ showTimer disabled in config, skipping timer UI.');
+                return;
+            }
+
+            // If no cookie, create one now to start the timer
+            if (!discountStartTime) {
+                const nowIso = new Date().toISOString();
+                const cookieName = `rv_tests_start_time_${testId}_discount_active`;
+                document.cookie = `${cookieName}=${encodeURIComponent(nowIso)}; path=/`;
+                discountStartTime = nowIso;
+                console.log('🍪 Created discount timer cookie:', cookieName, discountStartTime);
+            }
             // Start the countdown only for non-control group
             let timerExpired = false;
             const countdownInterval = setInterval(() => {
-                const remaining = getTimeRemaining(discountStartTime);
+                const remaining = getTimeRemaining(discountStartTime, timerMinutes);
                 if (!remaining) {
                     clearInterval(countdownInterval);
                     removeTimerUI(); // Only remove the UI, keep the cookie
@@ -569,11 +588,23 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
         // Check if discount timer expired (skip analytics if expired)
         const discountStartTime = getCookie(`rv_tests_start_time_${testId}_discount_active`);
         if (discountStartTime) {
-            const now = Date.now();
-            const start = new Date(discountStartTime).getTime();
-            if (now - start > 30 * 60 * 1000) {
-                console.log('⏰ Discount timer expired, skipping analytics');
-                return;
+            try {
+                const abTestsData = await fetchABTestData();
+                const timerMinutes = parseInt(abTestsData?.[testId]?.discountConfig?.timerMinutes) || 30;
+                const now = Date.now();
+                const start = new Date(discountStartTime).getTime();
+                if (now - start > (timerMinutes * 60 * 1000)) {
+                    console.log('⏰ Discount timer expired, skipping analytics');
+                    return;
+                }
+            } catch (e) {
+                // Fallback to 30 minutes if any error
+                const now = Date.now();
+                const start = new Date(discountStartTime).getTime();
+                if (now - start > 30 * 60 * 1000) {
+                    console.log('⏰ Discount timer expired, skipping analytics');
+                    return;
+                }
             }
         }
 
@@ -749,9 +780,10 @@ function observeCartChanges() {
                     // Check if discount timer expired (skip analytics if expired)
                     const discountStartTime = getCookie(`rv_tests_start_time_${testId}_discount_active`);
                     if (discountStartTime) {
+                        const timerMinutes = parseInt(test.discountConfig?.timerMinutes) || 30;
                         const now = Date.now();
                         const start = new Date(discountStartTime).getTime();
-                        if (now - start > 30 * 60 * 1000) {
+                        if (now - start > (timerMinutes * 60 * 1000)) {
                             console.log('⏰ Discount timer expired, skipping cart change analytics');
                             continue;
                         }
