@@ -14,6 +14,52 @@ import {
   * @param {RunInput} input
   * @returns {CartLinesDiscountsGenerateRunResult}
   */
+function getCurrencySymbol(currencyCode) {
+  const currencySymbols = {
+    'USD': '$',
+    'EUR': '€',
+    'GBP': '£',
+    'CAD': 'C$',
+    'AUD': 'A$',
+    'NZD': 'NZ$',
+    'JPY': '¥',
+    'CNY': '¥',
+    'KRW': '₩',
+    'INR': '₹',
+    'BRL': 'R$',
+    'MXN': '$',
+    'RUB': '₽',
+    'ZAR': 'R',
+    'CHF': 'CHF',
+    'SEK': 'kr',
+    'NOK': 'kr',
+    'DKK': 'kr',
+    'PLN': 'zł',
+    'CZK': 'Kč',
+    'HUF': 'Ft',
+    'TRY': '₺',
+    'ILS': '₪',
+    'AED': 'د.إ',
+    'SAR': 'ر.س',
+    'QAR': 'ر.ق',
+    'KWD': 'د.ك',
+    'BHD': 'د.ب',
+    'OMR': 'ر.ع.',
+    'JOD': 'د.ا',
+    'LBP': 'ل.ل',
+    'EGP': 'ج.م',
+    'THB': '฿',
+    'SGD': 'S$',
+    'MYR': 'RM',
+    'IDR': 'Rp',
+    'PHP': '₱',
+    'VND': '₫',
+    'HKD': 'HK$',
+    'TWD': 'NT$'
+  };
+  
+  return currencySymbols[currencyCode] || currencyCode;
+}
 
 export function cartLinesDiscountsGenerateRun(input) {
   // Get the test configuration from the metafield
@@ -194,13 +240,15 @@ export function cartLinesDiscountsGenerateRun(input) {
       cost: line.cost?.subtotalAmount?.amount
     }))
   });
-
+  const currencyCode = input.cart.lines?.[0]?.cost?.subtotalAmount?.currencyCode || 
+  input.cart.cost?.subtotalAmount?.currencyCode || 'USD';
+const currencySymbol = getCurrencySymbol(currencyCode);
   // Create appropriate messages based on threshold type
   let qualifyingMessage, activeMessage;
   if (type === 'value') {
     const remainingAmount = thresholdValue - cartTotal;
-    qualifyingMessage = `Add $${remainingAmount.toFixed(2)} more to get ${discountPercentage}% off your order`;
-    activeMessage = `${discountPercentage}% off orders over $${thresholdValue}`;
+    qualifyingMessage = `Add ${currencySymbol}${remainingAmount.toFixed(2)} more to get ${discountPercentage}% off your order`;
+    activeMessage = `${discountPercentage}% off orders over ${currencySymbol}${thresholdValue}`;
   } else {
     const remainingItems = thresholdValue - totalItems;
     qualifyingMessage = `Add ${remainingItems} more item${remainingItems > 1 ? 's' : ''} to get ${discountPercentage}% off your order`;
@@ -231,7 +279,7 @@ export function cartLinesDiscountsGenerateRun(input) {
       };
     }
     if (type === 'value' && cartTotal < thresholdValue) {
-      console.log(`No discount applied: Cart total ($${cartTotal}) is less than threshold ($${thresholdValue})`);
+      console.log(`No discount applied: Cart total (${currencySymbol}${cartTotal}) is less than threshold (${currencySymbol}${thresholdValue})`);
       return {
         operations: [{
           orderDiscountsAdd: {
