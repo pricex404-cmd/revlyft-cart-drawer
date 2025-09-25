@@ -144,6 +144,22 @@ export const numberInputCSS = `
     }
 `;
 
+
+export const numberTextFieldCSS = `
+  .Polaris-TextField__Spinner {
+    display: none !important;
+  }
+  .Polaris-TextField__Input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+  .Polaris-TextField__Input[type="number"]::-webkit-inner-spin-button,
+  .Polaris-TextField__Input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+`;
+
 // Function to apply global number input formatting
 export const applyGlobalNumberInputFormatting = () => {
     // Add global CSS to document head
