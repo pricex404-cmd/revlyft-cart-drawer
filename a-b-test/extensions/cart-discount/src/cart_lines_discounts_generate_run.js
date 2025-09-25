@@ -62,7 +62,7 @@ function getCurrencySymbol(currencyCode) {
     'HKD': 'HK$',
     'HUF': 'Ft',
     'ISK': 'kr',
-    'INR': '₹',        // ✅ Official Shopify shows ₹ not Rs
+    'INR': 'Rs',        // ✅ Official Shopify shows ₹ not Rs
     'IDR': 'Rp',
     'ILS': '₪',
     'JMD': '$',
@@ -317,8 +317,8 @@ const currencySymbol = getCurrencySymbol(currencyCode);
   let qualifyingMessage, activeMessage;
   if (type === 'value') {
     const remainingAmount = thresholdValue - cartTotal;
-    qualifyingMessage = `Add ${currencySymbol}${remainingAmount.toFixed(2)} more to get ${discountPercentage}% off your order`;
-    activeMessage = `${discountPercentage}% off orders over ${currencySymbol}${thresholdValue}`;
+    qualifyingMessage = `Add ${currencySymbol} ${remainingAmount.toFixed(2)} more to get ${discountPercentage}% off your order`;
+    activeMessage = `${discountPercentage}% off orders over ${currencySymbol} ${thresholdValue}`;
   } else {
     const remainingItems = thresholdValue - totalItems;
     qualifyingMessage = `Add ${remainingItems} more item${remainingItems > 1 ? 's' : ''} to get ${discountPercentage}% off your order`;
@@ -349,7 +349,7 @@ const currencySymbol = getCurrencySymbol(currencyCode);
       };
     }
     if (type === 'value' && cartTotal < thresholdValue) {
-      console.log(`No discount applied: Cart total (${currencySymbol}${cartTotal}) is less than threshold (${currencySymbol}${thresholdValue})`);
+      console.log(`No discount applied: Cart total (${currencySymbol} ${cartTotal}) is less than threshold (${currencySymbol} ${thresholdValue})`);
       return {
         operations: [{
           orderDiscountsAdd: {
