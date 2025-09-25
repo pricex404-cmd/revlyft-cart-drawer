@@ -12,6 +12,7 @@ query CartInput {
       cost {
         subtotalAmount {
           amount
+          currencyCode
         }
       }
     }
