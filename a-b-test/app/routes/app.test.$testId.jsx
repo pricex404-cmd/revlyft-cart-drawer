@@ -378,7 +378,7 @@ export default function Test() {
     const description = searchParams.get('description');
 
     // Define tab order for navigation
-    const tabOrder = ['testGroups', 'modifications', 'targeting', 'preview', 'configuration', 'results'];
+    const tabOrder = ['testGroups', 'modifications', 'targeting', 'preview','results', 'configuration'];
 
     // Add state for test status
     const [testStatus, setTestStatus] = useState(testData?.basicInfo?.status || 'pending');

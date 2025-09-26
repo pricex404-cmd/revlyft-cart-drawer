@@ -4,7 +4,7 @@ import { DiscountTypeSelector } from "./modificationContentComponent/DiscountTyp
 import { ThresholdInput } from "./modificationContentComponent/ThresholdInput";
 import { GroupDiscountConfig } from "./modificationContentComponent/GroupDiscountConfig";
 import { TimerInput } from "./modificationContentComponent/TimerInput";
-
+import { numberTextFieldCSS } from "../../utils/numberInputUtils";
 export function ModificationsContentDiscount({
     testGroups,
     onTestGroupsChange,
@@ -128,7 +128,7 @@ export function ModificationsContentDiscount({
                 discountType={discountType}
                 setDiscountType={setDiscountType}
             />
-
+            <style>{numberTextFieldCSS}</style>
             <ThresholdInput
                 discountType={discountType}
                 threshold={threshold}
