@@ -170,6 +170,197 @@ function removeTimerUI() {
     }
 }
 
+// Function to remove progress bar UI
+function removeProgressBarUI() {
+    const progressBarDiv = document.getElementById('rv-top-progress-bar');
+    if (progressBarDiv) {
+        progressBarDiv.remove();
+        console.log('🗑️ Progress bar UI removed');
+    }
+}
+
+// Function to create or update visual progress bar UI (minimal, no text, flush at top)
+function updateProgressBarUI(currentItems, threshold = 10) {
+    console.log('🎯 updateProgressBarUI called:', { currentItems, threshold });
+
+    let progressBarDiv = document.getElementById('rv-top-progress-bar');
+    if (!progressBarDiv) {
+        console.log('🔍 Progress bar not found, creating new one...');
+
+        // Target cart drawer inner specifically to place bar above "Your cart" header
+        const cartDrawerInner = document.querySelector('.drawer__inner[role="dialog"]');
+        const cartHeader = cartDrawerInner ? cartDrawerInner.querySelector('.drawer__header') : null;
+        console.log('🎯 Cart header found:', cartHeader);
+
+        if (!cartHeader) {
+            console.log('⚠️ Cart header not found, trying fallback selectors...');
+            // Fallback: try other cart selectors
+            const cartDrawer = document.querySelector('cart-drawer');
+            const cartPage = document.querySelector('.cart__items');
+            const productPage = document.querySelector('.product');
+
+            console.log('🔍 Fallback elements:', { cartDrawer, cartPage, productPage });
+
+            let targetElement = null;
+            if (cartDrawer) {
+                targetElement = cartDrawer;
+                console.log('✅ Using cart drawer as target');
+            } else if (cartPage) {
+                targetElement = cartPage;
+                console.log('✅ Using cart page as target');
+            } else if (productPage) {
+                targetElement = productPage;
+                console.log('✅ Using product page as target');
+            } else {
+                console.log('❌ No suitable target found for progress bar');
+                return; // No suitable target found
+            }
+
+            // Insert at the very top of fallback element
+            progressBarDiv = document.createElement('div');
+            progressBarDiv.id = 'rv-top-progress-bar';
+            progressBarDiv.style.cssText = `
+                width: 100%;
+                height: 20px;
+                background: #f0f0f0;
+                border: 2px solid #ddd;
+                border-radius: 12px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+                margin: 8px 0;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            `;
+            progressBarDiv.innerHTML = `
+                <div id="rv-progress-bar-fill" style="
+                    height: 100%; 
+                    width: 0%; 
+                    background: #3b82f6 !important; 
+                    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+                    border-radius: 10px; 
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    z-index: 10;
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                "></div>
+            `;
+            targetElement.insertAdjacentElement('afterbegin', progressBarDiv);
+            console.log('✅ Progress bar inserted into fallback target');
+        } else {
+            console.log('✅ Cart drawer inner found, inserting progress bar just below header');
+            // Insert progress bar just below the drawer__header (after the "Your cart" text)
+            progressBarDiv = document.createElement('div');
+            progressBarDiv.id = 'rv-top-progress-bar';
+            progressBarDiv.style.cssText = `
+                width: 100%;
+                height: 20px;
+                background: #f0f0f0;
+                border: 2px solid #ddd;
+                border-radius: 12px;
+                position: relative;
+                overflow: hidden;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+                margin: 8px 0;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            `;
+            progressBarDiv.innerHTML = `
+                <div id="rv-progress-bar-fill" style="
+                    height: 100%; 
+                    width: 0%; 
+                    background: #3b82f6 !important; 
+                    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+                    border-radius: 10px; 
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    z-index: 10;
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                "></div>
+            `;
+            // Insert right after the drawer__header
+            cartHeader.insertAdjacentElement('afterend', progressBarDiv);
+            console.log('✅ Progress bar inserted just below the cart header');
+        }
+    } else {
+        console.log('✅ Progress bar already exists, updating...');
+    }
+
+    // Calculate progress
+    const percent = Math.min(Math.round((currentItems / threshold) * 100), 100);
+    const fill = document.getElementById('rv-progress-bar-fill');
+
+    console.log('📊 Progress calculation:', { 
+        currentItems, 
+        threshold, 
+        calculation: `${currentItems}/${threshold} * 100`,
+        percent 
+    });
+
+    if (!fill) {
+        console.log('❌ Progress bar fill element not found, trying to recreate...');
+        // Try to recreate the fill element
+        const progressBarDiv = document.getElementById('rv-top-progress-bar');
+        if (progressBarDiv) {
+            progressBarDiv.innerHTML = `
+                <div id="rv-progress-bar-fill" style="
+                    height: 100%; 
+                    width: 0%; 
+                    background: #3b82f6 !important; 
+                    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+                    border-radius: 10px; 
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    z-index: 10;
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                "></div>
+            `;
+            console.log('✅ Progress bar fill element recreated');
+        } else {
+            console.log('❌ Progress bar container not found either');
+            return;
+        }
+    }
+
+    // Get the fill element again after potential recreation
+    const fillElement = document.getElementById('rv-progress-bar-fill');
+    if (!fillElement) {
+        console.log('❌ Still cannot find progress bar fill element');
+        return;
+    }
+
+    // Update progress bar width
+    fillElement.style.width = percent + '%';
+    
+    // Force visibility properties to override any CSS conflicts
+    fillElement.style.display = 'block !important';
+    fillElement.style.visibility = 'visible !important';
+    fillElement.style.opacity = '1 !important';
+    
+    console.log('🎨 Progress bar updated:', { width: percent + '%', percent });
+
+    // Blue fill based on progress percentage
+    const fillColor = '#3b82f6'; // Always blue for any progress
+    
+    fillElement.style.background = fillColor;
+
+    console.log('🌈 Color updated:', { background: fillElement.style.background, percent });
+}
+
 // Function to manage discount countdown
 function manageDiscountCountdown() {
     try {
@@ -345,7 +536,7 @@ function getAppDomain() {
             }
         }
     }
-    
+
     // Fallback to current domain
     return window.location.origin;
 }
@@ -713,19 +904,163 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
     }
 }
 
+// Function to get cart value (total price)
+function getCartValue() {
+    // Try multiple selectors to find subtotal
+    const selectors = [
+        '.cart__subtotal .money',
+        '.cart-subtotal',
+        '[data-cart-subtotal]',
+        '.subtotal',
+        '.cart__subtotal',
+        '.cart-subtotal-price',
+        '.cart-total',
+        '.total-price',
+        '.money',
+        // More specific selectors for cart drawer
+        '.drawer__inner .subtotal',
+        '.drawer__inner .cart__subtotal',
+        '.drawer__inner .money',
+        // Look for elements with price patterns
+        '*[class*="subtotal"]',
+        '*[class*="total"]',
+        '*[class*="price"]'
+    ];
+    
+    let subtotalElement = null;
+    let usedSelector = '';
+    
+    for (const selector of selectors) {
+        subtotalElement = document.querySelector(selector);
+        if (subtotalElement) {
+            usedSelector = selector;
+            break;
+        }
+    }
+    
+    if (subtotalElement) {
+        const text = subtotalElement.textContent || subtotalElement.innerText;
+        console.log('💰 Found subtotal element using selector:', usedSelector, 'Text:', text);
+        
+        // Extract number from text like "$729.95 AUD" or "$729.95"
+        const match = text.match(/[\d,]+\.?\d*/);
+        if (match) {
+            const value = parseFloat(match[0].replace(',', ''));
+            console.log('💰 Cart value:', value, 'from text:', text);
+            return value;
+        }
+    }
+    
+    // Fallback 1: Look for elements containing "Subtotal" text
+    const allElements = document.querySelectorAll('*');
+    for (const element of allElements) {
+        // Skip style, script, and other non-content elements
+        if (element.tagName === 'STYLE' || element.tagName === 'SCRIPT' || 
+            element.tagName === 'META' || element.tagName === 'LINK') {
+            continue;
+        }
+        
+        const text = element.textContent || element.innerText;
+        if (text && text.includes('Subtotal') && text.includes('$') && text.includes('AUD')) {
+            console.log('💰 Found subtotal element:', element, 'Text:', text);
+            // Look for the price pattern in the text
+            const priceMatch = text.match(/\$([\d,]+\.?\d*)\s*AUD/);
+            if (priceMatch) {
+                const value = parseFloat(priceMatch[1].replace(',', ''));
+                console.log('💰 Cart value (subtotal fallback):', value);
+                return value;
+            }
+        }
+    }
+    
+    // Fallback 2: Look for any element containing price patterns
+    for (const element of allElements) {
+        // Skip style, script, and other non-content elements
+        if (element.tagName === 'STYLE' || element.tagName === 'SCRIPT' || 
+            element.tagName === 'META' || element.tagName === 'LINK') {
+            continue;
+        }
+        
+        const text = element.textContent || element.innerText;
+        // Look for various price patterns
+        const pricePatterns = [
+            /\$([\d,]+\.?\d*)\s*AUD/,  // $4,394.30 AUD
+            /\$([\d,]+\.?\d*)/,        // $4,394.30
+            /([\d,]+\.?\d*)\s*AUD/     // 4,394.30 AUD
+        ];
+        
+        for (const pattern of pricePatterns) {
+            if (text && pattern.test(text) && 
+                !text.includes('@property') && !text.includes('syntax:') &&
+                text.length < 1000) { // Avoid very long text (likely CSS/JS)
+                console.log('💰 Found price in fallback element:', element, 'Text:', text);
+                const match = text.match(pattern);
+                if (match) {
+                    const value = parseFloat(match[1].replace(',', ''));
+                    console.log('💰 Cart value (price fallback):', value);
+                    return value;
+                }
+            }
+        }
+    }
+    
+    console.log('💰 No cart value found');
+    return 0;
+}
+
 // Function to extract cart information
 function getCartInfo() {
-    const cartItems = document.querySelectorAll('.cart-item');
+    // Try multiple selectors to find cart items
+    const selectors = [
+        '.cart-item',
+        '[data-cart-item]',
+        '.cart__item',
+        '.line-item',
+        '.cart-line-item'
+    ];
+    
+    let cartItems = [];
+    let usedSelector = '';
+    
+    for (const selector of selectors) {
+        cartItems = document.querySelectorAll(selector);
+        if (cartItems.length > 0) {
+            usedSelector = selector;
+            break;
+        }
+    }
+    
     let totalItems = 0;
 
-    cartItems.forEach(item => {
-        const quantityInput = item.querySelector('.quantity__input');
+    console.log('🔍 Found cart items using selector:', usedSelector, 'Count:', cartItems.length);
+    
+    cartItems.forEach((item, index) => {
+        // Try multiple quantity input selectors
+        const quantitySelectors = [
+            '.quantity__input',
+            'input[type="number"]',
+            '.quantity-input',
+            'input[name*="quantity"]',
+            'input[data-quantity]'
+        ];
+        
+        let quantityInput = null;
+        for (const qSelector of quantitySelectors) {
+            quantityInput = item.querySelector(qSelector);
+            if (quantityInput) break;
+        }
+        
+        console.log(`Item ${index}:`, item, 'Quantity input:', quantityInput);
         if (quantityInput) {
-            totalItems += parseInt(quantityInput.value) || 0;
+            const quantity = parseInt(quantityInput.value) || 0;
+            totalItems += quantity;
+            console.log(`Item ${index} quantity:`, quantity);
+        } else {
+            console.log(`Item ${index}: No quantity input found`);
         }
     });
 
-    console.log('🛒 Current cart items:', totalItems);
+    console.log('🛒 Total cart items:', totalItems);
     return totalItems;
 }
 
@@ -751,6 +1086,7 @@ function observeCartChanges() {
             }
 
             const currentItemCount = getCartInfo();
+            const currentCartValue = getCartValue();
             const currentTime = Date.now();
 
             // Get current message text
@@ -802,6 +1138,50 @@ function observeCartChanges() {
 
                     // Check if this is control group (discountPercentageValue is "0")
                     const isControlGroup = userVariant.discountPercentageValue === "0";
+
+                    // Update progress bar UI for test groups (not control group)
+                    if (!isControlGroup) {
+                        // Calculate actual threshold from discount message
+                        const discountMessage = document.querySelector('.discounts__discount');
+                        const messageText = discountMessage ? discountMessage.textContent.trim() : "";
+                        console.log('📝 Discount message text:', messageText);
+                        
+                        const { thresholdToAdd } = extractThresholdInfo(messageText);
+                        console.log('🔢 Extracted threshold to add:', thresholdToAdd);
+                        
+                        // Check if threshold is based on value or quantity
+                        // If threshold is a large number (> 10), it's likely a value threshold
+                        const isValueThreshold = threshold > 10;
+                        
+                        let actualThreshold;
+                        let currentValue;
+                        
+                        if (isValueThreshold) {
+                            // Use cart value for threshold calculation
+                            currentValue = currentCartValue;
+                            actualThreshold = threshold; // Use the configured threshold directly
+                            console.log('💰 Using VALUE-based threshold');
+                        } else {
+                            // Use cart quantity for threshold calculation
+                            currentValue = currentItemCount;
+                            actualThreshold = currentItemCount + (parseInt(thresholdToAdd) || 0);
+                            console.log('🔢 Using QUANTITY-based threshold');
+                        }
+                        
+                        console.log('🎯 Progress bar threshold calculation:', {
+                            currentItemCount,
+                            currentCartValue,
+                            currentValue,
+                            thresholdToAdd,
+                            parsedThresholdToAdd: parseInt(thresholdToAdd) || 0,
+                            actualThreshold,
+                            originalThreshold: threshold,
+                            isValueThreshold,
+                            messageText
+                        });
+                        
+                        updateProgressBarUI(currentValue, actualThreshold);
+                    }
 
                     let eventData;
                     if (isControlGroup) {
@@ -1003,11 +1383,320 @@ const observer = new MutationObserver((mutations) => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
+// Manual test function for debugging progress bar
+window.testProgressBar = function (testItems = 5, testThreshold = 10) {
+    console.log('🧪 Testing progress bar with:', { testItems, testThreshold });
+    
+    // Force remove existing progress bar first
+    removeProgressBarUI();
+    
+    // Wait a bit then create new one
+    setTimeout(() => {
+        updateProgressBarUI(testItems, testThreshold);
+        
+        // Test different progress levels
+        setTimeout(() => {
+            console.log('🧪 Testing 25% progress...');
+            updateProgressBarUI(2, 8);
+        }, 1000);
+
+        setTimeout(() => {
+            console.log('🧪 Testing 50% progress...');
+            updateProgressBarUI(4, 8);
+        }, 2000);
+
+        setTimeout(() => {
+            console.log('🧪 Testing 75% progress...');
+            updateProgressBarUI(6, 8);
+        }, 3000);
+
+        setTimeout(() => {
+            console.log('🧪 Testing 100% progress...');
+            updateProgressBarUI(8, 8);
+        }, 4000);
+    }, 100);
+};
+
+// Test function specifically for cart drawer structure
+window.testCartDrawerProgressBar = function () {
+    console.log('🧪 Testing cart drawer progress bar...');
+    const cartDrawerInner = document.querySelector('.drawer__inner[role="dialog"]');
+    console.log('🎯 Cart drawer inner found:', cartDrawerInner);
+
+    if (cartDrawerInner) {
+        console.log('✅ Cart drawer structure detected, testing progress bar...');
+        updateProgressBarUI(3, 10);
+    } else {
+        console.log('❌ Cart drawer not found. Make sure cart is open.');
+    }
+};
+
+// Debug function to check progress bar state
+window.debugProgressBar = function() {
+    const progressBar = document.getElementById('rv-top-progress-bar');
+    const fill = document.getElementById('rv-progress-bar-fill');
+    
+    console.log('🔍 Progress Bar Debug Info:');
+    console.log('Progress Bar Container:', progressBar);
+    console.log('Progress Bar Fill:', fill);
+    
+    if (progressBar) {
+        const computedStyle = window.getComputedStyle(progressBar);
+        console.log('Container Styles:', progressBar.style.cssText);
+        console.log('Container Computed Styles:', computedStyle);
+        console.log('Container Display:', computedStyle.display);
+        console.log('Container Visibility:', computedStyle.visibility);
+        console.log('Container Opacity:', computedStyle.opacity);
+        console.log('Container Position:', computedStyle.position);
+        console.log('Container Z-Index:', computedStyle.zIndex);
+        
+        // Check if element is actually visible
+        const rect = progressBar.getBoundingClientRect();
+        console.log('Container Bounding Rect:', rect);
+        console.log('Container Visible:', rect.width > 0 && rect.height > 0);
+    }
+    
+    if (fill) {
+        const computedStyle = window.getComputedStyle(fill);
+        console.log('Fill Styles:', fill.style.cssText);
+        console.log('Fill Computed Styles:', computedStyle);
+        console.log('Fill Width:', fill.style.width);
+        console.log('Fill Background:', fill.style.background);
+        console.log('Fill Display:', computedStyle.display);
+        console.log('Fill Visibility:', computedStyle.visibility);
+        console.log('Fill Opacity:', computedStyle.opacity);
+        
+        // Check if element is actually visible
+        const rect = fill.getBoundingClientRect();
+        console.log('Fill Bounding Rect:', rect);
+        console.log('Fill Visible:', rect.width > 0 && rect.height > 0);
+    }
+    
+    // Check cart items
+    const cartItems = document.querySelectorAll('[data-cart-item]');
+    console.log('Cart Items Found:', cartItems.length);
+    
+    return {
+        progressBar,
+        fill,
+        cartItemsCount: cartItems.length
+    };
+};
+
+// Force progress bar to show with color - emergency function
+window.forceProgressBar = function(percent = 50) {
+    console.log('🚨 Force Progress Bar with', percent + '%');
+    
+    // Remove existing progress bar
+    removeProgressBarUI();
+    
+    // Wait a bit then create new one
+    setTimeout(() => {
+        // Create progress bar container
+        const progressBarDiv = document.createElement('div');
+        progressBarDiv.id = 'rv-top-progress-bar';
+        progressBarDiv.style.cssText = `
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            margin: 8px 0;
+            z-index: 1000;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        `;
+        
+        // Create fill element
+        const fillDiv = document.createElement('div');
+        fillDiv.id = 'rv-progress-bar-fill';
+        // Always blue for any progress
+        const fillColor = '#3b82f6';
+        
+        fillDiv.style.cssText = `
+            height: 100%;
+            width: ${percent}%;
+            background: ${fillColor} !important;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        `;
+        
+        progressBarDiv.appendChild(fillDiv);
+        
+        // Try to insert into cart
+        const cartDrawerInner = document.querySelector('.drawer__inner[role="dialog"]');
+        const cartHeader = cartDrawerInner ? cartDrawerInner.querySelector('.drawer__header') : null;
+        
+        if (cartHeader) {
+            cartHeader.insertAdjacentElement('afterend', progressBarDiv);
+            console.log('✅ Force progress bar inserted after cart header');
+        } else {
+            // Fallback - insert at top of body
+            document.body.insertAdjacentElement('afterbegin', progressBarDiv);
+            console.log('✅ Force progress bar inserted at top of body');
+        }
+        
+        console.log('🎨 Force progress bar created with', percent + '% width and colorful gradient');
+    }, 100);
+};
+
+// Quick visibility check function
+window.checkProgressBarVisibility = function() {
+    const progressBar = document.getElementById('rv-top-progress-bar');
+    const fill = document.getElementById('rv-progress-bar-fill');
+    
+    if (progressBar) {
+        const rect = progressBar.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(progressBar);
+        
+        console.log('🔍 Progress Bar Visibility Check:');
+        console.log('Container Display:', computedStyle.display);
+        console.log('Container Visibility:', computedStyle.visibility);
+        console.log('Container Opacity:', computedStyle.opacity);
+        console.log('Container Position:', computedStyle.position);
+        console.log('Container Z-Index:', computedStyle.zIndex);
+        console.log('Container Bounding Rect:', rect);
+        console.log('Container Visible:', rect.width > 0 && rect.height > 0);
+        console.log('Container Parent:', progressBar.parentElement);
+        
+        // Check if parent is visible
+        if (progressBar.parentElement) {
+            const parentRect = progressBar.parentElement.getBoundingClientRect();
+            const parentStyle = window.getComputedStyle(progressBar.parentElement);
+            console.log('Parent Display:', parentStyle.display);
+            console.log('Parent Visibility:', parentStyle.visibility);
+            console.log('Parent Opacity:', parentStyle.opacity);
+            console.log('Parent Bounding Rect:', parentRect);
+        }
+    }
+    
+    if (fill) {
+        const rect = fill.getBoundingClientRect();
+        const computedStyle = window.getComputedStyle(fill);
+        
+        console.log('Fill Display:', computedStyle.display);
+        console.log('Fill Visibility:', computedStyle.visibility);
+        console.log('Fill Opacity:', computedStyle.opacity);
+        console.log('Fill Bounding Rect:', rect);
+        console.log('Fill Visible:', rect.width > 0 && rect.height > 0);
+    }
+};
+
+// Fix display issue function
+window.fixProgressBarDisplay = function() {
+    const fill = document.getElementById('rv-progress-bar-fill');
+    if (fill) {
+        // Force display properties
+        fill.style.setProperty('display', 'block', 'important');
+        fill.style.setProperty('visibility', 'visible', 'important');
+        fill.style.setProperty('opacity', '1', 'important');
+        
+        console.log('🔧 Fixed progress bar fill display properties');
+        console.log('Fill Display:', window.getComputedStyle(fill).display);
+        console.log('Fill Visible:', window.getComputedStyle(fill).visibility);
+        console.log('Fill Opacity:', window.getComputedStyle(fill).opacity);
+    } else {
+        console.log('❌ Progress bar fill element not found');
+    }
+};
+
+// Test function to manually set progress bar with correct values
+window.testProgressBarWithValues = function() {
+    console.log('🧪 Testing progress bar with manual values...');
+    
+    // Remove existing progress bar
+    removeProgressBarUI();
+    
+    // Wait a bit then create with correct values
+    setTimeout(() => {
+        // Based on your cart: $729.95 out of $1200 threshold
+        const currentValue = 729.95;
+        const threshold = 1200;
+        const percent = Math.round((currentValue / threshold) * 100);
+        
+        console.log('🧪 Manual test values:', { currentValue, threshold, percent });
+        
+        // Create progress bar container
+        const progressBarDiv = document.createElement('div');
+        progressBarDiv.id = 'rv-top-progress-bar';
+        progressBarDiv.style.cssText = `
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            margin: 8px 0;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 1000;
+        `;
+        
+        // Create fill element
+        const fillDiv = document.createElement('div');
+        fillDiv.id = 'rv-progress-bar-fill';
+        fillDiv.style.cssText = `
+            height: 100%;
+            width: ${percent}%;
+            background: #3b82f6 !important;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        `;
+        
+        progressBarDiv.appendChild(fillDiv);
+        
+        // Try to insert into cart
+        const cartDrawerInner = document.querySelector('.drawer__inner[role="dialog"]');
+        const cartHeader = cartDrawerInner ? cartDrawerInner.querySelector('.drawer__header') : null;
+        
+        if (cartHeader) {
+            cartHeader.insertAdjacentElement('afterend', progressBarDiv);
+            console.log('✅ Test progress bar inserted after cart header');
+        } else {
+            // Fallback - insert at top of body
+            document.body.insertAdjacentElement('afterbegin', progressBarDiv);
+            console.log('✅ Test progress bar inserted at top of body');
+        }
+        
+        console.log('🎨 Test progress bar created with', percent + '% width and blue fill');
+    }, 100);
+};
+
 // Export functions
 window.revlyfDiscount = {
     getTimeRemaining,
     formatTime,
     manageDiscountCountdown,
     observeCartChanges,
-    trackUserBehaviorAnalytics
+    trackUserBehaviorAnalytics,
+    updateProgressBarUI,
+    removeProgressBarUI,
+    debugProgressBar,
+    forceProgressBar,
+    checkProgressBarVisibility,
+    fixProgressBarDisplay,
+    testProgressBarWithValues
 };
