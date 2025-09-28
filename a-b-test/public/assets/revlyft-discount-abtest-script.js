@@ -738,7 +738,8 @@ function trackCartChangeWithProgressBar() {
         console.log('✅ Discount message found:', messageText);
 
         // Check if discount is already applied (shows "off orders over" with actual discount)
-        const isDiscountApplied = messageText.includes('off orders over') && messageText.includes('(-Rs.') && !messageText.includes('(-Rs. 0.00)');
+       
+        const isDiscountApplied = messageText.includes('off orders') && messageText.includes('(-Rs.') && !messageText.includes('(-Rs. 0.00)');
         
         if (isDiscountApplied) {
             console.log('✅ Discount already applied - showing 100% progress bar');
@@ -754,10 +755,10 @@ function trackCartChangeWithProgressBar() {
             console.log('✅ Value-based "Add more" message - calculating progress from DOM');
             
             // Extract the amount needed to add from the message
-            const amountMatch = messageText.match(/Add Rs ([\d,.]+) more/);
+            const amountToAddInCart = messageText.match(/Add Rs ([\d,.]+) more/);
             
-            if (amountMatch && currentCartValue > 0) {
-                const amountToAdd = extractPriceFromText(amountMatch[1]);
+            if (amountToAddInCart && currentCartValue > 0) {
+                const amountToAdd = extractPriceFromText(amountToAddInCart[1]);
                 const targetThreshold = currentCartValue + amountToAdd;
                 
                 // Calculate progress percentage - how much of the threshold we've reached
@@ -781,10 +782,10 @@ function trackCartChangeWithProgressBar() {
             console.log('✅ Quantity-based "Add more" message - calculating progress from DOM');
             
             // Extract the number of items needed to add from the message (handles both singular and plural)
-            const quantityMatch = messageText.match(/Add (\d+) more items?/);
+            const quantityToAddInCart = messageText.match(/Add (\d+) more items?/);
             
-            if (quantityMatch && currentItemCount > 0) {
-                const itemsToAdd = parseInt(quantityMatch[1]);
+            if (quantityToAddInCart && currentItemCount > 0) {
+                const itemsToAdd = parseInt(quantityToAddInCart[1]);
                 const targetThreshold = currentItemCount + itemsToAdd;
                 
                 // Calculate progress percentage - how much of the threshold we've reached
@@ -1018,10 +1019,10 @@ function updateProgressBarUI() {
         const currentCartValue = getCartValue();
         
         // Extract the amount needed to add from the message
-        const amountMatch = messageText.match(/Add Rs ([\d,.]+) more/);
+        const amountToAddInCart = messageText.match(/Add Rs ([\d,.]+) more/);
         
-        if (amountMatch && currentCartValue > 0) {
-            const amountToAdd = extractPriceFromText(amountMatch[1]);
+        if (amountToAddInCart && currentCartValue > 0) {
+            const amountToAdd = extractPriceFromText(amountToAddInCart[1]);
             const targetThreshold = currentCartValue + amountToAdd;
             
             // Calculate progress percentage
