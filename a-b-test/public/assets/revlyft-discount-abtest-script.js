@@ -7,6 +7,125 @@ if (window.sessionStorage && window.sessionStorage.getItem('rv_hashValue')) {
     hashValue = getCookie('rv_hashValue');
 }
 
+// Centralized styles for this script
+const RV_STYLES = {
+    offerBlock: `
+        width: 100%;
+        display: block;
+        margin: 12px 0;
+        padding: 2px 10px;
+        background: rgba(0,0,0,0.02);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    `,
+    timerDiv: `
+        margin: 10px 0;
+        padding: 8px 12px;
+        background-color: #fff8e6;
+        border: 1px solid #ffd700;
+        border-radius: 14px;
+        color:: #1f2937;
+        font-weight: bold;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    `,
+    clockIcon: `
+        font-size: 1.4em;
+        animation: rv-pulse 1s infinite;
+    `,
+    keyframes: `
+        @keyframes rv-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    `,
+    textSpan: `
+        flex: 1;
+        font-size: 1.2rem;
+        font-weight: 600;
+    `,
+    timeBox: `
+        display:inline-block;
+        padding:4px 12px;
+        border:1px solid #ffd089;
+        background:#fff;
+        border-radius:10px;
+        min-width:54px;
+        text-align:center;
+        color: #1f2937;
+        font-weight:700;
+        box-shadow:0 1px 2px rgba(0,0,0,0.07);
+        font-variant-numeric: tabular-nums;
+    `,
+    timeSep: `
+        display:inline-block;
+        margin:0 8px;
+        color:#b91c1c;
+        font-weight:700;
+    `,
+    timeWrap: `
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        margin-top:10px;
+    `,
+    progressText: `
+        width: 100%;
+        margin: 10px 0 8px 0;
+        font-size: 0.8em;
+        line-height: 1.2;
+        color: #1f2937;
+        font-weight: 400;
+        text-align: center;
+        letter-spacing: .2px;
+        display: block !important;
+    `,
+    progressBar: `
+        width: 100%;
+        height: 15px;
+        background: #f0f0f0;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        margin: 6px 0 10px 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    `,
+    progressFill: `
+        height: 100%;
+        width: 0%;
+        background: #3b82f6;
+        transition: width 0.6s ease;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    `
+};
+
+// Inject keyframes once
+(function ensureKeyframesInjected() {
+    const STYLE_ID = 'rv-discount-styles';
+    if (!document.getElementById(STYLE_ID)) {
+        const styleEl = document.createElement('style');
+        styleEl.id = STYLE_ID;
+        styleEl.textContent = RV_STYLES.keyframes;
+        document.head.appendChild(styleEl);
+    }
+})();
+
 function getTimeRemaining(startTime, timerMinutes = 30) {
     const timerDurationMs = (parseInt(timerMinutes, 10) || 30) * 60 * 1000; // timer minutes in milliseconds
     const now = new Date().getTime();
@@ -90,8 +209,9 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     let timerDiv = document.getElementById('rv-discount-timer');
 
     if (!timerDiv) {
+        const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
         const discountMessage = findDiscountElement();
-        if (!discountMessage) {
+        if (!cartHeaderContainer && !discountMessage) {
             if (timerExpired) {
                 console.log('⏳ No discount message found and timer expired, will NOT retry.');
                 return;
@@ -108,56 +228,59 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         }
 
         console.log('✅ Creating new timer UI');
+        // Ensure a block just BELOW the header so header stays on its own line
+        let offerBlock = null;
+        if (cartHeaderContainer) {
+            offerBlock = document.getElementById('rv-offer-block');
+            if (!offerBlock) {
+                offerBlock = document.createElement('div');
+                offerBlock.id = 'rv-offer-block';
+                offerBlock.style.cssText = RV_STYLES.offerBlock;
+                cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
+            }
+        }
         timerDiv = document.createElement('div');
         timerDiv.id = 'rv-discount-timer';
-        timerDiv.style.cssText = `
-            margin: 10px 0;
-            padding: 8px 12px;
-            background-color: #fff8e6;
-            border: 1px solid #ffd700;
-            border-radius: 4px;
-            color: #e31837;
-            font-weight: bold;
-            font-size: 0.95em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
-        `;
+        timerDiv.style.cssText = RV_STYLES.timerDiv;
 
         const clockIcon = document.createElement('span');
         clockIcon.innerHTML = '⏰';
-        clockIcon.style.cssText = `
-            font-size: 1.2em;
-            animation: pulse 1s infinite;
-        `;
+        clockIcon.style.cssText = RV_STYLES.clockIcon;
         timerDiv.appendChild(clockIcon);
 
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-                100% { transform: scale(1); }
-            }
-        `;
-        document.head.appendChild(style);
+        // keyframes are injected globally at load time
 
         const textSpan = document.createElement('span');
         textSpan.id = 'rv-discount-timer-text';
-        textSpan.style.flex = '1';
+        textSpan.style.cssText = RV_STYLES.textSpan;
         timerDiv.appendChild(textSpan);
 
-        discountMessage.insertAdjacentElement('afterend', timerDiv);
+        if (offerBlock) {
+            offerBlock.insertAdjacentElement('beforeend', timerDiv);
+        } else if (discountMessage) {
+            discountMessage.insertAdjacentElement('afterend', timerDiv);
+        }
         console.log('✅ Timer UI inserted into DOM');
     }
 
     const textSpan = document.getElementById('rv-discount-timer-text');
     if (textSpan) {
-        textSpan.textContent = `⚡ Hurry! This special offer expires in ${timeString}`;
-        // console.log('✅ Timer text updated:', timeString);
+        // Support both "MM:SS" string and {minutes, seconds}
+        let minutes = 0;
+        let seconds = 0;
+        if (typeof timeString === 'string' && timeString.includes(':')) {
+            const parts = timeString.split(':');
+            minutes = parseInt(parts[0], 10) || 0;
+            seconds = parseInt(parts[1], 10) || 0;
+        } else if (timeString && typeof timeString === 'object') {
+            minutes = parseInt(timeString.minutes, 10) || 0;
+            seconds = parseInt(timeString.seconds, 10) || 0;
+        }
+
+        const boxStyle = RV_STYLES.timeBox;
+        const sepStyle = RV_STYLES.timeSep;
+        const wrapStyle = RV_STYLES.timeWrap;
+        textSpan.innerHTML = `⚡ Hurry! This special offer expires in <span style="display:block"></span><span class="rv-time-wrap" style="${wrapStyle}"><span style="${boxStyle}">${minutes}m</span><span style="${sepStyle}">:</span><span style="${boxStyle}">${seconds}s</span></span>`;
     }
 }
 
@@ -713,6 +836,135 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
     }
 }
 
+// ===================================================================
+// MISSING FUNCTION: You need to ADD this function to your file
+// ===================================================================
+
+// Function to track cart changes with progress bar - OPTIMIZED (no DB calls)
+function trackCartChangeWithProgressBar() {
+    try {
+        console.log('🔄 Tracking cart change with progress bar logic');
+
+        // Get current cart info from DOM
+        const currentItemCount = getCartInfo();
+        const currentCartValue = getCartValue();
+
+        // Find discount message in DOM
+        const discountMessage = document.querySelector('.discounts__discount');
+        if (!discountMessage) {
+            console.log('❌ No discount message found - removing progress bar');
+            removeProgressBarUI();
+            return;
+        }
+
+        const messageText = discountMessage.textContent.trim();
+        console.log('✅ Discount message found:', messageText);
+
+        // Check if discount is already applied (shows "off orders over" with actual discount)
+       
+        const isDiscountApplied = messageText.includes('off orders with')||messageText.includes('off orders over');
+        console.log("isDiscountApplied",isDiscountApplied,messageText)
+        if (isDiscountApplied) {
+            console.log('✅ Discount already applied - showing 100% progress bar');
+            const promptTemplate = getPromptTemplate('unlocked');
+            const discountText = parseDiscountFromMessage(messageText);
+            renderProgressBarUI(100, promptTemplate, {
+                remaining: '0',
+                threshold: '',
+                current: '',
+                unit: '',
+                discount: discountText
+            });
+            return;
+        }
+console.log("aaaa")
+        // Check if it's an "Add more" message (value-based or quantity-based)
+        const isValueBased = messageText.includes('Add Rs') && messageText.includes('more to get');
+        const isQuantityBased = messageText.includes('Add') && (messageText.includes('more items') || messageText.includes('more item')) && messageText.includes('to get');
+        
+        if (isValueBased) {
+            console.log('✅ Value-based "Add more" message - calculating progress from DOM');
+            
+            // Extract the amount needed to add from the message
+            const amountToAddInCart = messageText.match(/Add Rs ([\d,.]+) more/);
+            
+            if (amountToAddInCart && currentCartValue > 0) {
+                const amountToAdd = extractPriceFromText(amountToAddInCart[1]);
+                const targetThreshold = currentCartValue + amountToAdd;
+                
+                // Calculate progress percentage - how much of the threshold we've reached
+                const progressPercent = Math.min(Math.round((currentCartValue / targetThreshold) * 100), 100);
+
+                console.log('💰 Value-based progress calculation from DOM:', {
+                    currentCartValue,
+                    amountToAdd,
+                    targetThreshold,
+                    progressPercent,
+                    calculation: `(${currentCartValue} / ${targetThreshold}) * 100 = ${progressPercent}%`,
+                    remaining: `${targetThreshold - currentCartValue} more needed`
+                });
+
+                const promptTemplate = getPromptTemplate('value');
+                const discountText = parseDiscountFromMessage(messageText);
+                const remainingVal = Math.max(targetThreshold - currentCartValue, 0);
+                const formatMoney = (v) => `Rs ${v.toFixed(2)}`;
+                renderProgressBarUI(progressPercent, promptTemplate, {
+                    remaining: formatMoney(remainingVal),
+                    threshold: formatMoney(targetThreshold),
+                    current: formatMoney(currentCartValue),
+                    unit: 'amount',
+                    discount: discountText
+                });
+            } else {
+                console.log('❌ Could not extract amount or cart value is 0');
+                removeProgressBarUI();
+            }
+        } else if (isQuantityBased) {
+            console.log('✅ Quantity-based "Add more" message - calculating progress from DOM');
+            
+            // Extract the number of items needed to add from the message (handles both singular and plural)
+            const quantityToAddInCart = messageText.match(/Add (\d+) more items?/);
+            
+            if (quantityToAddInCart && currentItemCount > 0) {
+                const itemsToAdd = parseInt(quantityToAddInCart[1]);
+                const targetThreshold = currentItemCount + itemsToAdd;
+                
+                // Calculate progress percentage - how much of the threshold we've reached
+                const progressPercent = Math.min(Math.round((currentItemCount / targetThreshold) * 100), 100);
+
+                console.log('🔢 Quantity-based progress calculation from DOM:', {
+                    currentItemCount,
+                    itemsToAdd,
+                    targetThreshold,
+                    progressPercent,
+                    calculation: `(${currentItemCount} / ${targetThreshold}) * 100 = ${progressPercent}%`,
+                    remaining: `${targetThreshold - currentItemCount} more items needed`
+                });
+
+                const promptTemplate = getPromptTemplate('quantity');
+                const discountText = parseDiscountFromMessage(messageText);
+                const remainingItems = Math.max(targetThreshold - currentItemCount, 0);
+                renderProgressBarUI(progressPercent, promptTemplate, {
+                    remaining: `${remainingItems} ${remainingItems === 1 ? 'item' : 'items'}`,
+                    threshold: `${targetThreshold} items`,
+                    current: `${currentItemCount} items`,
+                    unit: 'items',
+                    discount: discountText
+                });
+            } else {
+                console.log('❌ Could not extract quantity or cart items is 0');
+                removeProgressBarUI();
+            }
+        } else {
+            console.log('❌ No relevant discount message - removing progress bar');
+            removeProgressBarUI();
+        }
+
+    } catch (error) {
+        console.error('❌ Error in cart change tracking with progress bar:', error);
+    }
+}
+
 // Function to extract cart information
 function getCartInfo() {
     const cartItems = document.querySelectorAll('.cart-item');
@@ -728,6 +980,258 @@ function getCartInfo() {
     console.log('🛒 Current cart items:', totalItems);
     return totalItems;
 }
+
+
+
+
+// FIXED getCartValue function - updated selectors for your cart structure
+function getCartValue() {
+    try {
+        console.log('🔍 Attempting to get cart value...');
+
+        // Updated selectors based on your cart structure
+        const selectors = [
+            '.totals__subtotal-value',  // This is from your HTML: <p class="totals__subtotal-value">Rs. 11,679.20</p>
+            '.cart-drawer__footer .totals__subtotal-value',
+            '.drawer__footer .totals__subtotal-value',
+            '.cart__footer .totals__total .money',
+            '.cart__total .money',
+            '[data-cart-total]'
+        ];
+
+        for (const selector of selectors) {
+            const element = document.querySelector(selector);
+            console.log(`🔍 Checking selector: "${selector}"`, element ? '✅ Found!' : '❌ Not found');
+            if (element) {
+                const text = element.textContent.trim();
+                console.log('📝 Element text:', text);
+                // Extract numeric value from text like "Rs. 11,679.20"
+                const match = text.match(/[\d,]+\.?\d*/);
+                if (match) {
+                    const value = parseFloat(match[0].replace(/,/g, ''));
+                    console.log('✅ Cart value found:', value);
+                    return value;
+                }
+            }
+        }
+
+        // Fallback: try to get from cart data
+        if (window.cart && window.cart.total_price) {
+            const value = window.cart.total_price / 100; // Convert from cents
+            console.log('✅ Cart value from window.cart:', value);
+            return value;
+        }
+
+        console.log('❌ No cart value found, returning 0');
+        return 0;
+    } catch (error) {
+        console.error('❌ Error getting cart value:', error);
+        return 0;
+    }
+}
+
+// Build customizable progress text using a simple template and context
+// Supported placeholders: {remaining}, {threshold}, {current}, {unit}, {discount}
+function buildProgressText(template, context) {
+    try {
+        const safeTemplate = (template && typeof template === 'string' && template.trim().length > 0)
+            ? template
+            : 'Bigger Cart, Bigger Offer';
+
+        return safeTemplate
+            .replace(/\{remaining\}/g, context.remaining ?? '')
+            .replace(/\{threshold\}/g, context.threshold ?? '')
+            .replace(/\{current\}/g, context.current ?? '')
+            .replace(/\{unit\}/g, context.unit ?? '')
+            .replace(/\{discount\}/g, context.discount ?? '');
+    } catch (e) {
+        console.error('❌ Error building progress text:', e);
+        return 'Bigger Cart, Bigger Offer';
+    }
+}
+
+// Ensure discount text is human-friendly: "23 % off" instead of "23% off"
+function normalizeDiscountText(discountRaw) {
+    if (!discountRaw || typeof discountRaw !== 'string') return '';
+    try {
+        let t = discountRaw.trim();
+        // Convert "23%" -> "23 %"
+        t = t.replace(/(\d+)%/g, '$1 %');
+        // Collapse extra spaces
+        t = t.replace(/\s+/g, ' ').trim();
+        return t;
+    } catch (e) {
+        return discountRaw;
+    }
+}
+
+// Parse discount text like "23% off" or from phrases like "off orders over ..."
+function parseDiscountFromMessage(messageText) {
+    try {
+        const match = messageText.match(/(\d+%)[^\d%]*off|off\s+orders\s+(?:over|with)\s+([^,\.;]+)/i);
+        const raw = match ? (match[1] || match[2] || '').trim() : '';
+        return normalizeDiscountText(raw);
+    } catch (e) {
+        return '';
+    }
+}
+
+// Provide a single place to fetch the prompt template for different states
+// State can be: 'unlocked' | 'value' | 'quantity'
+function getPromptTemplate(state) {
+    try {
+        // Global override (single template for all states)
+        if (typeof window.rvProgressPrompt === 'string' && window.rvProgressPrompt.trim().length > 0) {
+            return window.rvProgressPrompt;
+        }
+        // Per-state overrides via object { unlocked, value, quantity }
+        const overrides = window.rvProgressPrompts || {};
+        if (typeof overrides[state] === 'string' && overrides[state].trim().length > 0) {
+            return overrides[state];
+        }
+        // Defaults
+        switch (state) {
+            case 'unlocked':
+                return 'Unlocked {discount}! Enjoy your savings 🎉';
+            case 'value':
+                return 'Only {remaining} more to unlock {discount}! Keep going 🚀';
+            case 'quantity':
+                return 'Add {remaining} to unlock {discount}! You’re almost there ✨';
+            default:
+                return 'Bigger Cart, Bigger Offer';
+        }
+    } catch (e) {
+        return 'Bigger Cart, Bigger Offer';
+    }
+}
+
+// SIMPLIFIED renderProgressBarUI function - renders progress bar and customizable text
+function renderProgressBarUI(progressPercent, customText, textContext) {
+    console.log('🎨 Rendering progress bar:', { progressPercent, customText, textContext });
+
+    let progressBarDiv = document.getElementById('rv-progress-bar');
+
+    if (!progressBarDiv) {
+        // Prefer placing elements inside the offer block just below header; otherwise after discount message
+        const offerBlock = document.getElementById('rv-offer-block');
+        const cartHeaderHeading = document.querySelector('cart-drawer .drawer__header .drawer__heading, .drawer__header .drawer__heading');
+        const cartHeaderContainer = cartHeaderHeading ? cartHeaderHeading.closest('.drawer__header') : null;
+        const discountMessage = document.querySelector('.discounts__discount');
+        const timerEl = document.getElementById('rv-discount-timer');
+        const insertionTarget = offerBlock || timerEl || cartHeaderContainer || discountMessage || cartHeaderHeading;
+        if (!insertionTarget) {
+            console.log('❌ No suitable insertion target (header/discount message) found for progress bar');
+            return;
+        }
+
+        // Ensure a progress text element exists just above the bar
+        let progressTextDiv = document.getElementById('rv-progress-text');
+        if (!progressTextDiv) {
+            progressTextDiv = document.createElement('div');
+            progressTextDiv.id = 'rv-progress-text';
+            progressTextDiv.style.cssText = RV_STYLES.progressText;
+            // Use custom marketing copy instead of the raw discount message
+            progressTextDiv.textContent = buildProgressText(customText, textContext || {});
+            if (offerBlock) {
+                offerBlock.insertAdjacentElement('beforeend', progressTextDiv);
+            } else if (timerEl) {
+                timerEl.insertAdjacentElement('afterend', progressTextDiv);
+            } else {
+                insertionTarget.insertAdjacentElement('afterend', progressTextDiv);
+            }
+        } else if (timerEl && progressTextDiv.previousElementSibling !== timerEl) {
+            // If timer exists, ensure text sits right after it
+            timerEl.insertAdjacentElement('afterend', progressTextDiv);
+        }
+        // If element exists already, update its text
+        if (progressTextDiv) {
+            progressTextDiv.textContent = buildProgressText(customText, textContext || {});
+        }
+
+        // Create progress bar element
+        progressBarDiv = document.createElement('div');
+        progressBarDiv.id = 'rv-progress-bar';
+        progressBarDiv.style.cssText = RV_STYLES.progressBar;
+
+        const fillDiv = document.createElement('div');
+        fillDiv.id = 'rv-progress-bar-fill';
+        fillDiv.style.cssText = RV_STYLES.progressFill;
+
+        progressBarDiv.appendChild(fillDiv);
+        const anchorForBar = document.getElementById('rv-progress-text') || insertionTarget;
+        if (offerBlock) {
+            offerBlock.insertAdjacentElement('beforeend', progressBarDiv);
+        } else {
+            anchorForBar.insertAdjacentElement('afterend', progressBarDiv);
+        }
+        console.log('✅ Progress bar created and inserted');
+    }
+
+    // Update progress bar with the given percentage
+    const fillElement = document.getElementById('rv-progress-bar-fill');
+    if (fillElement) {
+        // Set width
+        fillElement.style.width = progressPercent + '%';
+        console.log('📏 Progress bar width set to:', progressPercent + '%');
+
+        // Set color based on progress
+        let fillColor;
+        if (progressPercent >= 100) {
+            fillColor = '#10b981'; // Green for completion
+        } else if (progressPercent >= 75) {
+            fillColor = '#f59e0b'; // Orange for high progress  
+        } else if (progressPercent > 0) {
+            fillColor = '#3b82f6'; // Blue for normal progress
+        } else {
+            fillColor = '#ef4444'; // Red for 0% progress
+        }
+
+        // Apply color with !important to override any existing styles
+        fillElement.style.setProperty('background', fillColor, 'important');
+        fillElement.style.setProperty('background-color', fillColor, 'important');
+
+        console.log('🎨 Progress bar updated:', {
+            width: progressPercent + '%',
+            color: fillColor
+        });
+    }
+}
+
+// Function to extract price from text (e.g., "500.10" from "Rs. 500.10")
+function extractPriceFromText(priceText) {
+    try {
+        console.log('🔍 Extracting price from text:', priceText);
+        // Remove currency symbols and spaces, but keep decimal points
+        const cleanText = priceText.replace(/[Rs,\s]/g, '');
+        console.log('🧹 Cleaned text:', cleanText);
+        const price = parseFloat(cleanText);
+        console.log('💰 Parsed price:', price);
+        return isNaN(price) ? 0 : price;
+    } catch (error) {
+        console.error('❌ Error extracting price from text:', priceText, error);
+        return 0;
+    }
+}
+
+// Function to remove progress bar UI
+function removeProgressBarUI() {
+    const progressBarDiv = document.getElementById('rv-progress-bar');
+    if (progressBarDiv) {
+        progressBarDiv.remove();
+        console.log('🗑️ Progress bar UI removed');
+    }
+    const progressTextDiv = document.getElementById('rv-progress-text');
+    if (progressTextDiv) {
+        progressTextDiv.remove();
+        console.log('🗑️ Progress text removed');
+    }
+}
+
+
+
+
+
+
 
 // Improved cart change observation with better duplicate prevention
 function observeCartChanges() {
@@ -823,7 +1327,7 @@ function observeCartChanges() {
                     }
 
                     await trackUserBehaviorAnalytics(testId, variantIndex, eventData);
-
+                    await trackCartChangeWithProgressBar();
                     // Update last tracked state
                     lastTrackedState = {
                         itemCount: currentItemCount,
@@ -1003,7 +1507,6 @@ const observer = new MutationObserver((mutations) => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
-// Export functions
 window.revlyfDiscount = {
     getTimeRemaining,
     formatTime,
