@@ -13,7 +13,7 @@ const RV_STYLES = {
         width: 100%;
         display: block;
         margin: 12px 0;
-        padding: 8px 10px;
+        padding: 2px 10px;
         background: rgba(0,0,0,0.02);
         border: 1px solid rgba(0,0,0,0.06);
         border-radius: 12px;
