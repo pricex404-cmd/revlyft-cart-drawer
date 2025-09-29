@@ -37,7 +37,8 @@ import PreviewContent from "../components/priceTest/PreviewContent";
 import PreviewContentProductDetails from "../components/productDetailTest/PreviewContentProductDetails";
 import ResultsContent from "../components/test/ResultsContent";
 import ResultsContentProductDetails from "../components/productDetailTest/ResultsContentProductDetails";
-import ConfigurationContent from "../components/test/ConfigurationContent";
+import ConfigurationContentDiscount from "../components/DiscountTest/ConfigurationContentDiscount";
+import ConfigurationContentPrice from "../components/priceTest/ConfigurationContentPrice"
 import { PreviewContentDiscount } from "../components/DiscountTest/PreviewContentDiscount";
 
 // Import extracted components
@@ -757,7 +758,7 @@ export default function Test() {
                 }}
             />
         ),
-        configuration: <ConfigurationContent shop={shop} testId={testId} />,
+        configuration: basicInfo?.type === 'discount' ? (<ConfigurationContentDiscount shop={shop} testId={testId} />):(<ConfigurationContentPrice shop={shop} testId={testId} />),
         results: basicInfo?.type === 'productDetails' ? (
             <ResultsContentProductDetails testGroups={testGroups} />
         ) : basicInfo?.type === 'discount' ? (
