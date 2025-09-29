@@ -739,14 +739,14 @@ function trackCartChangeWithProgressBar() {
 
         // Check if discount is already applied (shows "off orders over" with actual discount)
        
-        const isDiscountApplied = messageText.includes('off orders') && messageText.includes('(-Rs.') && !messageText.includes('(-Rs. 0.00)');
-        
+        const isDiscountApplied = messageText.includes('off orders with')||messageText.includes('off orders over');
+        console.log("isDiscountApplied",isDiscountApplied,messageText)
         if (isDiscountApplied) {
             console.log('✅ Discount already applied - showing 100% progress bar');
             renderProgressBarUI(100);
             return;
         }
-
+console.log("aaaa")
         // Check if it's an "Add more" message (value-based or quantity-based)
         const isValueBased = messageText.includes('Add Rs') && messageText.includes('more to get');
         const isQuantityBased = messageText.includes('Add') && (messageText.includes('more items') || messageText.includes('more item')) && messageText.includes('to get');
