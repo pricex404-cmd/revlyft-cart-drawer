@@ -887,10 +887,14 @@ function renderProgressBarUI(progressPercent) {
     let progressBarDiv = document.getElementById('rv-progress-bar');
 
     if (!progressBarDiv) {
-        // Find discount message to insert progress bar after it
+        // Prefer placing the progress bar just below the entire cart header so it appears on a new line
+        const cartHeaderHeading = document.querySelector('cart-drawer .drawer__header .drawer__heading, .drawer__header .drawer__heading');
+        const cartHeaderContainer = cartHeaderHeading ? cartHeaderHeading.closest('.drawer__header') : null;
+        // Fallback: place it after the discount message if header not found
         const discountMessage = document.querySelector('.discounts__discount');
-        if (!discountMessage) {
-            console.log('❌ No discount message found for progress bar insertion');
+        const insertionTarget = cartHeaderContainer || discountMessage || cartHeaderHeading;
+        if (!insertionTarget) {
+            console.log('❌ No suitable insertion target (header or discount message) found for progress bar');
             return;
         }
 
@@ -928,7 +932,7 @@ function renderProgressBarUI(progressPercent) {
         `;
 
         progressBarDiv.appendChild(fillDiv);
-        discountMessage.insertAdjacentElement('afterend', progressBarDiv);
+        insertionTarget.insertAdjacentElement('afterend', progressBarDiv);
         console.log('✅ Progress bar created and inserted');
     }
 
