@@ -18,4 +18,3 @@ export { TestGroupsContent } from './TestGroupsContent';
 export { default as TargetingContent } from './TargetingContent';
 export { default as ConfigureAnalyticsContent } from './ConfigureAnalyticsContent';
 export { default as ResultsContent } from './ResultsContent';
-export { default as ConfigurationContent } from './ConfigurationContent'; 

@@ -20,7 +20,7 @@ import {
 } from "@shopify/polaris";
 import { SettingsIcon, ExternalIcon, XCircleIcon, StatusActiveIcon } from '@shopify/polaris-icons';
 
-export const ConfigurationContent = ({ shop, testId }) => {
+const ConfigurationContentPrice = ({ shop, testId }) => {
     const [scriptStatus, setScriptStatus] = useState(null);
     const [error, setError] = useState(null);
     const [storeUrl, setStoreUrl] = useState(null);
@@ -258,4 +258,4 @@ export const ConfigurationContent = ({ shop, testId }) => {
     );
 };
 
-export default ConfigurationContent; 
+export default ConfigurationContentPrice; 
