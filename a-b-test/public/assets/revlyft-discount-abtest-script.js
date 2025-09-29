@@ -25,7 +25,7 @@ const RV_STYLES = {
         background-color: #fff8e6;
         border: 1px solid #ffd700;
         border-radius: 14px;
-        color:: #1f2937;
+        color: #1f2937;
         font-weight: bold;
         font-size: 0.95em;
         display: flex;
@@ -877,6 +877,7 @@ function trackCartChangeWithProgressBar() {
             });
             return;
         }
+
 console.log("aaaa")
         // Check if it's an "Add more" message (value-based or quantity-based)
         const isValueBased = messageText.includes('Add Rs') && messageText.includes('more to get');
@@ -888,8 +889,15 @@ console.log("aaaa")
             // Extract the amount needed to add from the message
             const amountToAddInCart = messageText.match(/Add Rs ([\d,.]+) more/);
             
+          
+          
+
+
+
+
             if (amountToAddInCart && currentCartValue > 0) {
-                const amountToAdd = extractPriceFromText(amountToAddInCart[1]);
+                const amountToAdd =extractPriceFromTextForDiscount(amountToAddInCart[1]);
+                console.log("meee ",amountToAdd ,amountToAddInCart[1])
                 const targetThreshold = currentCartValue + amountToAdd;
                 
                 // Calculate progress percentage - how much of the threshold we've reached
@@ -1197,21 +1205,37 @@ function renderProgressBarUI(progressPercent, customText, textContext) {
     }
 }
 
-// Function to extract price from text (e.g., "500.10" from "Rs. 500.10")
-function extractPriceFromText(priceText) {
+
+// Discount script-specific parser to avoid collisions with other scripts
+function extractPriceFromTextForDiscount(priceText) {
     try {
-        console.log('🔍 Extracting price from text:', priceText);
-        // Remove currency symbols and spaces, but keep decimal points
-        const cleanText = priceText.replace(/[Rs,\s]/g, '');
-        console.log('🧹 Cleaned text:', cleanText);
-        const price = parseFloat(cleanText);
-        console.log('💰 Parsed price:', price);
-        return isNaN(price) ? 0 : price;
-    } catch (error) {
-        console.error('❌ Error extracting price from text:', priceText, error);
-        return 0;
-    }
-}
+         console.log('🔍 Extracting price from text:', priceText);
+         if (!priceText || typeof priceText !== 'string') return 0;
+         const txt = priceText.trim();
+         // Fixed: Changed \\d to \d for proper digit matching
+         const match = txt.match(/(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?|\d+[.,]\d{2}|\d+)/);
+     if (!match) return 0;
+         const token = match[0];
+     let value;
+         if (token.includes('.') && token.includes(',') && token.lastIndexOf(',') > token.lastIndexOf('.')) {
+             value = parseFloat(token.replace(/\./g, '').replace(',', '.'));      // 1.999,99 -> 1999.99
+         } else if (token.includes(',') && token.includes('.') && token.lastIndexOf('.') > token.lastIndexOf(',')) {
+             value = parseFloat(token.replace(/,/g, ''));                          // 1,999.99 -> 1999.99
+         } else if (token.includes(',') && !token.includes('.')) {
+             value = parseFloat(token.replace(',', '.'));                          // 19,99 -> 19.99
+         } else {
+             value = parseFloat(token.replace(/,/g, ''));                          // 1999.99 or 1,999 -> 1999.99 / 1999
+         }
+         console.log('💰 Parsed price:', value);
+     return isNaN(value) ? 0 : value;
+     } catch (error) {
+         console.error('❌ Error extracting price from text:', priceText, error);
+         return 0;
+     }
+ }
+ 
+
+
 
 // Function to remove progress bar UI
 function removeProgressBarUI() {
