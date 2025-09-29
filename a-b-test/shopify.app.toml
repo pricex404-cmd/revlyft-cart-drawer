@@ -1,13 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-application_url = "https://app.revlyft.com/"
+client_id = "e59db4a060f6e83ace4a512a5e178392"
+application_url = "https://zero-ryan-asus-strength.trycloudflare.com"
 embedded = true
-client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
-name = "RevLyft"
-handle = "ab-test-18"
+name = "a-b-test-dev"
+handle = "a-b-test-dev"
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
+include_config_on_deploy = true
 
 [webhooks]
 api_version = "2025-01"
@@ -38,13 +39,13 @@ api_version = "2025-01"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_orders,read_script_tags,write_discounts,write_products,write_script_tags,write_files,read_inventory,write_inventory"
+scopes = "read_inventory,read_orders,read_script_tags,write_discounts,write_files,write_inventory,write_products,write_script_tags"
 
 [auth]
 redirect_urls = [
-  "https://app.revlyft.com/auth/callback",
-  "https://app.revlyft.com/auth/shopify/callback",
-  "https://app.revlyft.com/api/auth/callback"
+  "https://zero-ryan-asus-strength.trycloudflare.com/auth/callback",
+  "https://zero-ryan-asus-strength.trycloudflare.com/auth/shopify/callback",
+  "https://zero-ryan-asus-strength.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
