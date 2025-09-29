@@ -987,64 +987,6 @@ function removeProgressBarUI() {
     }
 }
 
-// SIMPLIFIED updateProgressBarUI function - only calculates and passes progress percentage
-function updateProgressBarUI() {
-    console.log('🎯 updateProgressBarUI called');
-
-    const discountMessage = document.querySelector('.discounts__discount');
-    if (!discountMessage) {
-        console.log('❌ No discount message found - removing progress bar');
-        removeProgressBarUI();
-        return;
-    }
-
-    const messageText = discountMessage.textContent.trim();
-    console.log('✅ Discount message found:', messageText);
-
-    // Case 1: Discount already applied - "12% off orders over Rs 2000 (-Rs. 269.98)"
-    const isDiscountApplied = messageText.includes('off orders over') && messageText.includes('(-Rs.') && !messageText.includes('(-Rs. 0.00)');
-    
-    if (isDiscountApplied) {
-        console.log('✅ Discount already applied - showing 100% progress bar');
-        renderProgressBarUI(100);
-        return;
-    }
-
-    // Case 2: Add more message - "Add Rs 500.10 more to get 12% off your order (-Rs. 0.00)"
-    const isAddMore = messageText.includes('Add Rs') && messageText.includes('more to get');
-    
-    if (isAddMore) {
-        console.log('✅ Add more message - calculating progress');
-        
-        const currentCartValue = getCartValue();
-        
-        // Extract the amount needed to add from the message
-        const amountToAddInCart = messageText.match(/Add Rs ([\d,.]+) more/);
-        
-        if (amountToAddInCart && currentCartValue > 0) {
-            const amountToAdd = extractPriceFromText(amountToAddInCart[1]);
-            const targetThreshold = currentCartValue + amountToAdd;
-            
-            // Calculate progress percentage
-            const progressPercent = Math.min(Math.round((currentCartValue / targetThreshold) * 100), 100);
-
-            console.log('💰 Progress calculation:', {
-                currentCartValue,
-                amountToAdd,
-                targetThreshold,
-                progressPercent
-            });
-
-            renderProgressBarUI(progressPercent);
-        } else {
-            console.log('❌ Could not extract amount or cart value is 0');
-            removeProgressBarUI();
-        }
-    } else {
-        console.log('❌ No relevant discount message - removing progress bar');
-        removeProgressBarUI();
-    }
-}
 
 
 
