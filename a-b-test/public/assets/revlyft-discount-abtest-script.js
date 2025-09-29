@@ -79,7 +79,7 @@ const RV_STYLES = {
     progressText: `
         width: 100%;
         margin: 10px 0 8px 0;
-        font-size: 1em;
+        font-size: 0.8em;
         line-height: 1.2;
         color: #1f2937;
         font-weight: 400;
@@ -89,7 +89,7 @@ const RV_STYLES = {
     `,
     progressBar: `
         width: 100%;
-        height: 20px;
+        height: 15px;
         background: #f0f0f0;
         border: 2px solid #ddd;
         border-radius: 12px;
@@ -866,7 +866,15 @@ function trackCartChangeWithProgressBar() {
         console.log("isDiscountApplied",isDiscountApplied,messageText)
         if (isDiscountApplied) {
             console.log('✅ Discount already applied - showing 100% progress bar');
-            renderProgressBarUI(100);
+            const promptTemplate = getPromptTemplate('unlocked');
+            const discountText = parseDiscountFromMessage(messageText);
+            renderProgressBarUI(100, promptTemplate, {
+                remaining: '0',
+                threshold: '',
+                current: '',
+                unit: '',
+                discount: discountText
+            });
             return;
         }
 console.log("aaaa")
@@ -896,7 +904,17 @@ console.log("aaaa")
                     remaining: `${targetThreshold - currentCartValue} more needed`
                 });
 
-                renderProgressBarUI(progressPercent);
+                const promptTemplate = getPromptTemplate('value');
+                const discountText = parseDiscountFromMessage(messageText);
+                const remainingVal = Math.max(targetThreshold - currentCartValue, 0);
+                const formatMoney = (v) => `Rs ${v.toFixed(2)}`;
+                renderProgressBarUI(progressPercent, promptTemplate, {
+                    remaining: formatMoney(remainingVal),
+                    threshold: formatMoney(targetThreshold),
+                    current: formatMoney(currentCartValue),
+                    unit: 'amount',
+                    discount: discountText
+                });
             } else {
                 console.log('❌ Could not extract amount or cart value is 0');
                 removeProgressBarUI();
@@ -923,7 +941,16 @@ console.log("aaaa")
                     remaining: `${targetThreshold - currentItemCount} more items needed`
                 });
 
-                renderProgressBarUI(progressPercent);
+                const promptTemplate = getPromptTemplate('quantity');
+                const discountText = parseDiscountFromMessage(messageText);
+                const remainingItems = Math.max(targetThreshold - currentItemCount, 0);
+                renderProgressBarUI(progressPercent, promptTemplate, {
+                    remaining: `${remainingItems} ${remainingItems === 1 ? 'item' : 'items'}`,
+                    threshold: `${targetThreshold} items`,
+                    current: `${currentItemCount} items`,
+                    unit: 'items',
+                    discount: discountText
+                });
             } else {
                 console.log('❌ Could not extract quantity or cart items is 0');
                 removeProgressBarUI();
@@ -1003,9 +1030,84 @@ function getCartValue() {
     }
 }
 
-// SIMPLIFIED renderProgressBarUI function - ONLY renders progress bar with percentage
-function renderProgressBarUI(progressPercent) {
-    console.log('🎨 Rendering progress bar:', { progressPercent });
+// Build customizable progress text using a simple template and context
+// Supported placeholders: {remaining}, {threshold}, {current}, {unit}, {discount}
+function buildProgressText(template, context) {
+    try {
+        const safeTemplate = (template && typeof template === 'string' && template.trim().length > 0)
+            ? template
+            : 'Bigger Cart, Bigger Offer';
+
+        return safeTemplate
+            .replace(/\{remaining\}/g, context.remaining ?? '')
+            .replace(/\{threshold\}/g, context.threshold ?? '')
+            .replace(/\{current\}/g, context.current ?? '')
+            .replace(/\{unit\}/g, context.unit ?? '')
+            .replace(/\{discount\}/g, context.discount ?? '');
+    } catch (e) {
+        console.error('❌ Error building progress text:', e);
+        return 'Bigger Cart, Bigger Offer';
+    }
+}
+
+// Ensure discount text is human-friendly: "23 % off" instead of "23% off"
+function normalizeDiscountText(discountRaw) {
+    if (!discountRaw || typeof discountRaw !== 'string') return '';
+    try {
+        let t = discountRaw.trim();
+        // Convert "23%" -> "23 %"
+        t = t.replace(/(\d+)%/g, '$1 %');
+        // Collapse extra spaces
+        t = t.replace(/\s+/g, ' ').trim();
+        return t;
+    } catch (e) {
+        return discountRaw;
+    }
+}
+
+// Parse discount text like "23% off" or from phrases like "off orders over ..."
+function parseDiscountFromMessage(messageText) {
+    try {
+        const match = messageText.match(/(\d+%)[^\d%]*off|off\s+orders\s+(?:over|with)\s+([^,\.;]+)/i);
+        const raw = match ? (match[1] || match[2] || '').trim() : '';
+        return normalizeDiscountText(raw);
+    } catch (e) {
+        return '';
+    }
+}
+
+// Provide a single place to fetch the prompt template for different states
+// State can be: 'unlocked' | 'value' | 'quantity'
+function getPromptTemplate(state) {
+    try {
+        // Global override (single template for all states)
+        if (typeof window.rvProgressPrompt === 'string' && window.rvProgressPrompt.trim().length > 0) {
+            return window.rvProgressPrompt;
+        }
+        // Per-state overrides via object { unlocked, value, quantity }
+        const overrides = window.rvProgressPrompts || {};
+        if (typeof overrides[state] === 'string' && overrides[state].trim().length > 0) {
+            return overrides[state];
+        }
+        // Defaults
+        switch (state) {
+            case 'unlocked':
+                return 'Unlocked {discount}! Enjoy your savings 🎉';
+            case 'value':
+                return 'Only {remaining} more to unlock {discount}! Keep going 🚀';
+            case 'quantity':
+                return 'Add {remaining} to unlock {discount}! You’re almost there ✨';
+            default:
+                return 'Bigger Cart, Bigger Offer';
+        }
+    } catch (e) {
+        return 'Bigger Cart, Bigger Offer';
+    }
+}
+
+// SIMPLIFIED renderProgressBarUI function - renders progress bar and customizable text
+function renderProgressBarUI(progressPercent, customText, textContext) {
+    console.log('🎨 Rendering progress bar:', { progressPercent, customText, textContext });
 
     let progressBarDiv = document.getElementById('rv-progress-bar');
 
@@ -1029,7 +1131,7 @@ function renderProgressBarUI(progressPercent) {
             progressTextDiv.id = 'rv-progress-text';
             progressTextDiv.style.cssText = RV_STYLES.progressText;
             // Use custom marketing copy instead of the raw discount message
-            progressTextDiv.textContent = 'Bigger Cart, Bigger Offer';
+            progressTextDiv.textContent = buildProgressText(customText, textContext || {});
             if (offerBlock) {
                 offerBlock.insertAdjacentElement('beforeend', progressTextDiv);
             } else if (timerEl) {
@@ -1040,6 +1142,10 @@ function renderProgressBarUI(progressPercent) {
         } else if (timerEl && progressTextDiv.previousElementSibling !== timerEl) {
             // If timer exists, ensure text sits right after it
             timerEl.insertAdjacentElement('afterend', progressTextDiv);
+        }
+        // If element exists already, update its text
+        if (progressTextDiv) {
+            progressTextDiv.textContent = buildProgressText(customText, textContext || {});
         }
 
         // Create progress bar element
