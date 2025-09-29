@@ -7,6 +7,125 @@ if (window.sessionStorage && window.sessionStorage.getItem('rv_hashValue')) {
     hashValue = getCookie('rv_hashValue');
 }
 
+// Centralized styles for this script
+const RV_STYLES = {
+    offerBlock: `
+        width: 100%;
+        display: block;
+        margin: 12px 0;
+        padding: 8px 10px;
+        background: rgba(0,0,0,0.02);
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    `,
+    timerDiv: `
+        margin: 10px 0;
+        padding: 8px 12px;
+        background-color: #fff8e6;
+        border: 1px solid #ffd700;
+        border-radius: 14px;
+        color:: #1f2937;
+        font-weight: bold;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+    `,
+    clockIcon: `
+        font-size: 1.4em;
+        animation: rv-pulse 1s infinite;
+    `,
+    keyframes: `
+        @keyframes rv-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    `,
+    textSpan: `
+        flex: 1;
+        font-size: 1.2rem;
+        font-weight: 600;
+    `,
+    timeBox: `
+        display:inline-block;
+        padding:4px 12px;
+        border:1px solid #ffd089;
+        background:#fff;
+        border-radius:10px;
+        min-width:54px;
+        text-align:center;
+        color: #1f2937;
+        font-weight:700;
+        box-shadow:0 1px 2px rgba(0,0,0,0.07);
+        font-variant-numeric: tabular-nums;
+    `,
+    timeSep: `
+        display:inline-block;
+        margin:0 8px;
+        color:#b91c1c;
+        font-weight:700;
+    `,
+    timeWrap: `
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        margin-top:10px;
+    `,
+    progressText: `
+        width: 100%;
+        margin: 10px 0 8px 0;
+        font-size: 1em;
+        line-height: 1.2;
+        color: #1f2937;
+        font-weight: 400;
+        text-align: center;
+        letter-spacing: .2px;
+        display: block !important;
+    `,
+    progressBar: `
+        width: 100%;
+        height: 20px;
+        background: #f0f0f0;
+        border: 2px solid #ddd;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        margin: 6px 0 10px 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    `,
+    progressFill: `
+        height: 100%;
+        width: 0%;
+        background: #3b82f6;
+        transition: width 0.6s ease;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    `
+};
+
+// Inject keyframes once
+(function ensureKeyframesInjected() {
+    const STYLE_ID = 'rv-discount-styles';
+    if (!document.getElementById(STYLE_ID)) {
+        const styleEl = document.createElement('style');
+        styleEl.id = STYLE_ID;
+        styleEl.textContent = RV_STYLES.keyframes;
+        document.head.appendChild(styleEl);
+    }
+})();
+
 function getTimeRemaining(startTime, timerMinutes = 30) {
     const timerDurationMs = (parseInt(timerMinutes, 10) || 30) * 60 * 1000; // timer minutes in milliseconds
     const now = new Date().getTime();
@@ -116,61 +235,24 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
             if (!offerBlock) {
                 offerBlock = document.createElement('div');
                 offerBlock.id = 'rv-offer-block';
-                offerBlock.style.cssText = `
-                    width: 100%;
-                    display: block;
-                    margin: 12px 0;
-                    padding: 8px 10px;
-                    background: rgba(0,0,0,0.02);
-                    border: 1px solid rgba(0,0,0,0.06);
-                    border-radius: 12px;
-                    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-                `;
+                offerBlock.style.cssText = RV_STYLES.offerBlock;
                 cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
             }
         }
         timerDiv = document.createElement('div');
         timerDiv.id = 'rv-discount-timer';
-        timerDiv.style.cssText = `
-            margin: 10px 0;
-            padding: 8px 12px;
-            background-color: #fff8e6;
-            border: 1px solid #ffd700;
-            border-radius: 14px;
-            color: #e31837;
-            font-weight: bold;
-            font-size: 0.95em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
-        `;
+        timerDiv.style.cssText = RV_STYLES.timerDiv;
 
         const clockIcon = document.createElement('span');
         clockIcon.innerHTML = '⏰';
-        clockIcon.style.cssText = `
-            font-size: 1.4em;
-            animation: pulse 1s infinite;
-        `;
+        clockIcon.style.cssText = RV_STYLES.clockIcon;
         timerDiv.appendChild(clockIcon);
 
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes pulse {
-                0% { transform: scale(1); }
-                50% { transform: scale(1.1); }
-                100% { transform: scale(1); }
-            }
-        `;
-        document.head.appendChild(style);
+        // keyframes are injected globally at load time
 
         const textSpan = document.createElement('span');
         textSpan.id = 'rv-discount-timer-text';
-        textSpan.style.flex = '1';
-        textSpan.style.fontSize = '1.2rem';
-        textSpan.style.fontWeight = '600';
+        textSpan.style.cssText = RV_STYLES.textSpan;
         timerDiv.appendChild(textSpan);
 
         if (offerBlock) {
@@ -195,9 +277,9 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
             seconds = parseInt(timeString.seconds, 10) || 0;
         }
 
-        const boxStyle = `display:inline-block;padding:4px 12px;border:1px solid #ffd089;background:#fff;border-radius:10px;min-width:54px;text-align:center;color:#b91c1c;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,0.07);font-variant-numeric: tabular-nums;`;
-        const sepStyle = `display:inline-block;margin:0 8px;color:#b91c1c;font-weight:700;`;
-        const wrapStyle = `display:inline-flex;align-items:center;gap:8px;margin-top:10px;`;
+        const boxStyle = RV_STYLES.timeBox;
+        const sepStyle = RV_STYLES.timeSep;
+        const wrapStyle = RV_STYLES.timeWrap;
         textSpan.innerHTML = `⚡ Hurry! This special offer expires in <span style="display:block"></span><span class="rv-time-wrap" style="${wrapStyle}"><span style="${boxStyle}">${minutes}m</span><span style="${sepStyle}">:</span><span style="${boxStyle}">${seconds}s</span></span>`;
     }
 }
@@ -945,17 +1027,7 @@ function renderProgressBarUI(progressPercent) {
         if (!progressTextDiv) {
             progressTextDiv = document.createElement('div');
             progressTextDiv.id = 'rv-progress-text';
-            progressTextDiv.style.cssText = `
-                width: 100%;
-                margin: 10px 0 8px 0;
-                font-size: 1em;
-                line-height: 1.2;
-                color: #1f2937;
-                font-weight: 400;
-                text-align: center;
-                letter-spacing: .2px;
-                display: block !important;
-            `;
+            progressTextDiv.style.cssText = RV_STYLES.progressText;
             // Use custom marketing copy instead of the raw discount message
             progressTextDiv.textContent = 'Bigger Cart, Bigger Offer';
             if (offerBlock) {
@@ -973,35 +1045,11 @@ function renderProgressBarUI(progressPercent) {
         // Create progress bar element
         progressBarDiv = document.createElement('div');
         progressBarDiv.id = 'rv-progress-bar';
-        progressBarDiv.style.cssText = `
-            width: 100%;
-            height: 20px;
-            background: #f0f0f0;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            margin: 6px 0 10px 0;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        `;
+        progressBarDiv.style.cssText = RV_STYLES.progressBar;
 
         const fillDiv = document.createElement('div');
         fillDiv.id = 'rv-progress-bar-fill';
-        fillDiv.style.cssText = `
-            height: 100%;
-            width: 0%;
-            background: #3b82f6;
-            transition: width 0.6s ease;
-            border-radius: 10px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: block !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-        `;
+        fillDiv.style.cssText = RV_STYLES.progressFill;
 
         progressBarDiv.appendChild(fillDiv);
         const anchorForBar = document.getElementById('rv-progress-text') || insertionTarget;
