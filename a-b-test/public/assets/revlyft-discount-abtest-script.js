@@ -90,8 +90,9 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     let timerDiv = document.getElementById('rv-discount-timer');
 
     if (!timerDiv) {
+        const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
         const discountMessage = findDiscountElement();
-        if (!discountMessage) {
+        if (!cartHeaderContainer && !discountMessage) {
             if (timerExpired) {
                 console.log('⏳ No discount message found and timer expired, will NOT retry.');
                 return;
@@ -108,6 +109,26 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         }
 
         console.log('✅ Creating new timer UI');
+        // Ensure a block just BELOW the header so header stays on its own line
+        let offerBlock = null;
+        if (cartHeaderContainer) {
+            offerBlock = document.getElementById('rv-offer-block');
+            if (!offerBlock) {
+                offerBlock = document.createElement('div');
+                offerBlock.id = 'rv-offer-block';
+                offerBlock.style.cssText = `
+                    width: 100%;
+                    display: block;
+                    margin: 12px 0;
+                    padding: 8px 10px;
+                    background: rgba(0,0,0,0.02);
+                    border: 1px solid rgba(0,0,0,0.06);
+                    border-radius: 12px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+                `;
+                cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
+            }
+        }
         timerDiv = document.createElement('div');
         timerDiv.id = 'rv-discount-timer';
         timerDiv.style.cssText = `
@@ -115,7 +136,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
             padding: 8px 12px;
             background-color: #fff8e6;
             border: 1px solid #ffd700;
-            border-radius: 4px;
+            border-radius: 14px;
             color: #e31837;
             font-weight: bold;
             font-size: 0.95em;
@@ -130,7 +151,7 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         const clockIcon = document.createElement('span');
         clockIcon.innerHTML = '⏰';
         clockIcon.style.cssText = `
-            font-size: 1.2em;
+            font-size: 1.4em;
             animation: pulse 1s infinite;
         `;
         timerDiv.appendChild(clockIcon);
@@ -148,16 +169,36 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
         const textSpan = document.createElement('span');
         textSpan.id = 'rv-discount-timer-text';
         textSpan.style.flex = '1';
+        textSpan.style.fontSize = '1.2rem';
+        textSpan.style.fontWeight = '600';
         timerDiv.appendChild(textSpan);
 
-        discountMessage.insertAdjacentElement('afterend', timerDiv);
+        if (offerBlock) {
+            offerBlock.insertAdjacentElement('beforeend', timerDiv);
+        } else if (discountMessage) {
+            discountMessage.insertAdjacentElement('afterend', timerDiv);
+        }
         console.log('✅ Timer UI inserted into DOM');
     }
 
     const textSpan = document.getElementById('rv-discount-timer-text');
     if (textSpan) {
-        textSpan.textContent = `⚡ Hurry! This special offer expires in ${timeString}`;
-        // console.log('✅ Timer text updated:', timeString);
+        // Support both "MM:SS" string and {minutes, seconds}
+        let minutes = 0;
+        let seconds = 0;
+        if (typeof timeString === 'string' && timeString.includes(':')) {
+            const parts = timeString.split(':');
+            minutes = parseInt(parts[0], 10) || 0;
+            seconds = parseInt(parts[1], 10) || 0;
+        } else if (timeString && typeof timeString === 'object') {
+            minutes = parseInt(timeString.minutes, 10) || 0;
+            seconds = parseInt(timeString.seconds, 10) || 0;
+        }
+
+        const boxStyle = `display:inline-block;padding:4px 12px;border:1px solid #ffd089;background:#fff;border-radius:10px;min-width:54px;text-align:center;color:#b91c1c;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,0.07);font-variant-numeric: tabular-nums;`;
+        const sepStyle = `display:inline-block;margin:0 8px;color:#b91c1c;font-weight:700;`;
+        const wrapStyle = `display:inline-flex;align-items:center;gap:8px;margin-top:10px;`;
+        textSpan.innerHTML = `⚡ Hurry! This special offer expires in <span style="display:block"></span><span class="rv-time-wrap" style="${wrapStyle}"><span style="${boxStyle}">${minutes}m</span><span style="${sepStyle}">:</span><span style="${boxStyle}">${seconds}s</span></span>`;
     }
 }
 
@@ -887,15 +928,46 @@ function renderProgressBarUI(progressPercent) {
     let progressBarDiv = document.getElementById('rv-progress-bar');
 
     if (!progressBarDiv) {
-        // Prefer placing the progress bar just below the entire cart header so it appears on a new line
+        // Prefer placing elements inside the offer block just below header; otherwise after discount message
+        const offerBlock = document.getElementById('rv-offer-block');
         const cartHeaderHeading = document.querySelector('cart-drawer .drawer__header .drawer__heading, .drawer__header .drawer__heading');
         const cartHeaderContainer = cartHeaderHeading ? cartHeaderHeading.closest('.drawer__header') : null;
-        // Fallback: place it after the discount message if header not found
         const discountMessage = document.querySelector('.discounts__discount');
-        const insertionTarget = cartHeaderContainer || discountMessage || cartHeaderHeading;
+        const timerEl = document.getElementById('rv-discount-timer');
+        const insertionTarget = offerBlock || timerEl || cartHeaderContainer || discountMessage || cartHeaderHeading;
         if (!insertionTarget) {
-            console.log('❌ No suitable insertion target (header or discount message) found for progress bar');
+            console.log('❌ No suitable insertion target (header/discount message) found for progress bar');
             return;
+        }
+
+        // Ensure a progress text element exists just above the bar
+        let progressTextDiv = document.getElementById('rv-progress-text');
+        if (!progressTextDiv) {
+            progressTextDiv = document.createElement('div');
+            progressTextDiv.id = 'rv-progress-text';
+            progressTextDiv.style.cssText = `
+                width: 100%;
+                margin: 10px 0 8px 0;
+                font-size: 1em;
+                line-height: 1.2;
+                color: #1f2937;
+                font-weight: 400;
+                text-align: center;
+                letter-spacing: .2px;
+                display: block !important;
+            `;
+            // Use custom marketing copy instead of the raw discount message
+            progressTextDiv.textContent = 'Bigger Cart, Bigger Offer';
+            if (offerBlock) {
+                offerBlock.insertAdjacentElement('beforeend', progressTextDiv);
+            } else if (timerEl) {
+                timerEl.insertAdjacentElement('afterend', progressTextDiv);
+            } else {
+                insertionTarget.insertAdjacentElement('afterend', progressTextDiv);
+            }
+        } else if (timerEl && progressTextDiv.previousElementSibling !== timerEl) {
+            // If timer exists, ensure text sits right after it
+            timerEl.insertAdjacentElement('afterend', progressTextDiv);
         }
 
         // Create progress bar element
@@ -909,7 +981,7 @@ function renderProgressBarUI(progressPercent) {
             border-radius: 12px;
             position: relative;
             overflow: hidden;
-            margin: 8px 0;
+            margin: 6px 0 10px 0;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
@@ -932,7 +1004,12 @@ function renderProgressBarUI(progressPercent) {
         `;
 
         progressBarDiv.appendChild(fillDiv);
-        insertionTarget.insertAdjacentElement('afterend', progressBarDiv);
+        const anchorForBar = document.getElementById('rv-progress-text') || insertionTarget;
+        if (offerBlock) {
+            offerBlock.insertAdjacentElement('beforeend', progressBarDiv);
+        } else {
+            anchorForBar.insertAdjacentElement('afterend', progressBarDiv);
+        }
         console.log('✅ Progress bar created and inserted');
     }
 
@@ -988,6 +1065,11 @@ function removeProgressBarUI() {
     if (progressBarDiv) {
         progressBarDiv.remove();
         console.log('🗑️ Progress bar UI removed');
+    }
+    const progressTextDiv = document.getElementById('rv-progress-text');
+    if (progressTextDiv) {
+        progressTextDiv.remove();
+        console.log('🗑️ Progress text removed');
     }
 }
 
