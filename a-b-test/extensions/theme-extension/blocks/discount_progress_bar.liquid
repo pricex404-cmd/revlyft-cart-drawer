@@ -1,0 +1,215 @@
+{% comment %}
+  Discount Progress Bar Block – Direct calculation with live cart fetch
+{% endcomment %}
+
+{% assign cart_total = cart.total_price | divided_by: 100.0 %}
+{% assign item_count = cart.item_count %}
+
+<div class="revlyft-discount-progress" id="revlyft-progress-{{ block.id }}">
+  <div class="progress-wrapper" id="progress-wrapper-{{ block.id }}" style="display: none;">
+    <div class="progress-message" id="progress-message-{{ block.id }}"></div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="progress-bar-{{ block.id }}">
+        <div class="progress-fill" id="progress-fill-{{ block.id }}">&#8203;</div>
+      </div>
+    </div>
+    <div class="progress-subtext" id="progress-subtext-{{ block.id }}"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const blockId         = '{{ block.id }}';
+  const threshold       = {{ block.settings.threshold | default: 4 }};
+  const discountType    = '{{ block.settings.discount_type | default: "quantity" }}';
+  const discountPercent = {{ block.settings.discount_percentage | default: 23 }};
+  const currencyCode    = '{{ cart.currency.iso_code }}';
+  let cartTotal         = parseFloat('{{ cart_total }}');
+  let itemCount         = parseInt('{{ item_count }}', 10);
+
+  function getCurrencySymbol(code) {
+    const symbols = { USD:'$', EUR:'€', GBP:'£', INR:'₹', CAD:'$', AUD:'$', JPY:'¥', CNY:'¥', KRW:'₩', SGD:'$' };
+    return symbols[code]||code;
+  }
+
+  function fetchCartAndRender() {
+    fetch('/cart.js')
+      .then(res => res.json())
+      .then(cart => {
+        cartTotal = cart.total_price / 100;
+        itemCount = cart.item_count;
+        renderProgress();
+      })
+      .catch(err => console.error('[Progress] Cart fetch error', err));
+  }
+
+  function renderProgress() {
+    const wrapper = document.getElementById('progress-wrapper-' + blockId);
+    const msgEl   = document.getElementById('progress-message-' + blockId);
+    const fillEl  = document.getElementById('progress-fill-' + blockId);
+    const subEl   = document.getElementById('progress-subtext-' + blockId);
+    if (!wrapper) return;
+
+    let progress, remaining;
+    if (discountType === 'quantity') {
+      remaining = Math.max(threshold - itemCount, 0);
+      progress  = Math.min((itemCount / threshold) * 100, 100);
+      msgEl.innerHTML = remaining > 0
+        ? `Add <strong>${remaining}</strong> more item${remaining > 1 ? 's' : ''} for <strong>${discountPercent}% off</strong>`
+        : `🎉 ${discountPercent}% discount applied!`;
+    } else {
+      remaining = Math.max(threshold - cartTotal, 0).toFixed(2);
+      progress  = Math.min((cartTotal / threshold) * 100, 100);
+      msgEl.innerHTML = remaining > 0
+        ? `Spend <strong>${getCurrencySymbol(currencyCode)}${remaining}</strong> more for <strong>${discountPercent}% off</strong>`
+        : `🎉 ${discountPercent}% discount applied!`;
+    }
+
+    fillEl.style.width = progress + '%';
+    fillEl.style.background = progress >= 100
+      ? '#10b981'
+      : progress >= 75
+        ? '#f59e0b'
+        : '#3b82f6';
+
+    subEl.textContent = progress >= 100
+      ? 'Discount applied to your cart'
+      : `${Math.round(progress)}% toward your discount`;
+
+    wrapper.style.display = 'block';
+  }
+
+  // Initial render
+  fetchCartAndRender();
+
+  // Listen for cart change events
+  document.addEventListener('cart:updated', fetchCartAndRender);
+  document.addEventListener('cart:change',  fetchCartAndRender);
+  document.addEventListener('cart:refresh', fetchCartAndRender);
+  document.addEventListener('shopify:section:load', fetchCartAndRender);
+
+  // Override fetch() calls to cart/change and cart/add
+  if (window.fetch) {
+    const origFetch = window.fetch;
+    window.fetch = function(res, init) {
+      const url = typeof res === 'string' ? res : res.url;
+      return origFetch(res, init).then(response => {
+        if (url.includes('/cart/change') || url.includes('/cart/add')) {
+          fetchCartAndRender();
+        }
+        return response;
+      });
+    };
+  }
+
+  // jQuery AJAX fallback
+  if (window.jQuery) {
+    jQuery(document).ajaxComplete((e, xhr, settings) => {
+      if (settings.url.includes('/cart/change') || settings.url.includes('/cart/add')) {
+        fetchCartAndRender();
+      }
+    });
+  }
+
+  // Quantity button clicks fallback
+  document.body.addEventListener('click', e => {
+    if (
+      e.target.matches('button[aria-label*="Increase quantity"]') ||
+      e.target.matches('button[aria-label*="Decrease quantity"]') ||
+      e.target.matches('.qty-adjust')
+    ) {
+      fetchCartAndRender();
+    }
+  });
+})();
+</script>
+
+<style>
+  .revlyft-discount-progress {
+    font-family: inherit;
+  }
+  .progress-wrapper {
+    background-color: #f3f4f6;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  .progress-message {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .progress-bar-container {
+    position: relative;
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 8px;
+  }
+  .progress-bar {
+    position: relative;
+    width: 100%;
+    background: #e5e7eb; /* or your desired bar background */
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0;
+    background: #3b82f6; /* fallback color */
+    transition: width 0.5s ease, background 0.3s ease;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .progress-subtext {
+    font-size: 12px;
+    color: #6b7280;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .discount-achieved .progress-message {
+    color: #059669;
+  }
+  .discount-achieved .progress-bar {
+    background: linear-gradient(90deg, #10b981, #047857);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Discount Progress Bar",
+  "target": "section",
+  "settings": [
+    {
+      "type": "number",
+      "id": "threshold",
+      "label": "Threshold",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "discount_type",
+      "label": "Type",
+      "options": [
+        { "value": "quantity", "label": "Quantity" },
+        { "value": "value", "label": "Value" }
+      ],
+      "default": "quantity"
+    },
+    {
+      "type": "number",
+      "id": "discount_percentage",
+      "label": "Discount %",
+      "default": 23
+    }
+  ]
+}
+{% endschema %}
