@@ -18,128 +18,144 @@
 </div>
 
 <script>
-(function() {
-  const blockId = '{{ block.id }}';
-  const currencyCode = '{{ cart.currency.iso_code }}';
-  let cartTotal = parseFloat('{{ cart_total }}');
-  let itemCount = parseInt('{{ item_count }}', 10);
+  (function () {
+    const blockId = '{{ block.id }}';
+    const currencyCode = '{{ cart.currency.iso_code }}';
+    let cartTotal = parseFloat('{{ cart_total }}');
+    let itemCount = parseInt('{{ item_count }}', 10);
 
-  function getCurrencySymbol(code) {
-    const symbols = { USD:'$', EUR:'€', GBP:'£', INR:'₹', CAD:'$', AUD:'$', JPY:'¥', CNY:'¥', KRW:'₩', SGD:'$' };
-    return symbols[code] || code;
-  }
-
-  function parseDiscountMessage(message, currentCartTotal, currentItemCount) {
-    if (!message) return null;
-
-    const valueRegex = /Add [^\d]*([\d.]+) more to get ([\d.]+)% off/;
-    const quantityRegex = /Add (\d+) more item/;
-    const percentRegex = /get (\d+)% off/;
-    const activeRegex = /(\d+)% off/;
-
-    let data = { threshold: 0, discountPercent: 0, discountType: '', remaining: 0 };
-
-    const valueMatch = message.match(valueRegex);
-    if (valueMatch) {
-      data.discountType = 'value';
-      data.remaining = parseFloat(valueMatch[1]);
-      data.discountPercent = parseFloat(valueMatch[2]);
-      data.threshold = currentCartTotal + data.remaining;
-      return data;
+    function getCurrencySymbol(code) {
+      const symbols = {
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        INR: '₹',
+        CAD: '$',
+        AUD: '$',
+        JPY: '¥',
+        CNY: '¥',
+        KRW: '₩',
+        SGD: '$',
+      };
+      return symbols[code] || code;
     }
 
-    const quantityMatch = message.match(quantityRegex);
-    const percentMatch = message.match(percentRegex);
-    if (quantityMatch && percentMatch) {
-      data.discountType = 'quantity';
-      data.remaining = parseInt(quantityMatch[1], 10);
-      data.discountPercent = parseFloat(percentMatch[1]);
-      data.threshold = currentItemCount + data.remaining;
-      return data;
-    }
+    function parseDiscountMessage(message, currentCartTotal, currentItemCount) {
+      if (!message) return null;
 
-    const activeMatch = message.match(activeRegex);
-    if (activeMatch) {
+      const valueRegex = /Add [^\d]*([\d.]+) more to get ([\d.]+)% off/;
+      const quantityRegex = /Add (\d+) more item/;
+      const percentRegex = /get (\d+)% off/;
+      const activeRegex = /(\d+)% off/;
+
+      let data = { threshold: 0, discountPercent: 0, discountType: '', remaining: 0 };
+
+      const valueMatch = message.match(valueRegex);
+      if (valueMatch) {
+        data.discountType = 'value';
+        data.remaining = parseFloat(valueMatch[1]);
+        data.discountPercent = parseFloat(valueMatch[2]);
+        data.threshold = currentCartTotal + data.remaining;
+        return data;
+      }
+
+      const quantityMatch = message.match(quantityRegex);
+      const percentMatch = message.match(percentRegex);
+      if (quantityMatch && percentMatch) {
+        data.discountType = 'quantity';
+        data.remaining = parseInt(quantityMatch[1], 10);
+        data.discountPercent = parseFloat(percentMatch[1]);
+        data.threshold = currentItemCount + data.remaining;
+        return data;
+      }
+
+      const activeMatch = message.match(activeRegex);
+      if (activeMatch) {
         data.discountPercent = parseFloat(activeMatch[1]);
         data.threshold = 0; // Discount is active, no threshold needed for progress calc
         return data;
+      }
+
+      return null;
     }
 
-    return null;
-  }
+    function renderProgress(cart) {
+      const wrapper = document.getElementById('progress-wrapper-' + blockId);
+      if (!wrapper) return;
 
-  function renderProgress(cart) {
-    const wrapper = document.getElementById('progress-wrapper-' + blockId);
-    if (!wrapper) return;
+      const discountMessage = cart.cart_level_discount_applications[0]?.title;
+      const discountData = parseDiscountMessage(discountMessage, cart.total_price / 100, cart.item_count);
 
-    const discountMessage = cart.cart_level_discount_applications[0]?.title;
-    const discountData = parseDiscountMessage(discountMessage, cart.total_price / 100, cart.item_count);
+      if (!discountData || discountData.discountPercent === 0) {
+        wrapper.style.display = 'none';
+        return;
+      }
 
-    if (!discountData || discountData.discountPercent === 0) {
-      wrapper.style.display = 'none';
-      return;
-    }
+      const msgEl = document.getElementById('progress-message-' + blockId);
+      const fillEl = document.getElementById('progress-fill-' + blockId);
+      const subEl = document.getElementById('progress-subtext-' + blockId);
 
-    const msgEl = document.getElementById('progress-message-' + blockId);
-    const fillEl = document.getElementById('progress-fill-' + blockId);
-    const subEl = document.getElementById('progress-subtext-' + blockId);
+      let progress = 0;
+      let achieved = false;
 
-    let progress = 0;
-    let achieved = false;
-
-    if (discountData.threshold > 0) {
+      if (discountData.threshold > 0) {
         if (discountData.discountType === 'quantity') {
-            progress = Math.min((cart.item_count / discountData.threshold) * 100, 100);
-            msgEl.innerHTML = `Add <strong>${discountData.remaining}</strong> more item${discountData.remaining > 1 ? 's' : ''} for <strong>${discountData.discountPercent}% off</strong>`;
-        } else { // value
-            progress = Math.min(((cart.total_price / 100) / discountData.threshold) * 100, 100);
-            msgEl.innerHTML = `Spend <strong>${getCurrencySymbol(currencyCode)}${discountData.remaining.toFixed(2)}</strong> more for <strong>${discountData.discountPercent}% off</strong>`;
+          progress = Math.min((cart.item_count / discountData.threshold) * 100, 100);
+          msgEl.innerHTML = `Add <strong>${discountData.remaining}</strong> more item${
+            discountData.remaining > 1 ? 's' : ''
+          } for <strong>${discountData.discountPercent}% off</strong>`;
+        } else {
+          // value
+          progress = Math.min((cart.total_price / 100 / discountData.threshold) * 100, 100);
+          msgEl.innerHTML = `Spend <strong>${getCurrencySymbol(currencyCode)}${discountData.remaining.toFixed(
+            2
+          )}</strong> more for <strong>${discountData.discountPercent}% off</strong>`;
         }
-    } else {
+      } else {
         progress = 100;
         achieved = true;
-    }
-    
-    if (progress >= 100) {
+      }
+
+      if (progress >= 100) {
         achieved = true;
+      }
+
+      if (achieved) {
+        msgEl.innerHTML = `🎉 ${discountData.discountPercent}% discount applied!`;
+      }
+
+      fillEl.style.width = progress + '%';
+      fillEl.style.background = achieved ? '#10b981' : progress >= 75 ? '#f59e0b' : '#3b82f6';
+      subEl.textContent = achieved ? 'Discount applied to your cart' : `${Math.round(progress)}% toward your discount`;
+      wrapper.style.display = 'block';
     }
 
-    if (achieved) {
-      msgEl.innerHTML = `🎉 ${discountData.discountPercent}% discount applied!`;
+    function fetchCartAndRender() {
+      fetch('/cart.js')
+        .then((res) => res.json())
+        .then((cart) => renderProgress(cart))
+        .catch((err) => console.error('[Progress] Cart fetch error', err));
     }
 
-    fillEl.style.width = progress + '%';
-    fillEl.style.background = achieved ? '#10b981' : (progress >= 75 ? '#f59e0b' : '#3b82f6');
-    subEl.textContent = achieved ? 'Discount applied to your cart' : `${Math.round(progress)}% toward your discount`;
-    wrapper.style.display = 'block';
-  }
+    // Initial render & listeners
+    document.addEventListener('DOMContentLoaded', fetchCartAndRender);
+    document.addEventListener('cart:updated', fetchCartAndRender);
+    document.addEventListener('cart:change', fetchCartAndRender);
 
-  function fetchCartAndRender() {
-    fetch('/cart.js')
-      .then(res => res.json())
-      .then(cart => renderProgress(cart))
-      .catch(err => console.error('[Progress] Cart fetch error', err));
-  }
-
-  // Initial render & listeners
-  document.addEventListener('DOMContentLoaded', fetchCartAndRender);
-  document.addEventListener('cart:updated', fetchCartAndRender);
-  document.addEventListener('cart:change', fetchCartAndRender);
-
-  // Fallback for AJAX calls
-  if (window.fetch) {
-    const origFetch = window.fetch;
-    window.fetch = function(res, init) {
-      const url = typeof res === 'string' ? res : res.url;
-      return origFetch(res, init).then(response => {
-        if (url.includes('/cart/change') || url.includes('/cart/add')) {
-          setTimeout(fetchCartAndRender, 500); // Delay to allow cart to update
-        }
-        return response;
-      });
-    };
-  }
-})();
+    // Fallback for AJAX calls
+    if (window.fetch) {
+      const origFetch = window.fetch;
+      window.fetch = function (res, init) {
+        const url = typeof res === 'string' ? res : res.url;
+        return origFetch(res, init).then((response) => {
+          if (url.includes('/cart/change') || url.includes('/cart/add')) {
+            setTimeout(fetchCartAndRender, 500); // Delay to allow cart to update
+          }
+          return response;
+        });
+      };
+    }
+  })();
 </script>
 
 <style>
@@ -200,7 +216,6 @@
     background: linear-gradient(90deg, #10b981, #047857);
   }
 </style>
-
 {% schema %}
 {
   "name": "Discount Progress Bar",
