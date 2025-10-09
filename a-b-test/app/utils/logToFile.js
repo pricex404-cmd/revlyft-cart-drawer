@@ -19,7 +19,7 @@ export const createLogger = (fileName) => {
         const logMessage = `[${timestamp}] ${message}\n`;
 
         fs.appendFileSync(logFile, logMessage);
-        console.log(message); // Also log to console
+         // Also log to console
     };
 };
 

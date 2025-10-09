@@ -56,7 +56,7 @@ export function ModificationsContentDiscount({
 
     // Update discount type
     const setDiscountType = (type) => {
-        console.log('🔧 Setting discount type:', type);
+        
         setDiscountConfig(prev => ({
             ...prev,
             type: type
@@ -65,7 +65,7 @@ export function ModificationsContentDiscount({
 
     // Validate and update threshold
     const handleThresholdChange = (value) => {
-        console.log('🔧 Setting threshold value:', value);
+        
         const numValue = parseFloat(value);
         if (value === "") {
             setDiscountConfig(prev => ({

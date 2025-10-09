@@ -26,7 +26,7 @@ export const action = async ({ request }) => {
         }
 
         // Step 1: Get staged upload URL
-        console.log('Step 1: Getting staged upload URL...');
+        
         const stagedResponse = await admin.graphql(
             STAGED_UPLOADS_CREATE,
             {
@@ -43,7 +43,7 @@ export const action = async ({ request }) => {
         );
 
         const stagedData = await stagedResponse.json();
-        console.log('Staged upload response:', stagedData);
+        
 
         if (stagedData.data?.stagedUploadsCreate?.userErrors?.length > 0) {
             throw new Error(stagedData.data.stagedUploadsCreate.userErrors[0].message);
@@ -52,7 +52,7 @@ export const action = async ({ request }) => {
         const { url, parameters, resourceUrl } = stagedData.data.stagedUploadsCreate.stagedTargets[0];
 
         // Step 2: Upload to Google Cloud Storage
-        console.log('Step 2: Uploading to Google Cloud Storage...');
+        
         const uploadFormData = new FormData();
         parameters.forEach(({ name, value }) => {
             uploadFormData.append(name, value);
@@ -69,7 +69,7 @@ export const action = async ({ request }) => {
         }
 
         // Step 3: Create file in Shopify
-        console.log('Step 3: Creating file in Shopify...');
+        
         const fileResponse = await admin.graphql(
             FILE_CREATE,
             {
@@ -84,7 +84,7 @@ export const action = async ({ request }) => {
         );
 
         const fileData = await fileResponse.json();
-        console.log('File create response:', fileData);
+        
 
         if (fileData.data?.fileCreate?.userErrors?.length > 0) {
             throw new Error(fileData.data.fileCreate.userErrors[0].message);
@@ -100,7 +100,7 @@ export const action = async ({ request }) => {
         if (!imageUrl) {
             // Poll for the image URL up to 5 times with 1 second delay
             for (let i = 0; i < 5; i++) {
-                console.log(`Polling for image URL attempt ${i + 1}...`);
+                
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
                 const pollResponse = await admin.graphql(

@@ -180,7 +180,7 @@ export const ProductsList = ({
 
     // Custom selection handler that syncs with parent state
     const handleCustomSelectionChange = useCallback((selectionType, toggleType, selection) => {
-        console.log('Selection change:', { selectionType, toggleType, selection });
+        
 
         if (selectionType === 'single') {
             // Handle single product selection - let parent component handle the logic

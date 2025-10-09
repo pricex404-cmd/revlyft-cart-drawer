@@ -106,7 +106,7 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
 
     // Check if all non-control groups have modified prices for all selected products
     return nonControlGroups.every(group => {
-        console.log(`🏷️ Checking group: ${group.name}`);
+        
 
         return selectedProducts.every(product => {
             const productId = product.productId.match(/(\d+)$/)?.[1] || product.productId;
@@ -116,21 +116,21 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
             console.log(`🔗 Group product data exists:`, !!groupProductData);
 
             if (!groupProductData) {
-                console.log(`❌ No group product data found for product ${productId}`);
+                
                 return false;
             }
 
             // Handle multi-variant products
             if (product.isMultiVariant) {
-                console.log(`🔀 Multi-variant product detected: ${product.title}`);
+                
 
                 // First check if there are any variants selected
                 if (!product.variants || product.variants.length === 0) {
-                    console.log(`❌ No variants selected for product ${product.title}`);
+                    
                     return false;
                 }
 
-                console.log(`📋 Product variants:`, product.variants.length);
+                
 
                 // Then check if selected variants have price modifications
                 const allVariantsModified = product.variants.every(productVariant => {
@@ -140,7 +140,7 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
                     console.log(`🎯 Checking variant: ${productVariant.title} (Key: ${variantKey})`);
 
                     if (!groupVariantData) {
-                        console.log(`❌ No variant data found for variant ${variantKey}`);
+                        
                         return false;
                     }
 
@@ -149,12 +149,12 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
                     const modifiedPrice = Number(groupVariantData.modifiedPrice);
                     const isModified = modifiedPrice !== originalPrice;
 
-                    console.log(`🔍 Variant ${productVariant.title}: ${originalPrice} → ${modifiedPrice}, Modified: ${isModified}`);
+                    
 
                     return isModified;
                 });
 
-                console.log(`✅ All variants modified for ${product.title}: ${allVariantsModified}`);
+                
                 return allVariantsModified;
             } else {
                 // Handle single variant products
@@ -162,7 +162,7 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
                 const modifiedPrice = Number(groupProductData.modifiedPrice);
                 const isModified = modifiedPrice !== originalPrice;
 
-                console.log(`🔍 Single variant ${product.title}: ${originalPrice} → ${modifiedPrice}, Modified: ${isModified}`);
+                
 
                 return isModified;
             }
@@ -206,10 +206,10 @@ export const checkIfProductDetailsModified = (testGroups, selectedProducts) => {
 export const checkIfDiscountModified = (testGroups, discountConfig) => {
     if (!testGroups.length) return false;
     if (discountConfig.showTimer === true && discountConfig.timerMinutes === "") {
-console.log("mmmmmm",discountConfig.timerMinutes)
+
         return false;
     }
-console.log("discountConfigggg",discountConfig)
+
     // Check if discount configuration is set
     if (!discountConfig.type || !discountConfig.threshold) return false;
 

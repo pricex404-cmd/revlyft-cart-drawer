@@ -71,7 +71,7 @@ const ConfigurationContentPrice = ({ shop, testId }) => {
     }, [shop, testId]);
 
     const saveTestInfo = async (newFields) => {
-        console.log("newFields", newFields);
+        
         if (newFields.priceVisibility === 'yes') {
             newFields.priceVisibilityAfterQuerySelector = null
             setPriceVisibilityAfterQuerySelector(null)

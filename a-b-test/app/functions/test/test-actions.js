@@ -25,12 +25,12 @@ export const handleSaveTest = async (shop, testId, testData, isStartingTest = fa
         if (testType === 'pricing' || testType === 'productDetails') {
             // Pricing and productDetails tests need selectedProducts
             updatedTestData.selectedProducts = testData.selectedProducts;
-            console.log(`📦 handleSaveTest: Adding selectedProducts for ${testType} test`);
+            
         } else if (testType === 'discount') {
             // Discount tests need discountConfig
             if (testData.discountConfig) {
                 updatedTestData.discountConfig = testData.discountConfig;
-                console.log('💰 handleSaveTest: Adding discountConfig for discount test:', testData.discountConfig);
+                
             }
         }
 

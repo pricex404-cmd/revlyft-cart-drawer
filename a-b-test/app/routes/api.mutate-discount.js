@@ -14,11 +14,11 @@ export const action = async ({ request }) => {
         const shop = url.searchParams.get('shop');
         const action = url.searchParams.get('action'); // 'activate' or 'deactivate'
 
-        console.log('========== ACTIVATE/DEACTIVATE DISCOUNT API ==========');
-        console.log('Request parameters:', { discountId, shop, action });
+        
+        
 
         if (!discountId || !shop || !action) {
-            console.log('Missing required parameters');
+            
             return json({ error: 'Discount ID, shop, and action are required' }, { status: 400 });
         }
 
@@ -39,14 +39,14 @@ export const action = async ({ request }) => {
             return json({ error: `Failed to ${action} discount: ${error}` }, { status: 500 });
         }
 
-        console.log('Discount successfully ' + action + 'd');
-        console.log('=====================================');
+        
+        
 
         return json({ success: true });
     } catch (error) {
         console.error('Error in activate/deactivate discount API:', error);
         console.error('Error stack:', error.stack);
-        console.log('=====================================');
+        
         return json({
             error: error.message || 'An unexpected error occurred',
             details: error.stack

@@ -67,8 +67,8 @@ export function formatGQLQuery(functionId, title, productId, startsAt, endsAt, m
     const escapedJsonString = metafieldJsonString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
     // Debug: Log the final metafield value that will be saved
-    console.log('💾 Optimized metafield value:', metafieldJsonString);
-    console.log('📏 Optimized metafield length:', metafieldJsonString.length);
+    
+    
     console.log('🎯 Original vs Optimized size reduction:',
       `${JSON.stringify({ testVariants }).length} -> ${metafieldJsonString.length} bytes`);
 
@@ -201,7 +201,7 @@ export async function createProductDiscount(admin, title, functionId, testVarian
 
     // Format dates in ISO format without timezone information
     let startsAt, endsAt;
-    console.log('🎯 Creating discount with', testVariants.length, 'test variants');
+    
 
     // Use provided startDate or default to now
     if (startDate) {
@@ -225,7 +225,7 @@ export async function createProductDiscount(admin, title, functionId, testVarian
     const graphqlQuery = formatGQLQuery(functionId, title, null, startsAt, endsAt, "AUTOMATIC", testVariants);
 
 
-    console.log('🚀 Sending GraphQL mutation to Shopify...');
+    
 
     // Create the discount with timeout
     const response = await Promise.race([
@@ -320,7 +320,7 @@ export async function createProductDiscount(admin, title, functionId, testVarian
  * @returns {Object} The result of the discount deletion
  */
 export async function deleteDiscount(admin, discountId) {
-  console.log('Attempting to delete discount with ID:', discountId);
+  
 
   try {
     const response = await admin.graphql(DISCOUNT_AUTOMATIC_DELETE, {
@@ -368,7 +368,7 @@ export async function getDiscountsByTestId(admin, testId, storedDiscountId) {
       const responseJson = await response.json();
 
       if (responseJson.data?.discountAutomaticApp) {
-        console.log('Found discount using stored ID:', responseJson.data.discountAutomaticApp);
+        
         return [responseJson.data.discountAutomaticApp];
       }
     } catch (error) {
@@ -390,7 +390,7 @@ export async function getDiscountsByTestId(admin, testId, storedDiscountId) {
         const config = discount.metafields.edges[0]?.node?.value;
         if (!config) return false;
         const parsedConfig = JSON.parse(config);
-        console.log('Parsed config:', parsedConfig);
+        
         // Check if the discount title contains the test ID
         return discount.title.includes(testId);
       } catch (error) {
@@ -404,7 +404,7 @@ export async function getDiscountsByTestId(admin, testId, storedDiscountId) {
 }
 
 export async function activateDiscount(admin, discountId) {
-  console.log('Attempting to activate discount with ID:', discountId);
+  
 
   try {
     const response = await admin.graphql(DISCOUNT_AUTOMATIC_ACTIVATE, {
@@ -439,7 +439,7 @@ export async function activateDiscount(admin, discountId) {
 }
 
 export async function deactivateDiscount(admin, discountId) {
-  console.log('Attempting to deactivate discount with ID:', discountId);
+  
 
   try {
     const response = await admin.graphql(DISCOUNT_AUTOMATIC_DEACTIVATE, {
@@ -491,7 +491,7 @@ const FIREBASE_DB_URL = "https://a-b-test-5f9a8-default-rtdb.asia-southeast1.fir
  */
 export async function deactivateAllActivePriceTests(sanitizedDomain, shop, currentTestId = null) {
   try {
-    console.log('🎯 Starting deactivation of all active pricing tests except:', currentTestId);
+    
 
     // Fetch all tests
     const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}.json`);
@@ -508,13 +508,13 @@ export async function deactivateAllActivePriceTests(sanitizedDomain, shop, curre
       testId !== currentTestId
     );
 
-    console.log(`📊 Found ${activePricingTests.length} active pricing tests to deactivate`);
+    
 
     // Deactivate each active pricing test
     for (const [testId, test] of activePricingTests) {
       const discountId = test.basicInfo?.discountId;
       if (discountId) {
-        console.log(`🔄 Deactivating pricing test ${testId} with discount ID ${discountId}`);
+        
 
         // Call the deactivate API
         const deactivateResponse = await fetch(`/api/mutate-discount?discountId=${discountId}&shop=${shop}&action=deactivate`, {
@@ -551,7 +551,7 @@ export async function deactivateAllActivePriceTests(sanitizedDomain, shop, curre
           body: JSON.stringify(updatedTestData)
         });
 
-        console.log(`✅ Successfully deactivated pricing test ${testId}`);
+        
       }
     }
 
@@ -571,7 +571,7 @@ export async function deactivateAllActivePriceTests(sanitizedDomain, shop, curre
  */
 export async function deactivateAllActiveDiscountTests(sanitizedDomain, shop, currentTestId = null) {
   try {
-    console.log('🎯 Starting deactivation of all active discount tests except:', currentTestId);
+    
 
     // Fetch all tests
     const response = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}.json`);
@@ -588,13 +588,13 @@ export async function deactivateAllActiveDiscountTests(sanitizedDomain, shop, cu
       testId !== currentTestId
     );
 
-    console.log(`📊 Found ${activeDiscountTests.length} active discount tests to deactivate`);
+    
 
     // Deactivate each active discount test
     for (const [testId, test] of activeDiscountTests) {
       const discountId = test.basicInfo?.discountId;
       if (discountId) {
-        console.log(`🔄 Deactivating discount test ${testId} with discount ID ${discountId}`);
+        
 
         // Call the deactivate API
         const deactivateResponse = await fetch(`/api/mutate-discount?discountId=${discountId}&shop=${shop}&action=deactivate`, {
@@ -631,7 +631,7 @@ export async function deactivateAllActiveDiscountTests(sanitizedDomain, shop, cu
           body: JSON.stringify(updatedTestData)
         });
 
-        console.log(`✅ Successfully deactivated discount test ${testId}`);
+        
       }
     }
 

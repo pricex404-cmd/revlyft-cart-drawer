@@ -13,14 +13,14 @@ const FIREBASE_DB_URL = "https://a-b-test-5f9a8-default-rtdb.asia-southeast1.fir
 
 const logToFile = createLogger('cleanup-product-duplicates');
 export const action = async ({ request }) => {
-    console.log('========== DELETE PRODUCT DUPLICATES API ==========');
+    
     try {
         const { admin } = await authenticate.admin(request);
         const url = new URL(request.url);
         const testId = url.searchParams.get("testId");
         const shop = url.searchParams.get("shop");
 
-        console.log('Request parameters:', { testId, shop });
+        
         await logToFile('Delete product duplicates request received', { testId, shop });
 
         if (!testId || !shop) {
@@ -32,7 +32,7 @@ export const action = async ({ request }) => {
 
         // Get test data from Firebase
         const sanitizedDomain = shop.replace(/\./g, '_');
-        console.log('Fetching test data from Firebase:', { sanitizedDomain, testId });
+        
         await logToFile('Fetching test data from Firebase', { sanitizedDomain, testId });
 
         const testResponse = await fetch(`${FIREBASE_DB_URL}/abTests/${sanitizedDomain}/${testId}.json`);
@@ -45,7 +45,7 @@ export const action = async ({ request }) => {
             throw new Error(error);
         }
 
-        console.log('Test data retrieved successfully');
+        
         await logToFile('Test data retrieved successfully', {
             testName: testData?.basicInfo?.testName,
             testType: testData?.basicInfo?.type,
@@ -59,11 +59,11 @@ export const action = async ({ request }) => {
 
         // Process each test group
         for (const group of testData.testGroups) {
-            console.log(`Processing group: ${group.name}`);
+            
             await logToFile('Processing test group', { groupName: group.name });
 
             if (group.name === "Control Group") {
-                console.log('Skipping control group');
+                
                 await logToFile('Skipping control group', { groupName: group.name });
                 continue;
             }
@@ -290,7 +290,7 @@ export const action = async ({ request }) => {
         //     });
         // }
 
-        console.log('Successfully completed product deletion');
+        
         await logToFile('Successfully completed product deletion', { deletedProductsCount });
 
         // Get current test data to modify
@@ -353,7 +353,7 @@ export const action = async ({ request }) => {
             });
         }
 
-        console.log('Successfully updated test data and status to pending');
+        
         await logToFile('Successfully updated test data and status to pending');
 
         return json({
@@ -374,6 +374,6 @@ export const action = async ({ request }) => {
             details: error.stack
         }, { status: 500 });
     } finally {
-        console.log('=====================================');
+        
     }
 }; 
