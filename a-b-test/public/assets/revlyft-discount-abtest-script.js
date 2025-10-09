@@ -166,96 +166,119 @@ function findDiscountElement() {
 // Global flag to prevent infinite discount message retries
 window.rv_DiscountMessageRetryLimitReached = false;
 
-// Function to create or update timer UI
+// Function to create or update timer UI - now integrates with progress bar
 function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     if (window.rv_DiscountMessageRetryLimitReached) {
         return;
     }
-    // console.log('🔄 Updating timer UI');
-    let timerDiv = document.getElementById('rv-discount-timer');
-
-    if (!timerDiv) {
-        const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
+    
+    // Look for progress bar message element first
+    let progressMessage = document.querySelector('.progress-message');
+    
+    if (!progressMessage) {
+        // Fallback to discount message element
         const discountMessage = findDiscountElement();
-        if (!cartHeaderContainer && !discountMessage) {
+        if (!discountMessage) {
             if (timerExpired) {
-                console.log('⏳ No discount message found and timer expired, will NOT retry.');
+                console.log('⏳ No progress bar or discount message found and timer expired, will NOT retry.');
                 return;
             }
             // Limit retries to 4
             if (retryCount >= 4) {
-                console.log('⏳ No discount message found after 4 retries, will NOT retry again.');
+                console.log('⏳ No progress bar or discount message found after 4 retries, will NOT retry again.');
                 window.rv_DiscountMessageRetryLimitReached = true;
                 return;
             }
-            console.log('⏳ No discount message found, will retry...');
+            console.log('⏳ No progress bar or discount message found, will retry...');
             setTimeout(() => updateTimerUI(timeString, timerExpired, retryCount + 1), 500);
             return;
         }
+    }
 
-        console.log('✅ Creating new timer UI');
-        // Ensure a block just BELOW the header so header stays on its own line
-        let offerBlock = null;
-        if (cartHeaderContainer) {
-            offerBlock = document.getElementById('rv-offer-block');
-            if (!offerBlock) {
+    console.log('✅ Updating timer UI within progress bar');
+    
+    // Support both "MM:SS" string and {minutes, seconds}
+    let minutes = 0;
+    let seconds = 0;
+    if (typeof timeString === 'string' && timeString.includes(':')) {
+        const parts = timeString.split(':');
+        minutes = parseInt(parts[0], 10) || 0;
+        seconds = parseInt(parts[1], 10) || 0;
+    } else if (timeString && typeof timeString === 'object') {
+        minutes = parseInt(timeString.minutes, 10) || 0;
+        seconds = parseInt(timeString.seconds, 10) || 0;
+    }
+
+    const boxStyle = RV_STYLES.timeBox;
+    const sepStyle = RV_STYLES.timeSep;
+    const wrapStyle = RV_STYLES.timeWrap;
+    
+    // Create timer HTML
+    const timerHTML = `<div style="${RV_STYLES.timerDiv.replace('margin: 10px 0;', 'margin: 8px 0 12px 0;')}">
+        <span style="${RV_STYLES.clockIcon}">⏰</span>
+        <span style="${RV_STYLES.textSpan}">⚡ Hurry! This special offer expires in 
+            <span style="display:block"></span>
+            <span class="rv-time-wrap" style="${wrapStyle}">
+                <span style="${boxStyle}">${minutes}m</span>
+                <span style="${sepStyle}">:</span>
+                <span style="${boxStyle}">${seconds}s</span>
+            </span>
+        </span>
+    </div>`;
+    
+    if (progressMessage) {
+        // Check if timer already exists in progress message
+        let existingTimer = progressMessage.querySelector('.rv-timer-in-progress');
+        if (!existingTimer) {
+            // Create timer container within progress message
+            existingTimer = document.createElement('div');
+            existingTimer.className = 'rv-timer-in-progress';
+            existingTimer.style.cssText = 'margin-bottom: 8px;';
+            progressMessage.insertBefore(existingTimer, progressMessage.firstChild);
+        }
+        existingTimer.innerHTML = timerHTML;
+    } else {
+        // Fallback: create separate timer div if no progress bar
+        let timerDiv = document.getElementById('rv-discount-timer');
+        if (!timerDiv) {
+            const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
+            let offerBlock = document.getElementById('rv-offer-block');
+            if (!offerBlock && cartHeaderContainer) {
                 offerBlock = document.createElement('div');
                 offerBlock.id = 'rv-offer-block';
                 offerBlock.style.cssText = RV_STYLES.offerBlock;
                 cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
             }
+            
+            timerDiv = document.createElement('div');
+            timerDiv.id = 'rv-discount-timer';
+            timerDiv.innerHTML = timerHTML;
+            
+            if (offerBlock) {
+                offerBlock.appendChild(timerDiv);
+            } else if (discountMessage) {
+                discountMessage.insertAdjacentElement('afterend', timerDiv);
+            }
+        } else {
+            timerDiv.innerHTML = timerHTML;
         }
-        timerDiv = document.createElement('div');
-        timerDiv.id = 'rv-discount-timer';
-        timerDiv.style.cssText = RV_STYLES.timerDiv;
-
-        const clockIcon = document.createElement('span');
-        clockIcon.innerHTML = '⏰';
-        clockIcon.style.cssText = RV_STYLES.clockIcon;
-        timerDiv.appendChild(clockIcon);
-
-        // keyframes are injected globally at load time
-
-        const textSpan = document.createElement('span');
-        textSpan.id = 'rv-discount-timer-text';
-        textSpan.style.cssText = RV_STYLES.textSpan;
-        timerDiv.appendChild(textSpan);
-
-        if (offerBlock) {
-            offerBlock.insertAdjacentElement('beforeend', timerDiv);
-        } else if (discountMessage) {
-            discountMessage.insertAdjacentElement('afterend', timerDiv);
-        }
-        console.log('✅ Timer UI inserted into DOM');
-    }
-
-    const textSpan = document.getElementById('rv-discount-timer-text');
-    if (textSpan) {
-        // Support both "MM:SS" string and {minutes, seconds}
-        let minutes = 0;
-        let seconds = 0;
-        if (typeof timeString === 'string' && timeString.includes(':')) {
-            const parts = timeString.split(':');
-            minutes = parseInt(parts[0], 10) || 0;
-            seconds = parseInt(parts[1], 10) || 0;
-        } else if (timeString && typeof timeString === 'object') {
-            minutes = parseInt(timeString.minutes, 10) || 0;
-            seconds = parseInt(timeString.seconds, 10) || 0;
-        }
-
-        const boxStyle = RV_STYLES.timeBox;
-        const sepStyle = RV_STYLES.timeSep;
-        const wrapStyle = RV_STYLES.timeWrap;
-        textSpan.innerHTML = `⚡ Hurry! This special offer expires in <span style="display:block"></span><span class="rv-time-wrap" style="${wrapStyle}"><span style="${boxStyle}">${minutes}m</span><span style="${sepStyle}">:</span><span style="${boxStyle}">${seconds}s</span></span>`;
     }
 }
 
 // Function to remove timer UI only (not the cookie)
 function removeTimerUI() {
+    // Remove timer from progress bar if it exists
+    const progressTimer = document.querySelector('.rv-timer-in-progress');
+    if (progressTimer) {
+        progressTimer.remove();
+        console.log('🗑️ Timer UI removed from progress bar');
+    }
+    
+    // Also remove standalone timer div if it exists
     const timerDiv = document.getElementById('rv-discount-timer');
     if (timerDiv) {
         timerDiv.remove();
-        console.log('🗑️ Timer UI removed');
+        console.log('🗑️ Standalone timer UI removed');
     }
 }
 
