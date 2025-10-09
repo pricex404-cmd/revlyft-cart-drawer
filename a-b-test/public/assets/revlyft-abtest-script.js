@@ -1,6 +1,6 @@
 // Add this to a JavaScript file in your theme or as a script tag
-console.log("🚀 revlyft cart attribute script loaded");
-console.log("🚀 Start");
+
+
 var rv_finalDevId;
 const timestamp = new Date().toISOString();
 
@@ -427,7 +427,7 @@ function rv_callbody() {
 
     function getOSlanguage() {
         raw_lang = navigator.language;
-        //console.log("raw_lang: ", raw_lang);
+        
         if (raw_lang == "en" || raw_lang.toLowerCase() === "en-us") {
             return "en";
         } else {
@@ -458,7 +458,7 @@ function rv_callbody() {
             return (audioCtx.sampleRate).toString() + "_" + destination.numberOfInputs + '_' + destination.numberOfOutputs + '_' + destination.channelCount + '_' + destination.channelCountMode + '_' + destination.channelInterpretation;
         }
         catch (e) {
-            console.log("AUDIO NOT SUPPORTED")
+            
             return "not supported";
         }
     }
@@ -845,97 +845,91 @@ function rv_callbody() {
         } catch (e) {
             canvasData = "Not supported";
         }
-        //console.log(canvasData)
-        //console.log(webGLData)
-        if (rv_debugGen) console.log(webGLVendor)
-        if (rv_debugGen) console.log(webGLRenderer)
 
 
 
-        //console.log("canvasData", canvasData);
+
+
         var visitorIdCan = x64hash128(`'canvasData':${canvasData}`)
-        if (rv_debugGen) console.log("the visitorIdCan: " + visitorIdCan);
 
-        //console.log("webGLData", webGLData);
+
+
         var visitorIdWebGL = x64hash128(`'webGLData':${webGLData}`)
-        if (rv_debugGen) console.log("the visitorIdWebGL: " + visitorIdWebGL);
+
 
         var rv_browserInd = [];
         var rv_browserIdV2 = [];
         var rv_browserIdLog = [];
 
         // NOTE: browser ind -- not ind for new MacOS 
-        if (rv_debugGen) console.log("webGLVendor", webGLVendor);
+           
         //rv_browserInd.push(`'webGLVendor':${webGLVendor}`)
         var visitorIdWebGLV = x64hash128(`'webGLVendor':${webGLVendor}`)
-        if (rv_debugGen) console.log("the visitorIdWebGLV: " + visitorIdWebGLV);
+
 
         // NOTE: browser ind -- not ind for new MacOS
-        if (rv_debugGen) console.log("webGLRenderer", webGLRenderer);
+
         //rv_browserInd.push(`'webGLRenderer':${webGLRenderer}`)
         var visitorIdWebGLR = x64hash128(`'webGLRenderer':${webGLRenderer}`)
-        if (rv_debugGen) console.log("the visitorIdWebGLR: " + visitorIdWebGLR);
 
         // NOTE: browser ind
-        if (rv_debugGen) console.log(device_webglSpecs);
+      
         rv_browserInd.push(`'device_webglSpecs':${device_webglSpecs}`)
         var visitorIdWebGLSpecs = x64hash128(`'device_webglSpecs':${device_webglSpecs}`)
-        if (rv_debugGen) console.log("the visitorIdWebGLSpecs: " + visitorIdWebGLSpecs);
+
 
         var visitorIdWebGL_device = x64hash128(`'webGLData_device':${webGLData_device}`)
-        if (rv_debugGen) console.log("the visitorIdWebGL_device: " + visitorIdWebGL_device);
-        //console.log("the webGLData_device: " + webGLData_device);
 
         // NOTE: browser ind
         var audioFprint = audioFPrinting();
-        if (rv_debugGen) console.log("audioFprint", audioFprint);
+
         rv_browserInd.push(`'audio_device':${audioFprint}`)
         var audio_device = x64hash128(`'audio_device':${audioFprint}`)
-        if (rv_debugGen) console.log("the audio_device: " + audio_device);
+
 
         // NOTE: browser ind
         var resFprint = getResolution();
-        if (rv_debugGen) console.log("resFprint", resFprint);
+
         rv_browserInd.push(`'res_device':${resFprint}`)
         var res_device = x64hash128(`'res_device':${resFprint}`)
-        if (rv_debugGen) console.log("the res_device: " + res_device);
+ 
 
         var rv_cpuCores = "-1";
         if (navigator.hardwareConcurrency)
             rv_cpuCores = navigator.hardwareConcurrency;
-        if (rv_debugGen) console.log("rv_cpuCores", rv_cpuCores);
+
         rv_browserIdV2.push(`'cpu_device':${rv_cpuCores}`);
         var cpu_device = x64hash128(`'cpu_device':${rv_cpuCores}`);
-        if (rv_debugGen) console.log("the cpu_device: " + cpu_device);
+
 
         var langFprint = get_writing_scripts();
-        if (rv_debugGen) console.log("langFprint", langFprint);
+
         rv_browserIdV2.push(`'lang_device':${langFprint}`);
         var lang_device = x64hash128(`'lang_device':${langFprint}`);
-        if (rv_debugGen) console.log("the lang_device: " + lang_device);
+
 
         // NOTE: browser ind
         var timeFprint = new Date().getTimezoneOffset();
-        if (rv_debugGen) console.log("timeFprint", timeFprint);
+
         rv_browserInd.push(`'time_device':${timeFprint}`)
         var time_device = x64hash128(`'time_device':${timeFprint}`)
-        if (rv_debugGen) console.log("the time_device: " + time_device);
+
 
         // NOTE: browser ind
         var osFprint = JSON.stringify(rv_jscd);
-        if (rv_debugGen) console.log("osFprint", osFprint);
+
         rv_browserInd.push(`'os_device':${osFprint}`);
         var os_device = x64hash128(`'os_device':${osFprint}`);
         rv_browserIdLog.push(`'os_device':${osFprint}`);
-        if (rv_debugGen) console.log("the os_device: " + os_device);
+
 
         // NOTE: browser ind
         var osLangFprint = getOSlanguage();
-        if (rv_debugGen) console.log("osLangFprint", osLangFprint);
+
         rv_browserInd.push(`'osLang_device':${osLangFprint}`);
         var osLang_device = x64hash128(`'osLang_device':${osLangFprint}`);
         rv_browserIdLog.push(`'osLang_device':${osLangFprint}`);
-        if (rv_debugGen) console.log("the osLang_device: " + osLang_device);
+
 
         rv_browserIdV2.push(`'browser_device':${rv_browser}`);
         rv_browserIdLog.push(`'browser_device':${rv_browser}`);
@@ -960,30 +954,27 @@ function rv_callbody() {
                 if (e.candidate == null) {
                     local_sdp = peerConn.localDescription.sdp;
                     rv_ipstring = /c=IN IP4 ([^\n]*)\n/.exec(local_sdp)[1].trim();
-                    if (rv_debugGen) console.log(local_sdp);
+                    if (rv_debugGen) 
                     //sdp_ipstring2 = /a=candidate([^\n]*)\n/.exec(local_sdp)[0]
                     sdp_ipstring2 = /[^\n]*? ((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)) [^\n]*? typ srflx raddr [^\n]*\n/.exec(local_sdp)[0]
                     rv_ipstring2 = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/.exec(sdp_ipstring2)[0];
-                    if (rv_debugGen) console.log("you rv_ipstring:" + rv_ipstring);
-                    if (rv_debugGen) console.log("your rv_ipstring2:" + rv_ipstring2);
+
                     if (rv_ipstring.trim() === '0.0.0.0') {
-                        if (rv_debugGen) console.log("rv_ipstring is 0.0.0.0");
+
                         rv_ipstring = rv_ipstring2;
                     } else {
-                        if (rv_debugGen) console.log("rv_ipstring is not 0.0.0.0");
+
                     }
                     // NOTE: browser ind
                     var userIpIp = x64hash128(`'rv_ip':${rv_ipstring}`);
                     //var userIpIp = x64hash128(`'canvasData':${rv_ipstring2}'`)
                     rv_browserInd.push(`'rv_ip':${rv_ipstring}`);
                     rv_browserIdLog.push(`'rv_ip':${rv_ipstring}`);
-                    if (rv_debugGen) console.log("your ip:" + rv_ipstring);
-                    if (rv_debugGen) console.log("the device ip: " + userIpIp);
+
                     rv_browserIndStr = rv_browserInd.join("_");
                     rv_browserIdLogStr = rv_browserIdLog.join("_");
                     rv_finalDevId = x64hash128(rv_browserIndStr);
-                    if (rv_debugGen) console.log(rv_browserIndStr);
-                    console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+
                     // Store rv_finalDevId in cookies for 30 days
                     setCookie('rv_finalDevId', rv_finalDevId, 30);
                     // Mark fingerprinting as complete
@@ -993,23 +984,22 @@ function rv_callbody() {
                     if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
                     rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
                     rv_finalBrowserId = x64hash128(rv_browserIdStr);
-                    console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
+
 
                     rv_browserIdStrV2part = rv_browserIdV2.join("_");
                     rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
                     rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
-                    console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
+
 
 
                 }
             };
         } else {
             // Inform user that webrtc fetch failed
-            if (rv_debugGen) console.log('Failed to fetch IP via WebRTC, perhaps your WebRTC is disabled?');
+
             rv_browserIndStr = rv_browserInd.join("_");
             rv_finalDevId = x64hash128(rv_browserIndStr);
-            if (rv_debugGen) console.log(rv_browserIndStr);
-            console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+                     
             // Store rv_finalDevId in cookies for 30 days
             setCookie('rv_finalDevId', rv_finalDevId, 30);
             // Mark fingerprinting as complete
@@ -1019,12 +1009,12 @@ function rv_callbody() {
             if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
             rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
             rv_finalBrowserId = x64hash128(rv_browserIdStr);
-            console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
+
 
             rv_browserIdStrV2part = rv_browserIdV2.join("_");
             rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
             rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
-            console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
+
 
 
         }
@@ -1037,14 +1027,14 @@ function initializeFingerprinting() {
     const existingDevId = getCookie('rv_finalDevId');
 
     if (existingDevId && existingDevId !== 'dummy_devid') {
-        console.log('🔍 Found existing rv_finalDevId in cookies:', existingDevId);
+        
         // Set the global variable from cookie
         rv_finalDevId = existingDevId;
         // Mark fingerprinting as complete
         window.rv_fingerprintComplete = true;
-        console.log('✅ Skipping fingerprinting - using cached device ID');
+        
     } else {
-        console.log('🚀 No valid rv_finalDevId found in cookies, running fingerprinting...');
+        
         rv_callbody();
     }
 }
@@ -1241,7 +1231,7 @@ async function getTargetingInfoForCart() {
         // Add single cart attribute with all test data as JSON string
         targetingInfo.revlyft_tests_targeting_data = JSON.stringify(testData);
 
-        console.log('🎯 Targeting info for cart:', targetingInfo);
+        
         return targetingInfo;
     } catch (error) {
         console.error('❌ Error in getTargetingInfoForCart:', error);
@@ -1301,7 +1291,7 @@ async function updateCartWithIP(ip) {
             return response.json();
         })
         .then(data => {
-            console.log('🛒 revlyftattributes saved to cart');
+            
             window.rv_AttributesSet = true;
         })
         .catch(error => {
@@ -1386,7 +1376,7 @@ function getShopifyDomainFromScript() {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
                     if (shopParam) {
-                        console.log('🔍 Found shop parameter in current script:', shopParam);
+                        
                         return shopParam;
                     }
                 } catch (urlError) {
@@ -1404,7 +1394,7 @@ function getShopifyDomainFromScript() {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
                     if (shopParam) {
-                        console.log('🔍 Found shop parameter in script URL:', shopParam);
+                        
                         return shopParam;
                     }
                 } catch (urlError) {
@@ -1417,14 +1407,14 @@ function getShopifyDomainFromScript() {
         const urlParams = new URLSearchParams(window.location.search);
         const shopParam = urlParams.get('shop');
         if (shopParam) {
-            console.log('🔍 Found shop parameter in page URL:', shopParam);
+            
             return shopParam;
         }
 
         // Method 3: Check if current domain is already a myshopify domain
         const currentDomain = window.location.hostname;
         if (currentDomain.includes('.myshopify.com')) {
-            console.log('🔍 Current domain is already a Shopify domain:', currentDomain);
+            
             return currentDomain;
         }
 
@@ -1443,7 +1433,7 @@ async function fetchShopifyDomain() {
     // First try to get domain from script parameters (faster and doesn't require API call)
     const scriptDomain = getShopifyDomainFromScript();
     if (scriptDomain) {
-        console.log('🔍 Using Shopify domain from script:', scriptDomain);
+        
         return scriptDomain;
     }
 
@@ -1518,7 +1508,7 @@ function getRevlyfHashValue() {
     // First check session storage for preview hash
     const sessionHashValue = sessionStorage.getItem('rv_hashValue');
     if (sessionHashValue) {
-        console.log('🎯 Using preview hash value:', sessionHashValue);
+        
         return parseInt(sessionHashValue, 10);
     }
 
@@ -1556,13 +1546,12 @@ function getVariantForUser(testVariants, hashValue) {
 
         if (hashValue <= cumulativePercentage) {
             selectedVariant = variant;
-            console.log(`🎯 User assigned to variant: "${variant.name}" (${variant.percentage}% of users)`);
+  
             break;
         }
     }
 
     if (!selectedVariant) {
-        console.log("🎯 No variant selected for this user");
         return null;
     }
 
@@ -1695,13 +1684,13 @@ async function processProductVisibility(activeTests, hashValue) {
 
         // Skip non-test objects (like querySelectors, isScriptDetected, or incomplete tests)
         if (testId === 'querySelectors' || testId === 'isScriptDetected' || !test || typeof test !== 'object' || !test.basicInfo) {
-            console.log(`⏭️ Skipping invalid entry: ${testId}`);
+            
             continue;
         }
 
         // Validate test has required structure before processing
         if (!test.testGroups || !test.selectedProducts || !test.targeting) {
-            console.log(`❌ Invalid test structure for ${testId}, skipping analytics tracking`);
+            
             continue;
         }
 
@@ -1829,7 +1818,7 @@ function isLeightWorksStore() {
 function findProductElementsById(productId) {
     // Check if we're on LeightWorks and use specialized function
     if (isLeightWorksStore()) {
-        console.log('🔍 Using LeightWorks-specific product element finder for product:', productId);
+        
         return findProductElementsByIdLeightWorks(productId);
     }
 
@@ -1983,7 +1972,7 @@ function initializeRevlyfPriceModifications() {
     }
     window.rv_PriceModificationRunning = true;
 
-    console.log('💰 Initializing price modifications');
+    
 
     // Set to store already modified elements to prevent re-processing
     const modifiedElements = new Set();
@@ -2099,12 +2088,12 @@ function storeRevlyfHashValue() {
 
     // Handle encrypted test ID from URL
     if (previewTestId) {
-        console.log("🎯 Found preview test ID in URL");
+        
         try {
             // Decrypt the test ID
             const decryptedTestId = decryptValue(previewTestId);
             if (decryptedTestId) {
-                console.log("🎯 Using decrypted preview test ID:", decryptedTestId);
+                
                 sessionStorage.setItem('revlyft_testId', decryptedTestId);
                 // Also store in cookies for persistence across sessions (expires in 1 day)
                 // setCookie('revlyft_previewTestId', decryptedTestId, 1);
@@ -2117,12 +2106,12 @@ function storeRevlyfHashValue() {
     }
 
     if (previewHash) {
-        console.log("🎯 Found preview hash in URL");
+
         try {
             // Decrypt the hash value
             const decryptedHash = decryptValue(previewHash);
             if (decryptedHash) {
-                console.log("🎯 Using decrypted preview hash value:", decryptedHash);
+                
                 sessionStorage.setItem('rv_hashValue', decryptedHash);
                 return; // Exit early when preview hash is set
             } else {
@@ -2148,12 +2137,12 @@ function storeRevlyfHashValue() {
             if (ip) {
                 hashValue = generateConsistentHash(ip);
                 setCookie('rv_hashValue', hashValue.toString(), 1);
-                console.log('🎯 Hash value generated and stored');
+                
             } else {
                 // Generate a random hash value as last resort
                 hashValue = Math.floor(Math.random() * 100);
                 setCookie('rv_hashValue', hashValue.toString(), 1);
-                console.log('🎯 Random hash value generated and stored');
+                
             }
         });
         return;
@@ -2161,11 +2150,11 @@ function storeRevlyfHashValue() {
 
     // Store the hash value in cookies
     setCookie('rv_hashValue', hashValue.toString(), 1);
-    console.log('🎯 Hash value stored in cookies');
+    
 }
 
 // (function () {
-////console.log("revlyftcart attribute script self-executing");
+
 
 // Try to run immediately
 // initializerv_CartAttributes();
@@ -2221,7 +2210,7 @@ function initializeRevlyf() {
         return;
     }
 
-    console.log('🚀 Initializing Revlyf...');
+    
     window.rv_Initialized = true;
 
     // Check for config parameters and mark script as detected
@@ -2249,7 +2238,7 @@ function initializeRevlyf() {
 
 // Add cleanup function
 function cleanupRevlyf() {
-    console.log('🧹 Cleaning up Revlyf...');
+    
 
     // Clear variant check interval
     if (window.rv_VariantCheckInterval) {
@@ -2275,7 +2264,7 @@ function setupVariantChangeListener() {
         return;
     }
 
-    console.log('🔄 Setting up variant change listener for product page');
+    
 
     // Listen for URL changes (variant parameter changes) and DOM changes
     let currentVariant = new URLSearchParams(window.location.search).get('variant') || getCurrentVariantFromDOM();
@@ -2290,7 +2279,7 @@ function setupVariantChangeListener() {
         }
 
         if (newVariant && newVariant !== currentVariant) {
-            console.log('🔄 Variant changed from', currentVariant, 'to', newVariant);
+            
             currentVariant = newVariant;
 
             // Clear existing modifications
@@ -2339,7 +2328,7 @@ function setupVariantChangeListener() {
  * Clear existing price modifications to allow re-processing
  */
 function clearExistingPriceModifications() {
-    console.log('💰 Clearing existing price modifications');
+    
 
     // Find all elements with rv-modified attribute
     const modifiedElements = document.querySelectorAll('[data-rv-modified]');
@@ -2386,11 +2375,11 @@ function debounce(func, wait) {
  * Track add to cart events
  */
 function setupCartTracking() {
-    console.log('🛒 Setting up cart tracking');
+    
 
     // Shared function to handle add to cart tracking
     async function handleAddToCartTracking(form, eventType = 'submit') {
-        console.log(`🛒 Add to cart ${eventType} detected`);
+        
 
         try {
             // Get product ID from the hidden input
@@ -2411,24 +2400,24 @@ function setupCartTracking() {
             }
 
             if (!productId) {
-                console.log('❌ No product ID found in form');
+                
                 return;
             }
 
             const cleanProductId = getCleanId(productId);
-            console.log(`🛒 Processing add to cart for product ID: ${cleanProductId}, variant ID: ${variantId}`);
+            
 
             // Get IP from cookies
             const ip = getCookie('rv_UserIp');
             if (!ip) {
-                console.log('❌ No IP found in cookies');
+                
                 return;
             }
 
             // Get hash value
             const hashValue = getRevlyfHashValue();
             if (hashValue < 0) {
-                console.log('❌ No valid hash value found');
+                
                 return;
             }
 
@@ -2439,7 +2428,7 @@ function setupCartTracking() {
             const abTestsData = await fetchABTestData();
 
             if (!abTestsData) {
-                console.log('❌ No A/B test data found');
+                
                 return;
             }
 
@@ -2458,7 +2447,7 @@ function setupCartTracking() {
                 if (test.basicInfo.type === 'pricing') {
                     const meetsTargeting = await checkTargetingCriteria(test, testId);
                     if (!meetsTargeting) {
-                        console.log(`🎯 User does not meet targeting criteria for test ${testId}, skipping cart tracking`);
+                        
                         continue;
                     }
                 }
@@ -2548,7 +2537,7 @@ function setupCartTracking() {
                             trackingKey = `productId_${originalProductId}`;
                         }
 
-                        console.log(`📊 Tracking addToCart for ${trackingKey}`);
+                        
 
                         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/addToCart`;
                         const analyticsUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/${firebasePath}.json`;
@@ -2592,7 +2581,7 @@ function setupCartTracking() {
                             throw new Error(`Failed to update addToCart data: ${updateResponse.status}`);
                         }
 
-                        console.log(`📊 Successfully tracked add to cart for ${trackingKey}`);
+                        
                     } else {
                         // For productDetails tests, keep original simple array tracking
                         const firebasePath = `abTests/${storeId}/${testId}/testGroups/${variantIndex}/analytics/addToCart`;
@@ -2630,7 +2619,7 @@ function setupCartTracking() {
                             throw new Error(`Failed to update addToCart data: ${updateResponse.status}`);
                         }
 
-                        console.log(`📊 Successfully tracked add to cart for product ${cleanProductId}`);
+                        
                     }
                 } catch (error) {
                     console.error('❌ Error updating addToCart analytics:', error);
@@ -2659,7 +2648,7 @@ function setupCartTracking() {
             // Find the closest form
             const form = event.target.closest('form[action*="/cart/add"]');
             if (form) {
-                console.log('🛒 AJAX add to cart button clicked');
+                
                 // Add a small delay to allow the click to process first
                 setTimeout(async () => {
                     await handleAddToCartTracking(form, 'click');
@@ -2675,7 +2664,7 @@ function setupCartTracking() {
 
         // Check if this is a cart add request
         if (typeof resource === 'string' && resource.includes('/cart/add')) {
-            console.log('🛒 AJAX cart add request intercepted');
+            
 
             // Try to find the form that triggered this request
             const forms = document.querySelectorAll('form[action*="/cart/add"]');
@@ -2704,7 +2693,7 @@ function setupCartTracking() {
         }
     });
 
-    console.log('🛒 Cart tracking setup complete');
+    
 }
 
 
@@ -2714,7 +2703,7 @@ function setupCartTracking() {
  */
 function initializeAnalytics() {
     setupCartTracking();
-    console.log("analytics initialized");
+    
 }
 
 
@@ -3093,7 +3082,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
         for (const param of configParams) {
             if (urlParams.has(param)) {
                 hasConfigParam = true;
-                console.log(`🔍 Found config parameter: ${param}=${urlParams.get(param)}`);
+            
                 break;
             }
         }
@@ -3103,7 +3092,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
             return;
         }
 
-        console.log('🔍 Config parameters detected, marking script as detected in Firebase');
+        
 
         // Get the store ID (sanitized domain)
         const storeId = await getStoreId();
@@ -3124,7 +3113,7 @@ async function checkConfigParamsAndMarkScriptDetected() {
             throw new Error(`Failed to update isscriptDetected: ${response.status}`);
         }
 
-        console.log('✅ Successfully marked script as detected in Firebase');
+        
 
     } catch (error) {
         console.error('❌ Error marking script as detected:', error);
@@ -3144,7 +3133,7 @@ async function isReturningVisitor(storeId) {
         const visitorCookie = getCookie('rv_visitor_status');
         const firstVisitCookie = getCookie('rv_first_visit');
         
-        console.log('🔍 Cookie values:', { visitorCookie, firstVisitCookie });
+        
         
         // Handle existing cookie data
         if (visitorCookie && firstVisitCookie) {
@@ -3153,17 +3142,17 @@ async function isReturningVisitor(storeId) {
                 const status = visitorCookie;
                 const elapsed = now - firstVisit;
                 
-                console.log('🔍 Found existing data in cookies:', { firstVisit, status, elapsed });
+                
                 
                 // Only update if status should change from 'new' to 'returning'
                 if (elapsed >= THIRTY_MINUTES && status === 'new') {
-                    console.log('🔄 Time exceeded, updating to returning visitor');
+                    
                     setCookie('rv_visitor_status', 'returning', 365);
                     return true;
                 }
                 
                 // No update needed, return current status
-                console.log('🔍 No change needed, current status:', status);
+                
                 return status === 'returning';
                 
             } catch (e) {
@@ -3173,11 +3162,11 @@ async function isReturningVisitor(storeId) {
         }
 
         // No valid cookie data - check database or create new
-        console.log('No data in cookies, checking database');
+        
         const finalDevId = getCookie('rv_finalDevId');
         
         if (!finalDevId || finalDevId === 'dummy_devid') {
-            console.log('🆕 No valid devId, creating new visitor');
+            
             setVisitorStatusToCookie(now, 'new');
             return false;
         }
@@ -3203,7 +3192,7 @@ async function isReturningVisitor(storeId) {
                 
             } else {
                 // New user - save to database and set cookies
-                console.log('🆕 User not found in database, creating new record');
+                
                 await saveVisitorToFirebase(finalDevId, now, storeId);
                 setVisitorStatusToCookie(now, 'new');
                 return false;
@@ -3235,7 +3224,7 @@ async function isReturningVisitor(storeId) {
 function setVisitorStatusToCookie(firstVisit, status) {
     setCookie('rv_first_visit', firstVisit.toString(), 365);
     setCookie('rv_visitor_status', status, 365);
-    console.log('🔍 Cookies set once:', { firstVisit, status });
+    
 }
 
 /**
@@ -3246,7 +3235,7 @@ function setVisitorStatusToCookie(firstVisit, status) {
  */
 async function fetchVistorsFromFirebase(storeId, finalDevId) {
     const firebaseUrl = `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTestVisitor/${storeId}/${finalDevId}.json`;
-    console.log('🔍 Checking Firebase database:', firebaseUrl);
+    
     
     const response = await fetch(firebaseUrl);
     if (!response.ok) {
@@ -3275,7 +3264,7 @@ async function saveVisitorToFirebase(devId, firstVisit, storeId) {
         });
         
         if (response.ok) {
-            console.log('✅ Visitor timestamp saved to Firebase database:', firstVisit);
+            
         } else {
             console.error('❌ Failed to save visitor data to Firebase database');
         }
@@ -3296,7 +3285,7 @@ function getDeviceType() {
         return check;
     };
 
-    console.log("isMobile ?", window.mobileCheck());
+
     return window.mobileCheck() ? 'mobile' : 'desktop';
 }
 
@@ -3321,7 +3310,7 @@ function isTestInPreviewMode(testId) {
 async function checkTargetingCriteria(test, testId = null) {
     // Check if this is a preview session for this specific test
     if (testId && isTestInPreviewMode(testId)) {
-        console.log('🎯 Preview mode detected for test', testId, '- bypassing targeting criteria');
+        
         return true;
     }
 
@@ -3330,7 +3319,7 @@ async function checkTargetingCriteria(test, testId = null) {
     }
 
     const targeting = test.targeting;
-    console.log('🎯 Checking targeting criteria:', targeting);
+    
 
     // Check traffic source
     if (targeting.trafficSource) {
@@ -3339,11 +3328,11 @@ async function checkTargetingCriteria(test, testId = null) {
 
         // If targeting is set to "all", allow both paid and organic traffic
         if (targeting.trafficSource === 'all') {
-            console.log(`🎯 Traffic source targeting set to "all" - allowing ${userTrafficType}`);
+            
         } else {
             const targetingIsPaid = targeting.trafficSource === 'paid_traffic';
             if (userIspaid !== targetingIsPaid) {
-                console.log(`🎯 Traffic source mismatch: user=${userTrafficType}, targeting=${targeting.trafficSource}`);
+                
                 return false;
             }
         }
@@ -3356,11 +3345,11 @@ async function checkTargetingCriteria(test, testId = null) {
 
         // If targeting is set to "all", allow both new and returning visitors
         if (targeting.visitorType === 'all') {
-            console.log(`🎯 Visitor type targeting set to "all" - allowing ${userVisitorType}`);
+            
         } else {
             const targetingIsReturning = targeting.visitorType === 'returning';
             if (userIsReturning !== targetingIsReturning) {
-                console.log(`🎯 Visitor type mismatch: user=${userVisitorType}, targeting=${targeting.visitorType}`);
+                
                 return false;
             }
         }
@@ -3372,14 +3361,14 @@ async function checkTargetingCriteria(test, testId = null) {
 
         // If targeting is set to "all", allow both mobile and desktop
         if (targeting.deviceType === 'all') {
-            console.log(`🎯 Device type targeting set to "all" - allowing ${userDevice}`);
+            
         } else if (userDevice !== targeting.deviceType) {
-            console.log(`🎯 Device type mismatch: user=${userDevice}, targeting=${targeting.deviceType}`);
+            
             return false;
         }
     }
 
-    console.log('🎯 User meets all targeting criteria');
+    
     return true;
 }
 
@@ -3387,7 +3376,7 @@ async function checkTargetingCriteria(test, testId = null) {
  * Apply A/B test price modifications
  */
 async function applyABTestPriceModifications() {
-    console.log('💰 Applying price modifications');
+    
 
     // Fetch active tests
     const activeTests = await fetchABTestData();
@@ -3416,7 +3405,7 @@ async function applyABTestPriceModifications() {
 async function processAllProducts(activeTests, hashValue) {
     // Early return if no tests
     if (!activeTests || Object.keys(activeTests).length === 0) {
-        console.log('❌ No active tests to process');
+        
         return;
     }
 
@@ -3425,30 +3414,30 @@ async function processAllProducts(activeTests, hashValue) {
 
     // Process each test
     for (const [testId, test] of Object.entries(activeTests)) {
-        console.log(`🧪 Processing test: ${testId}`);
+        
 
         // Validate test data completeness before processing
         if (!isValidTestConfiguration(test)) {
-            console.log(`❌ Test ${testId} has incomplete configuration, skipping analytics tracking`);
+            
             continue;
         }
 
         // Skip if test is not active
         if (!test.basicInfo || test.basicInfo.status !== 'active') {
-            console.log(`❌ Test ${testId} is not active, status: ${test.basicInfo?.status || 'unknown'}`);
+            
             continue;
         }
 
         // Skip if no selected products
         if (!test.selectedProducts || !Array.isArray(test.selectedProducts) || test.selectedProducts.length === 0) {
-            console.log(`❌ Test ${testId} has no selected products`);
+            
             continue;
         }
 
         // Check targeting criteria for price tests
         const meetsTargeting = await checkTargetingCriteria(test, testId);
         if (!meetsTargeting) {
-            console.log(`🎯 User does not meet targeting criteria for test ${testId}, skipping modifications but storing in cookies`);
+            
 
             // Store user info in cookies for potential future targeting but don't apply any modifications
             const ip = getCookie('rv_UserIp');
@@ -3507,7 +3496,7 @@ async function processAllProducts(activeTests, hashValue) {
                 shouldApplyPriceModification = !isNaN(discountPercentage) && discountPercentage > 0;
             }
 
-            console.log(`🔍 Processing product ${productId} for user variant ${userVariant.name} (discount: ${discountPercentage}%)`);
+        
 
             // Note: We continue with view tracking even if no productConfig or discountPercentage is 0
             // This ensures control groups are properly tracked
@@ -3538,13 +3527,13 @@ async function processAllProducts(activeTests, hashValue) {
                         const allPriceElements = findPriceElementForProduct(element, true);
 
                         if (allPriceElements.length > 0) {
-                            console.log(`🔍 Found ${allPriceElements.length} price elements for product ${productId}`);
+                            
 
                             // Apply modification to all price elements
                             allPriceElements.forEach((priceElement, index) => {
                                 // Skip if already modified
                                 if (priceElement.hasAttribute('data-rv-modified')) {
-                                    console.log(`🔍 Price element ${index + 1} already modified, skipping`);
+                                    
                                     return;
                                 }
 
@@ -3554,11 +3543,11 @@ async function processAllProducts(activeTests, hashValue) {
                                 if (priceInfo.value > 0) {
                                     const modifiedPrice = priceInfo.value * (1 - discountPercentage / 100);
                                     updatePriceElementWithFormat(priceElement, modifiedPrice, priceInfo.originalFormat);
-                                    console.log(`💰 Updated price element ${index + 1} for product ${productId}: ${discountPercentage}% discount`);
+                                    
                                 }
                             });
                         } else {
-                            console.log(`❌ No price elements found for product ${productId}`);
+                            
                         }
                     }
                 }
@@ -3628,7 +3617,7 @@ async function processAllProducts(activeTests, hashValue) {
                                         body: JSON.stringify(views)
                                     });
 
-                                    console.log(`📊 Recorded view for ${trackingKey}`);
+                                    
                                 }
                             }
                         }
@@ -3636,10 +3625,10 @@ async function processAllProducts(activeTests, hashValue) {
                         console.error('Error tracking view:', error);
                     }
                 } else {
-                    console.log(`Product ${productId} not found on page`);
+                    
                 }
             } else {
-                console.log(`Product ${productId} not found on page`);
+                
             }
         }
     }
@@ -3719,7 +3708,7 @@ function findProductElementsByIdLeightWorks(productId) {
 
         if (mainProductSection) {
             elements.push(mainProductSection);
-            console.log('✅ Found main LeightWorks product section:', mainProductSection);
+            
         }
 
         // 2. Target product listing elements: <div id="product-listing-{productId}" ... data-product-id="{productId}">
@@ -3728,7 +3717,7 @@ function findProductElementsByIdLeightWorks(productId) {
         if (productListingElements.length > 0) {
             productListingElements.forEach(element => {
                 elements.push(element);
-                console.log('✅ Found LeightWorks product listing element:', element);
+                
             });
         }
 
@@ -3740,12 +3729,12 @@ function findProductElementsByIdLeightWorks(productId) {
             const productContainer = widget.closest('.product.product-index, .product-index, .js-product-listing');
             if (productContainer && !elements.includes(productContainer)) {
                 elements.push(productContainer);
-                console.log('✅ Found LeightWorks product via review widget:', productContainer);
+                
             }
         });
 
         if (elements.length === 0) {
-            console.log('❌ No LeightWorks product elements found for product:', productId);
+            
         }
 
         return elements;
@@ -3757,13 +3746,13 @@ function findProductElementsByIdLeightWorks(productId) {
 
 async function manageTestTimers() {
     try {
-        console.log('🔄 Starting manageTestTimers function');
+        
         // Fetch active tests
         const testData = await fetchABTestData();
-        console.log('📊 Active tests:', testData);
+        
 
         if (!testData || typeof testData !== 'object') {
-            console.log('❌ Invalid test data');
+            
             return;
         }
 
@@ -3784,7 +3773,7 @@ async function manageTestTimers() {
                     (testData[testId] && testData[testId].basicInfo && testData[testId].basicInfo.status !== 'active')
                 ) {
                     setCookie(name, '', -1); // Remove cookie
-                    console.log('🗑️ Timer cookie removed for deleted/inactive test:', name);
+                    
                 }
             }
         }
@@ -3809,11 +3798,11 @@ async function manageTestTimers() {
             const testStatus = testInfo?.basicInfo?.status || 'unknown';
             const testTimerKey = `rv_tests_start_time_${testId}_${testType}_${testStatus}`;
             const existingTimer = getCookie(testTimerKey);
-            console.log('🔍 Test:', testId, 'Type:', testType, 'Status:', testStatus, 'Timer key:', testTimerKey, 'Existing timer:', existingTimer);
+            
 
             // Check if test is active based on basicInfo.status
             const isActive = testInfo?.basicInfo?.status === 'active';
-            console.log('📋 Test status:', isActive ? 'active' : 'inactive');
+            
 
             // If test is active and no timer exists, set it
             if (isActive && !existingTimer) {
@@ -3830,7 +3819,7 @@ async function manageTestTimers() {
             // If test is not active and timer exists, remove it
             else if (!isActive && existingTimer) {
                 setCookie(testTimerKey, '', -1); // Remove cookie
-                console.log('🗑️ Timer removed for inactive test:', testId, 'Type:', testType, 'Status:', testStatus);
+                
             } else {
                 console.log('ℹ️ Timer already exists or test inactive:', {
                     testId,
@@ -3847,7 +3836,7 @@ async function manageTestTimers() {
 
 // Call the function at top level
 (function () {
-    console.log('🚀 Initializing test timer management');
+    
     manageTestTimers();
 })();
 

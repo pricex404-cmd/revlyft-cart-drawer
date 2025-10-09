@@ -55,39 +55,39 @@ export const isTestDataComplete = (selectedProducts, testGroups, targetingState,
     });
 
     if (selectedProducts.length === 0) {
-        console.log('❌ No selected products');
+        
         return false;
     }
 
     // Check if any test group has product modifications
     const hasProductModifications = testGroups.some(group => {
-        console.log(`🏷️ Checking group: ${group.name}`);
+        
 
         if (!group.products) {
-            console.log(`❌ Group ${group.name} has no products`);
+            
             return false;
         }
 
         const productKeys = Object.keys(group.products);
-        console.log(`📦 Group ${group.name} has ${productKeys.length} products`);
+        
 
         if (testType === 'pricing') {
             // For pricing tests, check if prices have been modified
             const hasModifiedPrices = productKeys.length > 0 && productKeys.some(key => {
                 const productData = group.products[key];
-                console.log(`💰 Checking product ${key}:`, productData);
+                
 
                 if (!productData) return false;
 
                 // Handle multi-variant products
                 if (productData.isMultiVariant && productData.variants) {
                     const variantKeys = Object.keys(productData.variants);
-                    console.log(`🔀 Multi-variant product ${key} has ${variantKeys.length} variants`);
+                    
 
                     const hasVariantModifications = variantKeys.some(variantKey => {
                         const variantData = productData.variants[variantKey];
                         const hasModification = variantData && variantData.modifiedPrice !== undefined;
-                        console.log(`🎯 Variant ${variantKey} has modification:`, hasModification);
+                        
                         return hasModification;
                     });
 
@@ -95,12 +95,12 @@ export const isTestDataComplete = (selectedProducts, testGroups, targetingState,
                 } else {
                     // Handle single variant products
                     const hasModification = productData.modifiedPrice !== undefined;
-                    console.log(`🔍 Single variant product ${key} has modification:`, hasModification);
+                    
                     return hasModification;
                 }
             });
 
-            console.log(`✅ Group ${group.name} has modified prices:`, hasModifiedPrices);
+            
             return hasModifiedPrices;
         } else if (testType === 'productDetails') {
             // For product details tests, check if any details have been modified
@@ -132,7 +132,7 @@ export const isTestDataComplete = (selectedProducts, testGroups, targetingState,
 
 // Separate function for discount test validation
 export const isDiscountTestDataComplete = (testGroups, targetingState, analyticsState, discountConfig) => {
-    console.log('💰 isDiscountTestDataComplete called with:', {
+    console.log('💰 isDiscountTestDataComplete called with:',discountConfig, {
         testGroupsLength: testGroups.length,
         hasDiscountConfig: !!discountConfig,
         discountConfig
@@ -140,7 +140,7 @@ export const isDiscountTestDataComplete = (testGroups, targetingState, analytics
 
     // Check if we have test groups
     if (testGroups.length === 0) {
-        console.log('❌ No test groups');
+        
         return false;
     }
 
@@ -150,12 +150,13 @@ export const isDiscountTestDataComplete = (testGroups, targetingState, analytics
         const hasValue = group.discountPercentageValue && group.discountPercentageValue !== '';
         const numValue = parseFloat(group.discountPercentageValue);
         const isValidValue = !isNaN(numValue) && numValue > 0 && numValue <= 100;
-        console.log(`🏷️ Group ${group.name} has valid discount value:`, hasValue && isValidValue, group.discountPercentageValue);
+        
         return hasValue && isValidValue;
     });
 
     // Check if discount configuration is set
-    const hasDiscountConfig = discountConfig && discountConfig.type && discountConfig.threshold !== '';
+    const hasDiscountConfig = discountConfig && discountConfig.type && discountConfig.threshold !== ''&& !(discountConfig.showTimer==true && discountConfig.timerMinutes=="") 
+  
 
     // Check if we have targeting and analytics data
     const hasTargeting = Object.keys(targetingState).length > 0;

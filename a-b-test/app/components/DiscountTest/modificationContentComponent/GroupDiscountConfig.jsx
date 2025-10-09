@@ -17,7 +17,7 @@ export function GroupDiscountConfig({
                 <BlockStack gap="400">
                     {testGroups.map(group => {
                         const isControlGroup = group.name.toLowerCase().includes('control');
-console.log("hhhhhhh",group.discountPercentageValue)
+
                         return (
                             <TextField
                                 placeholder="Enter Discount Value"

@@ -15,19 +15,19 @@ export const action = async ({ request }) => {
         const discountId = url.searchParams.get('discountId');
         const shop = url.searchParams.get('shop');
 
-        console.log('========== DELETE DISCOUNTS API ==========');
-        console.log('Request parameters:', { discountId, shop });
+        
+        
 
         if (!discountId || !shop) {
-            console.log('Missing required parameters');
+            
             return json({ error: 'Discount ID and shop are required' }, { status: 400 });
         }
 
-        console.log('Attempting to delete discount:', discountId);
+        
 
         // Delete the discount directly using the discountId
         const deleteResult = await deleteDiscount(admin, discountId);
-        console.log('Delete result:', JSON.stringify(deleteResult, null, 2));
+        
 
         if (!deleteResult.discountDeleted) {
             const error = deleteResult.errors[0]?.message || 'Unknown error';
@@ -35,14 +35,14 @@ export const action = async ({ request }) => {
             return json({ error: `Failed to delete discount: ${error}` }, { status: 500 });
         }
 
-        console.log('Discount successfully deleted');
-        console.log('=====================================');
+        
+        
 
         return json({ success: true });
     } catch (error) {
         console.error('Error in delete discounts API:', error);
         console.error('Error stack:', error.stack);
-        console.log('=====================================');
+        
         return json({
             error: error.message || 'An unexpected error occurred',
             details: error.stack

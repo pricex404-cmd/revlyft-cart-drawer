@@ -149,21 +149,21 @@ export function cartLinesDiscountsGenerateRun(input) {
 
   // Check test targeting from testTargetingAttribute
   const testData = JSON.parse(input.cart.testTargetingAttribute?.value ?? "{}");
-  console.log('Test data attribute:', testData);
+  
 
   // Check if discount test is active for this user
   let isDiscountTestActive = false;
   for (const [key, value] of Object.entries(testData)) {
     if (key.includes('discount_active') && value === "true") {
       isDiscountTestActive = true;
-      console.log('Discount test is active:', key);
+      
       break;
     }
   }
 
   // If discount test is not active, treat user as control group
   if (!isDiscountTestActive) {
-    console.log('No discount applied: User not in active discount test targeting');
+    
     return { operations: [] };
   }
 
@@ -175,7 +175,7 @@ export function cartLinesDiscountsGenerateRun(input) {
     const currentTimeStr = input.cart.currentTimeAttribute?.value;
 
     if (!testTimer || !currentTimeStr) {
-      console.log('No discount applied: Missing test timer or current time');
+      
       return { operations: [] };
     }
 
@@ -186,12 +186,12 @@ export function cartLinesDiscountsGenerateRun(input) {
       const activeDiscountKey = Object.entries(testData)
         .find(([key, value]) => key.includes('discount_active') && value === "true")?.[0];
       if (!activeDiscountKey) {
-        console.log('No discount applied: No active discount test key found');
+        
         return { operations: [] };
       }
       const startTime = timerData[activeDiscountKey];
       if (!startTime) {
-        console.log('No discount applied: No start time found for this discount test');
+        
         return { operations: [] };
       }
 
@@ -218,13 +218,13 @@ export function cartLinesDiscountsGenerateRun(input) {
         return { operations: [] };
       }
 
-      console.log('Test timer check passed - discount will be applied');
+      
     } catch (error) {
-      console.log('Error processing test timer:', error.message);
+      
       return { operations: [] };
     }
   } else {
-    console.log('Timer disabled or not configured; skipping timer checks');
+    
   }
 
   // Get the device ID and hash value from cart attributes
@@ -235,16 +235,16 @@ export function cartLinesDiscountsGenerateRun(input) {
   if (isNaN(hashValue) || hashValue === 0) {
     if (userIp) {
       hashValue = generateConsistentHash(userIp) % 100; // Convert to 0-99 range for percentage-based selection
-      console.log('Calculated hash value from device ID:', { userIp, hashValue });
+      
     } else {
-      console.log('No discount applied: No hash value or device ID available');
+      
       return { operations: [] };
     }
   }
 
   // If no test variants, return no discount
   if (testVariants.length === 0) {
-    console.log('No discount applied: No test variants');
+    
     return { operations: [] };
   }
 
@@ -268,7 +268,7 @@ export function cartLinesDiscountsGenerateRun(input) {
   // Check if this is the control group (0% discount)
   const isControlGroup = selectedVariant.discountPercentageValue === "0";
   if (isControlGroup) {
-    console.log('No discount applied: Control group');
+    
     return { operations: [] };
   }
 
@@ -277,7 +277,7 @@ export function cartLinesDiscountsGenerateRun(input) {
   // Get the discount percentage from the selected variant
   const discountPercentage = parseFloat(selectedVariant.discountPercentageValue);
   if (isNaN(discountPercentage) || discountPercentage <= 0 || discountPercentage > 100) {
-    console.log('No discount applied: Invalid discount percentage');
+    
     return { operations: [] };
   }
 
@@ -328,7 +328,7 @@ const currencySymbol = getCurrencySymbol(currencyCode);
   // Check threshold based on type
   if (thresholdValue > 0) {
     if (type === 'quantity' && totalItems < thresholdValue) {
-      console.log(`No discount applied: Total quantity (${totalItems}) is less than threshold (${thresholdValue})`);
+    
       return {
         operations: [{
           orderDiscountsAdd: {
@@ -349,7 +349,7 @@ const currencySymbol = getCurrencySymbol(currencyCode);
       };
     }
     if (type === 'value' && cartTotal < thresholdValue) {
-      console.log(`No discount applied: Cart total (${currencySymbol} ${cartTotal}) is less than threshold (${currencySymbol} ${thresholdValue})`);
+
       return {
         operations: [{
           orderDiscountsAdd: {

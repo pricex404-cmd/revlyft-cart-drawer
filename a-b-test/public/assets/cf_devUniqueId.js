@@ -420,7 +420,7 @@ function rv_callbody() {
   
     function getOSlanguage() {
       raw_lang = navigator.language;
-      //console.log("raw_lang: ", raw_lang);
+    
       if (raw_lang == "en" || raw_lang.toLowerCase() === "en-us") {
         return "en";
       } else {
@@ -451,7 +451,7 @@ function rv_callbody() {
         return (audioCtx.sampleRate).toString() + "_" + destination.numberOfInputs + '_' + destination.numberOfOutputs + '_' + destination.channelCount + '_' + destination.channelCountMode + '_' + destination.channelInterpretation;
       }
       catch (e) {
-        console.log("AUDIO NOT SUPPORTED")
+        
         return "not supported";
       }
     }
@@ -838,97 +838,92 @@ function rv_callbody() {
       } catch (e) {
         canvasData = "Not supported";
       }
-      //console.log(canvasData)
-      //console.log(webGLData)
-      if (rv_debugGen) console.log(webGLVendor)
-      if (rv_debugGen) console.log(webGLRenderer)
+
   
   
-  
-      //console.log("canvasData", canvasData);
+
       var visitorIdCan = x64hash128(`'canvasData':${canvasData}`)
-      if (rv_debugGen) console.log("the visitorIdCan: " + visitorIdCan);
+      if (rv_debugGen) 
   
-      //console.log("webGLData", webGLData);
+
       var visitorIdWebGL = x64hash128(`'webGLData':${webGLData}`)
-      if (rv_debugGen) console.log("the visitorIdWebGL: " + visitorIdWebGL);
+
   
       var rv_browserInd = [];
       var rv_browserIdV2 = [];
       var rv_browserIdLog = [];
   
       // NOTE: browser ind -- not ind for new MacOS 
-      if (rv_debugGen) console.log("webGLVendor", webGLVendor);
+
       //rv_browserInd.push(`'webGLVendor':${webGLVendor}`)
       var visitorIdWebGLV = x64hash128(`'webGLVendor':${webGLVendor}`)
-      if (rv_debugGen) console.log("the visitorIdWebGLV: " + visitorIdWebGLV);
+
   
       // NOTE: browser ind -- not ind for new MacOS
-      if (rv_debugGen) console.log("webGLRenderer", webGLRenderer);
+
       //rv_browserInd.push(`'webGLRenderer':${webGLRenderer}`)
       var visitorIdWebGLR = x64hash128(`'webGLRenderer':${webGLRenderer}`)
-      if (rv_debugGen) console.log("the visitorIdWebGLR: " + visitorIdWebGLR);
+
   
       // NOTE: browser ind
-      if (rv_debugGen) console.log(device_webglSpecs);
+
       rv_browserInd.push(`'device_webglSpecs':${device_webglSpecs}`)
       var visitorIdWebGLSpecs = x64hash128(`'device_webglSpecs':${device_webglSpecs}`)
-      if (rv_debugGen) console.log("the visitorIdWebGLSpecs: " + visitorIdWebGLSpecs);
+
   
       var visitorIdWebGL_device = x64hash128(`'webGLData_device':${webGLData_device}`)
-      if (rv_debugGen) console.log("the visitorIdWebGL_device: " + visitorIdWebGL_device);
-      //console.log("the webGLData_device: " + webGLData_device);
+
   
       // NOTE: browser ind
       var audioFprint = audioFPrinting();
-      if (rv_debugGen) console.log("audioFprint", audioFprint);
+
       rv_browserInd.push(`'audio_device':${audioFprint}`)
       var audio_device = x64hash128(`'audio_device':${audioFprint}`)
-      if (rv_debugGen) console.log("the audio_device: " + audio_device);
+
   
       // NOTE: browser ind
       var resFprint = getResolution();
-      if (rv_debugGen) console.log("resFprint", resFprint);
+
       rv_browserInd.push(`'res_device':${resFprint}`)
       var res_device = x64hash128(`'res_device':${resFprint}`)
-      if (rv_debugGen) console.log("the res_device: " + res_device);
+
   
       var rv_cpuCores = "-1";
       if (navigator.hardwareConcurrency)
         rv_cpuCores = navigator.hardwareConcurrency;
-      if (rv_debugGen) console.log("rv_cpuCores", rv_cpuCores);
+
       rv_browserIdV2.push(`'cpu_device':${rv_cpuCores}`);
       var cpu_device = x64hash128(`'cpu_device':${rv_cpuCores}`);
-      if (rv_debugGen) console.log("the cpu_device: " + cpu_device);
+
   
       var langFprint = get_writing_scripts();
-      if (rv_debugGen) console.log("langFprint", langFprint);
+
       rv_browserIdV2.push(`'lang_device':${langFprint}`);
       var lang_device = x64hash128(`'lang_device':${langFprint}`);
-      if (rv_debugGen) console.log("the lang_device: " + lang_device);
+
   
       // NOTE: browser ind
       var timeFprint = new Date().getTimezoneOffset();
-      if (rv_debugGen) console.log("timeFprint", timeFprint);
+  
       rv_browserInd.push(`'time_device':${timeFprint}`)
       var time_device = x64hash128(`'time_device':${timeFprint}`)
-      if (rv_debugGen) console.log("the time_device: " + time_device);
+
   
       // NOTE: browser ind
       var osFprint = JSON.stringify(rv_jscd);
-      if (rv_debugGen) console.log("osFprint", osFprint);
+
       rv_browserInd.push(`'os_device':${osFprint}`);
       var os_device = x64hash128(`'os_device':${osFprint}`);
       rv_browserIdLog.push(`'os_device':${osFprint}`);
-      if (rv_debugGen) console.log("the os_device: " + os_device);
+
   
       // NOTE: browser ind
       var osLangFprint = getOSlanguage();
-      if (rv_debugGen) console.log("osLangFprint", osLangFprint);
+
       rv_browserInd.push(`'osLang_device':${osLangFprint}`);
       var osLang_device = x64hash128(`'osLang_device':${osLangFprint}`);
       rv_browserIdLog.push(`'osLang_device':${osLangFprint}`);
-      if (rv_debugGen) console.log("the osLang_device: " + osLang_device);
+
   
       rv_browserIdV2.push(`'browser_device':${rv_browser}`);
       rv_browserIdLog.push(`'browser_device':${rv_browser}`);
@@ -953,63 +948,62 @@ function rv_callbody() {
           if (e.candidate == null) {
             local_sdp = peerConn.localDescription.sdp;
             rv_ipstring = /c=IN IP4 ([^\n]*)\n/.exec(local_sdp)[1].trim();
-            if (rv_debugGen) console.log(local_sdp);
+
             //sdp_ipstring2 = /a=candidate([^\n]*)\n/.exec(local_sdp)[0]
             sdp_ipstring2 = /[^\n]*? ((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)) [^\n]*? typ srflx raddr [^\n]*\n/.exec(local_sdp)[0]
             rv_ipstring2 = /((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))/.exec(sdp_ipstring2)[0];
-            if (rv_debugGen) console.log("you rv_ipstring:" + rv_ipstring);
-            if (rv_debugGen) console.log("your rv_ipstring2:" + rv_ipstring2);
+
+            if (rv_debugGen) 
             if (rv_ipstring.trim() === '0.0.0.0') {
-              if (rv_debugGen) console.log("rv_ipstring is 0.0.0.0");
+
               rv_ipstring = rv_ipstring2;
             } else {
-              if (rv_debugGen) console.log("rv_ipstring is not 0.0.0.0");
+
             }
             // NOTE: browser ind
             var deviceIdIp = x64hash128(`'rv_ip':${rv_ipstring}`);
             //var deviceIdIp = x64hash128(`'canvasData':${rv_ipstring2}'`)
             rv_browserInd.push(`'rv_ip':${rv_ipstring}`);
             rv_browserIdLog.push(`'rv_ip':${rv_ipstring}`);
-            if (rv_debugGen) console.log("your ip:" + rv_ipstring);
-            if (rv_debugGen) console.log("the device ip: " + deviceIdIp);
+
             rv_browserIndStr = rv_browserInd.join("_");
             rv_browserIdLogStr = rv_browserIdLog.join("_");
             rv_finalDevId = x64hash128(rv_browserIndStr);
-            if (rv_debugGen) console.log(rv_browserIndStr);
-            console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+
+
             //$("#browser_fingerprint").html(rv_browserIndStr);
             //document.getElementById("rv_demoDeepIDdevIdDebug").innerHTML = rv_browserIndStr;
             if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
             rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
             rv_finalBrowserId = x64hash128(rv_browserIdStr);
-            console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
+
   
             rv_browserIdStrV2part = rv_browserIdV2.join("_");
             rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
             rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
-            console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
+        
   
 
           }
         };
       } else {
         // Inform user that webrtc fetch failed
-        if (rv_debugGen) console.log('Failed to fetch IP via WebRTC, perhaps your WebRTC is disabled?');
+
         rv_browserIndStr = rv_browserInd.join("_");
         rv_finalDevId = x64hash128(rv_browserIndStr);
-        if (rv_debugGen) console.log(rv_browserIndStr);
-        console.log("the Device Id (rv_finalDevId): " + rv_finalDevId);
+
+
         //$("#browser_fingerprint").html(rv_browserIndStr);
         //document.getElementById("rv_demoDeepIDdevIdDebug").innerHTML = rv_browserIndStr;
         if (rv_debugGen) document.getElementById("rv_demoDeepIDdevId").innerHTML = rv_finalDevId;
         rv_browserIdStr = `'canvasData':${canvasData}|'webGLData':${webGLData}|'webGLVendor':${webGLVendor}|'webGLRenderer':${webGLRenderer}|'rv_browserIndStr':${rv_browserIndStr}`;
         rv_finalBrowserId = x64hash128(rv_browserIdStr);
-        console.log("the Browser Id (rv_finalBrowserId): " + rv_finalBrowserId);
+
   
         rv_browserIdStrV2part = rv_browserIdV2.join("_");
         rv_browserIdStrV2 = `'rv_browserIdStrV2part':${rv_browserIdStrV2part}|'rv_browserIdStr':${rv_browserIdStr}`;
         rv_finalBrowserIdV2 = x64hash128(rv_browserIdStrV2);
-        console.log("the Browser Id V2 (rv_finalBrowserIdV2): " + rv_finalBrowserIdV2);
+
 
 
       }

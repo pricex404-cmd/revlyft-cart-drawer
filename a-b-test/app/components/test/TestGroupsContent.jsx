@@ -212,8 +212,6 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
 
     const handleRemoveConfirm = () => {
         if (removingGroupId) {
-            console.log(`Removing group with ID: ${removingGroupId}`);
-            console.log('Before removal:', testGroups.map(g => ({ id: g.id, name: g.name, percentage: g.percentage })));
             
             // Use a callback to ensure we're working with the latest state
             setTestGroups(currentGroups => {
@@ -235,7 +233,6 @@ export const TestGroupsContent = ({ testGroups, setTestGroups, isTestStarted }) 
 
                 // Ensure the total is exactly 100%
                 const validatedGroups = validateAndFixPercentages(updatedGroups);
-                console.log('After removal:', validatedGroups.map(g => ({ id: g.id, name: g.name, percentage: g.percentage })));
                 return validatedGroups;
             });
             

@@ -28,19 +28,6 @@ import useProductModifications from './useProductModifications';
     basicInfo,
     setBasicInfo
 }) => {
-    console.log('=== ModificationsContent COMPONENT LOADED ===');
-    console.log('Props received:', {
-        products: products?.length,
-        testGroups: testGroups?.length,
-        selectedProducts: selectedProducts?.length,
-        isTestStarted,
-
-        multiVariantProductIds,
-        compareAtPriceProductIds
-    });
-
-    console.log('🔍 compareAtPriceProductIds details:', compareAtPriceProductIds);
-
     // Use the custom hook for product modifications
     const {
         showProductList,
@@ -114,10 +101,10 @@ import useProductModifications from './useProductModifications';
         }));
     };
 
-    console.log("ModificationsContent - isTestStarted:", isTestStarted);
+    
 
     // Debug: Log testGroups to see their structure
-    // console.log("Initial testGroups structure:", JSON.stringify(testGroups, null, 2));
+    // );
 
     // Sanitize any existing testGroups on component mount
     useEffect(() => {
@@ -137,7 +124,7 @@ import useProductModifications from './useProductModifications';
 
             // If we found unsanitized IDs, clean them up
             if (needsSanitizing) {
-                console.log("Found unsanitized product IDs in testGroups, sanitizing now...");
+                
 
                 const sanitizedGroups = testGroups.map(group => {
                     // Skip if no products
@@ -162,9 +149,7 @@ import useProductModifications from './useProductModifications';
                         ...group,
                         products: sanitizedProducts
                     };
-                });
-
-                console.log("Sanitized groups:", JSON.stringify(sanitizedGroups, null, 2));
+                })
                 setTestGroups(sanitizedGroups);
             }
         }
@@ -172,34 +157,34 @@ import useProductModifications from './useProductModifications';
     }, []);
 
     const handleProductSelect = (product) => {
-        console.log('=== handleProductSelect CALLED ===');
-        console.log('product:', product);
-        console.log('isTestStarted:', isTestStarted);
+        
+        
+        
 
         if (isTestStarted) {
-            console.log('Test is started, returning early');
+            
             return;
         }
 
         // Check if product has multiple variants
         const productId = product.id.split('/').pop();
-        console.log('productId extracted:', productId);
-        console.log('multiVariantProductIds:', multiVariantProductIds);
+        
+        
 
-        console.log('multiVariantProductIds type:', typeof multiVariantProductIds);
+        
 
 
         // Check if product has compare at price using the pre-filtered array
         const hasCompareAtPrice = compareAtPriceProductIds && compareAtPriceProductIds.includes(productId);
 
-        console.log('🔍 Checking if product has compare at price:');
-        console.log('📦 ProductId:', productId);
-        console.log('💰 Has compare at price:', hasCompareAtPrice);
-        console.log('📋 compareAtPriceProductIds:', compareAtPriceProductIds);
+        
+        
+        
+        
 
         // Check if product is already in another test
-        console.log('🔍 Checking if product is in other tests:');
-        console.log('📦 ProductId:', productId);
+        
+        
 
 
       
@@ -209,7 +194,7 @@ import useProductModifications from './useProductModifications';
 
         // If product is already selected, allow deselection regardless of warnings
         if (isAlreadySelected) {
-            console.log('Product is already selected, allowing deselection');
+            
             // Remove product
             setSelectedProducts(selectedProducts.filter(p => p.productId !== product.id));
 
@@ -228,7 +213,7 @@ import useProductModifications from './useProductModifications';
 
         // Show warnings and prevent selection for problematic products
         if (hasCompareAtPrice) {
-            console.log('🚨 WARNING: Product has compare at price, showing warning and preventing selection');
+            
             setProductSelectionError(`This product has a compare at price set. Price tests cannot be run on products with compare at price as it would create pricing conflicts.`);
             setTimeout(() => setProductSelectionError(''), 6000);
             return; // Prevent selection
@@ -236,7 +221,7 @@ import useProductModifications from './useProductModifications';
 
        
 
-        console.log('Product has no issues, proceeding with selection');
+        
 
         // Proceed with normal selection logic for products without issues
         const isMultiVariant = multiVariantProductIds && multiVariantProductIds.includes(productId);
@@ -252,14 +237,6 @@ import useProductModifications from './useProductModifications';
             // Check if all variants have the same price
             const firstPrice = allVariants[0]?.price || 0;
             const hasSamePrice = allVariants.every(variant => variant.price === firstPrice);
-
-            console.log('Multi-variant product analysis:', {
-                productTitle: product.title,
-                variantCount: allVariants.length,
-                prices: allVariants.map(v => v.price),
-                hasSamePrice: hasSamePrice,
-                firstPrice: firstPrice
-            });
 
             if (hasSamePrice) {
                 // Treat as normal product - all variants have same price
@@ -811,9 +788,9 @@ import useProductModifications from './useProductModifications';
     };
 
 
-    console.log('ModificationsContent render - productSelectionError:', productSelectionError);
-    console.log('ModificationsContent render - productSelectionError type:', typeof productSelectionError);
-    console.log('ModificationsContent render - productSelectionError length:', productSelectionError?.length);
+    
+    
+    
 
     return (
         <BlockStack gap="400">
@@ -829,8 +806,7 @@ import useProductModifications from './useProductModifications';
             />
 
             {/* Debug: Show current state */}
-            {console.log('RENDER - productSelectionError:', productSelectionError)}
-            {productSelectionError && console.log('RENDER - Toast should be visible now!')}
+            {}
 
             {/* Variant Selection Modal */}
             <VariantSelectionModal

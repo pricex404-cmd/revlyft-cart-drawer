@@ -27,7 +27,7 @@ class Logger {
         try {
             await fs.promises.appendFile(this.productDuplicateLogFile, formattedMessage);
             // Also log to console for development
-            console.log(formattedMessage);
+            
         } catch (error) {
             console.error('Error writing to log file:', error);
         }

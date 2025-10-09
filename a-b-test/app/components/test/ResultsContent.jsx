@@ -6,8 +6,8 @@ import extractShopifyProductId from "../../utils/extractProductId";
 export const ResultsContent = ({ testGroups = [], selectedProducts = [] }) => {
     const [expandedGroups, setExpandedGroups] = useState(new Set());
     const [expandedProducts, setExpandedProducts] = useState(new Set());
-    console.log('aaa', testGroups);
-    console.log('bbb', selectedProducts);
+    
+    
     if (!testGroups || testGroups.length === 0) {
         return (
             <BlockStack gap="400">

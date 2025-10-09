@@ -189,7 +189,7 @@ export const createStartTestHandler = (
                 throw new Error(`Test configuration is invalid: ${validation.issues.join(', ')}`);
             }
 
-            console.log('✅ Test configuration validation passed for type:', basicInfo?.type);
+            
 
             // Always save changes first (with pending status)
             const saveResult = await handleSaveTest(shop, testId, currentTestData);
@@ -198,7 +198,7 @@ export const createStartTestHandler = (
                 throw new Error(saveResult.message);
             }
 
-            console.log('📝 Test data saved, now starting test process for type:', basicInfo?.type);
+            
 
             // Start the test based on type
             let startResult;
@@ -256,7 +256,7 @@ export const createStartTestHandler = (
                 setIsDuplicatingProducts(false);
             } else if (basicInfo?.type === 'pricing') {
                 // Handle pricing tests with product discounts
-                console.log('🏷️ Starting pricing test...');
+                
 
                 // Deactivate all active price tests before starting the new one
                 const sanitizedDomain = shop.domain.replace(/\./g, '_');
@@ -265,7 +265,7 @@ export const createStartTestHandler = (
                 startResult = await handleStartTest(fetcher, shop, testId, currentTestData, functionId);
             } else if (basicInfo?.type === 'productDetails') {
                 // Handle product details tests (no discounts needed)
-                console.log('📄 Starting product details test...');
+                
                 setIsDuplicatingProducts(true);
                 startResult = await handleStartTest(fetcher, shop, testId, currentTestData, functionId);
             } else {
@@ -278,7 +278,7 @@ export const createStartTestHandler = (
 
             setToastMessage(startResult.message || 'Test started successfully!');
             setShowToast(true);
-            console.log('🚀 Test start process completed successfully for type:', basicInfo?.type);
+            
 
         } catch (error) {
             console.error('💥 Error in start test handler:', error);

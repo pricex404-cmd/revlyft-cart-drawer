@@ -23,7 +23,7 @@ export const action = async ({ request }) => {
         const functions = functionResponseJson.data.shopifyFunctions.nodes;
 
         // Log available functions for debugging
-        console.log('Available functions:', functions.map(f => ({ title: f.title, type: f.apiType })));
+        
 
         // Try to find cart discount function with correct type
         const cartDiscountFunction = functions.find(

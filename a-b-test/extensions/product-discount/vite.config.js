@@ -21,7 +21,7 @@ if (
 const host = new URL(process.env.SHOPIFY_APP_URL || "http://localhost")
     .hostname;
 const allowedDomain = process.env.ALLOWED_DOMAIN || "app.revlyft.com";
-console.log(allowedDomain);
+
 let hmrConfig;
 
 if (host === "localhost") {

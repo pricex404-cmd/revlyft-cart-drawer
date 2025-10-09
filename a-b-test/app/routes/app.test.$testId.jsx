@@ -89,7 +89,6 @@ export async function action({ request }) {
     const discountConfig = formData.get("discountConfig");
     const testType = formData.get("testType");
 
-    console.log('🚀 Starting discount creation for test:', testId, 'type:', testType);
 
     try {
         // Validate basic required parameters
@@ -112,10 +111,7 @@ export async function action({ request }) {
             if (!discountConfig) {
                 throw new Error('Missing discount configuration for discount test');
             }
-
             const discountConfigJson = JSON.parse(discountConfig);
-            console.log('📊 Creating cart discount with variants:', testVariantsJson.length);
-
             result = await createCartDiscount(admin, title, functionId, testVariantsJson, discountConfigJson);
 
             if (!result.discountCreated || !result.discount?.discountId) {
@@ -128,11 +124,8 @@ export async function action({ request }) {
             }
 
             discountId = result.discount.discountId;
-            console.log('✅ Cart discount created successfully with ID:', discountId);
 
         } else if (testType === 'pricing') {
-            // Handle pricing tests (product discounts)
-            console.log('🏷️ Creating product discount with variants:', testVariantsJson.length);
 
             // Deactivate all active price tests before creating the new one
             const sanitizedDomain = shop.replace(/\./g, '_');
@@ -150,20 +143,12 @@ export async function action({ request }) {
             }
 
             discountId = result.discount.discountId;
-            console.log('✅ Product discount created successfully with ID:', discountId);
 
         } else {
             throw new Error(`Unsupported test type for discount creation: ${testType}`);
         }
 
-        console.log('💾 Discount creation result:', {
-            testType,
-            discountCreated: result.discountCreated,
-            hasDiscountId: !!discountId,
-            errorCount: result.errors?.length || 0
-        });
-
-        // Update the test data in Firebase with the discount ID
+            // Update the test data in Firebase with the discount ID
         const sanitizedDomain = shop.replace(/\./g, '_');
 
         // First, get the current test data to preserve all existing information
@@ -203,10 +188,8 @@ export async function action({ request }) {
 
             // CRITICAL: If we can't update Firebase, we need to clean up the created discount
             try {
-                console.log('🧹 Attempting to clean up created discount due to Firebase update failure...');
                 const { deleteDiscount } = await import("../functions/discount");
                 await deleteDiscount(admin, discountId);
-                console.log('✅ Successfully cleaned up discount after Firebase failure');
             } catch (cleanupError) {
                 console.error('💥 Failed to clean up discount after Firebase failure:', cleanupError);
                 // This is a critical state - discount exists but not tracked in our DB
@@ -215,7 +198,6 @@ export async function action({ request }) {
             throw new Error('Failed to update test data with discount ID. Discount has been cleaned up.');
         }
 
-        console.log('🎉 Test successfully activated with discount ID:', discountId);
 
         return json({
             success: true,
@@ -276,7 +258,6 @@ export const loader = async ({ request, params }) => {
                 test.selectedProducts.forEach(product => {
                     const productId = product.productId.split('/').pop();
                     AllProductIdsInTests.add(productId);
-                    console.log(`🔍 Added product ${productId} from test ${currentTestId} to AllProductIdsInTests`);
                 });
             }
             if (test.testGroups) {
@@ -324,23 +305,10 @@ export const loader = async ({ request, params }) => {
                         !isNaN(price) &&
                         compareAtPrice > price;
                 });
-
-                if (hasValidComparePrice) {
-                    console.log(`🏷️ Product "${product.title}" has valid compare at price (greater than price):`,
-                        product.variants.edges.map(edge => ({
-                            id: edge.node.id,
-                            price: edge.node.price,
-                            compareAtPrice: edge.node.compareAtPrice,
-                            isValid: parseFloat(edge.node.compareAtPrice) > parseFloat(edge.node.price)
-                        }))
-                    );
-                }
                 return hasValidComparePrice;
             })
             .map(product => product.id.split('/').pop())
     );
-
-    console.log('🔍 Products with compare at price:', Array.from(compareAtPriceProductIds));
 
     // Get the function ID for product discount
     const functionResponse = await admin.graphql(GET_SHOPIFY_FUNCTIONS);
@@ -351,9 +319,6 @@ export const loader = async ({ request, params }) => {
         (func) => func.apiType === "product_discounts" && func.title === "product-discount"
     );
     const functionId = productDiscountFunction?.id || "";
-
-    console.log('🎯 Final AllProductIdsInTests for current test:', Array.from(AllProductIdsInTests));
-    console.log('🆔 Current testId:', testId);
 
     return {
         products: filteredProducts,
@@ -406,7 +371,9 @@ export default function Test() {
     // Add discount configuration state
     const [discountConfig, setDiscountConfig] = useState(testData?.discountConfig || {
         type: 'value',
-        threshold: ''
+        threshold: '',
+        showTimer: false,
+        timerMinutes: ''
     });
 
     const [currentTabId, setCurrentTabId] = useState(tabParam || 'testGroups');
@@ -643,10 +610,6 @@ export default function Test() {
     // Add event listener to refresh script detection when user returns to tab
     useEffect(() => {
         const handleTabFocus = () => {
-            console.log('🔄 Tab focused - running focus handler...');
-            console.log('🔄 Current isScriptDetected state:', isScriptDetected);
-            
-            // Always refresh script detection when returning to tab
             checkScriptDetection(true); // Show loading state
         };
 
@@ -654,7 +617,6 @@ export default function Test() {
         window.addEventListener('focus', handleTabFocus);
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
-                console.log('📄 Document became visible - running handler...');
                 handleTabFocus();
             }
         });
@@ -662,19 +624,13 @@ export default function Test() {
         // Also try pageshow event as backup
         window.addEventListener('pageshow', (event) => {
             if (!event.persisted) {
-                console.log('📄 Page shown - running handler...');
                 handleTabFocus();
             }
         });
-
-        console.log('✅ Multiple focus event listeners added');
-
-        // Cleanup event listeners on component unmount
         return () => {
             window.removeEventListener('focus', handleTabFocus);
             document.removeEventListener('visibilitychange', handleTabFocus);
             window.removeEventListener('pageshow', handleTabFocus);
-            console.log('🧹 All focus event listeners removed');
         };
     }, [checkScriptDetection, isScriptDetected]);
 

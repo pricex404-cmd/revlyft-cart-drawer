@@ -444,7 +444,7 @@ if (checkRequiredParameters()) {
             }
 
             const data = await response.json();
-            console.log('Fetched selectors:', data);
+            
 
             // Clear existing list
             selectorList.innerHTML = '';
@@ -504,7 +504,7 @@ if (checkRequiredParameters()) {
             }
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
-            console.log('Storing selector for shop:', sanitizedDomain);
+            
 
             // First check if this selector already exists
             const checkResponse = await fetch(`https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/querySelectors.json`);
@@ -523,7 +523,7 @@ if (checkRequiredParameters()) {
             }
 
             if (selectorExists) {
-                console.log('⚠️ This selector already exists, not storing duplicate');
+                
                 alert('This selector is already saved in the database.');
                 return true;
             }
@@ -536,7 +536,7 @@ if (checkRequiredParameters()) {
                 url: window.location.href
             };
 
-            console.log('Sending data to Firebase:', data);
+            
 
             // Make the API call to store under the store's node
             const response = await fetch(`https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/querySelectors.json`, {
@@ -552,7 +552,7 @@ if (checkRequiredParameters()) {
             }
 
             const result = await response.json();
-            console.log('✅ Query selector stored successfully:', result);
+            
 
             // Show success message
             alert('Query selector stored successfully! You can continue selecting more elements.');
@@ -579,8 +579,8 @@ if (checkRequiredParameters()) {
             }
 
             const sanitizedDomain = shopDomain.replace(/\./g, '_');
-            console.log('Attempting to delete selector with key:', key);
-            console.log('DELETE URL:', `https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/querySelectors/${key}.json`);
+            
+            
 
             const response = await fetch(`https://a-b-test-5f9a8-default-rtdb.asia-southeast1.firebasedatabase.app/abTests/${sanitizedDomain}/querySelectors/${key}.json`, {
                 method: 'DELETE',
@@ -593,7 +593,7 @@ if (checkRequiredParameters()) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            console.log('✅ Selector deleted successfully');
+            
 
             // Refresh the selector list and highlights
             await fetchAndDisplaySelectors();
@@ -645,7 +645,7 @@ if (checkRequiredParameters()) {
 
     // Function to show modal
     function showModal() {
-        console.log('Attempting to show modal...');
+        
         modalOverlay = document.querySelector('.modal-overlay');
         if (modalOverlay) {
             // Ensure the modal content exists
@@ -682,7 +682,7 @@ if (checkRequiredParameters()) {
             modalOverlay = document.querySelector('.modal-overlay');
             if (modalOverlay) {
                 modalOverlay.style.display = 'flex';
-                console.log('Modal recreated and should be visible now');
+                
             } else {
                 console.error('Failed to recreate modal!');
             }
@@ -691,10 +691,10 @@ if (checkRequiredParameters()) {
 
     // Function to hide modal
     function hideModal() {
-        console.log('Attempting to hide modal...');
+        
         if (modalOverlay) {
             modalOverlay.style.display = 'none';
-            console.log('Modal hidden');
+            
         } else {
             console.error('Modal overlay element not found when trying to hide!');
         }
@@ -709,16 +709,16 @@ if (checkRequiredParameters()) {
 
         // Only proceed if selection mode is active
         if (!isSelectionModeActive) {
-            console.log('Selection mode not active, ignoring click');
+            
             return;
         }
 
-        console.log('Click event triggered');
+        
         event.preventDefault();
         event.stopPropagation();
 
         const smartSelector = getSmartSelector(event.target);
-        console.log('💡 Smart Selector:', smartSelector);
+        
 
         // Re-query modal elements to ensure we have the latest references
         modalOverlay = document.querySelector('.modal-overlay');
@@ -740,7 +740,7 @@ if (checkRequiredParameters()) {
         const handleYesClick = async (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Yes button clicked');
+            
             try {
                 const success = await storeQuerySelector(smartSelector);
                 if (success) {
@@ -754,7 +754,7 @@ if (checkRequiredParameters()) {
         const handleNoClick = (e) => {
             e.preventDefault();
             e.stopPropagation();
-            console.log('No button clicked');
+            
             hideModal();
         };
 
@@ -762,7 +762,7 @@ if (checkRequiredParameters()) {
         if (modalYesButton) {
             modalYesButton.removeEventListener('click', handleYesClick);
             modalYesButton.addEventListener('click', handleYesClick);
-            console.log('Yes button handler attached');
+            
         } else {
             console.error('Yes button not found in modal!');
         }
@@ -770,7 +770,7 @@ if (checkRequiredParameters()) {
         if (modalNoButton) {
             modalNoButton.removeEventListener('click', handleNoClick);
             modalNoButton.addEventListener('click', handleNoClick);
-            console.log('No button handler attached');
+            
         } else {
             console.error('No button not found in modal!');
         }
@@ -778,7 +778,7 @@ if (checkRequiredParameters()) {
         // Add click handler to close modal when clicking outside
         const handleOverlayClick = (e) => {
             if (e.target === modalOverlay) {
-                console.log('Overlay clicked, closing modal');
+                
                 hideModal();
                 modalOverlay.removeEventListener('click', handleOverlayClick);
             }
@@ -788,7 +788,7 @@ if (checkRequiredParameters()) {
 
     // Cleanup function to reset state and prepare for next selection
     function cleanup() {
-        console.log('Cleaning up...');
+        
 
         // Remove all event listeners
         document.removeEventListener('mouseover', onMouseOver, true);
@@ -805,12 +805,12 @@ if (checkRequiredParameters()) {
             modalOverlay.style.display = 'none';
         }
 
-        console.log('Cleanup complete');
+        
     }
 
     // Initialize event listeners
     function initializeEventListeners() {
-        console.log('Initializing event listeners...');
+        
 
         // Remove any existing listeners first
         document.removeEventListener('mouseover', onMouseOver, true);
@@ -827,17 +827,17 @@ if (checkRequiredParameters()) {
             // Add a class to the body to indicate selection mode is active
             document.body.classList.add('rv-selector-mode');
 
-            console.log('Selection mode activated');
+            
         }
 
-        console.log('Event listeners initialized');
+        
     }
 
     // Initialize everything when the script loads
-    console.log('Script loading...');
+    
     // Don't initialize event listeners by default
     // initializeEventListeners();
-    console.log('Script loaded and initialized');
+    
 
     // Function to generate query selector from element
     function generateQuerySelector(element) {
@@ -905,7 +905,7 @@ if (checkRequiredParameters()) {
 
         extractButton.addEventListener('click', () => {
             const selectors = extractSelectors();
-            console.log('Extracted Selectors:', selectors);
+            
 
             // Create a modal to display selectors
             const modal = document.createElement('div');
@@ -998,13 +998,13 @@ if (checkRequiredParameters()) {
 
             // Always highlight product elements in blue
             // const productElements = findProductElements();
-            // console.log(`[Highlight] Found ${productElements.length} product elements`);
+            // 
 
             if (!data) return;
 
             // Get all stored selectors
             storedSelectorsFromDB = Object.values(data).map(item => item.selector);
-            console.log('[Highlight] Selectors from DB:', storedSelectorsFromDB);
+            
 
             // Remove existing highlights
             document.querySelectorAll('.rv-stored-highlight').forEach(el => {
@@ -1015,10 +1015,10 @@ if (checkRequiredParameters()) {
             storedSelectorsFromDB.forEach(selector => {
                 try {
                     const elements = document.querySelectorAll(selector);
-                    console.log(`[Highlight] Found ${elements.length} elements for selector: ${selector}`);
+                    
                     elements.forEach(element => {
                         element.classList.add('rv-stored-highlight');
-                        console.log('[Highlight] Added highlight to element:', element);
+                        
                     });
                 } catch (error) {
                     console.error(`[Highlight] Error applying selector ${selector}:`, error);
@@ -1032,16 +1032,16 @@ if (checkRequiredParameters()) {
     // Function to find product elements
     // function findProductElements() {
     //     const elements = new Set();
-    //     console.log('Looking for product elements on page');
+    //     
 
     //     // Helper function to add element if it's valid
     //     const addElement = (element) => {
     //         if (element && !elements.has(element)) {
-    //             console.log('Adding element:', element.tagName, element.className);
+    //             
     //             elements.add(element);
     //             // Add blue highlight to the element
     //             element.classList.add('rv-product-highlight');
-    //             console.log('[Highlight] Added blue highlight to element:', element);
+    //             
     //         }
     //     };
 
@@ -1060,7 +1060,7 @@ if (checkRequiredParameters()) {
 
     //         productSelectors.forEach(selector => {
     //             const found = document.querySelectorAll(selector);
-    //             console.log(`[Highlight] Found ${found.length} elements for selector: ${selector}`);
+    //             
     //             found.forEach(addElement);
     //         });
 
@@ -1078,7 +1078,7 @@ if (checkRequiredParameters()) {
 
     //         priceSelectors.forEach(selector => {
     //             const found = document.querySelectorAll(selector);
-    //             console.log(`[Highlight] Found ${found.length} elements for selector: ${selector}`);
+    //             
     //             found.forEach(addElement);
     //         });
 
@@ -1186,7 +1186,7 @@ if (checkRequiredParameters()) {
     //             document.querySelectorAll(selector).forEach(addElement);
     //         });
 
-    //         console.log(`[Highlight] Found ${elements.size} product-related elements on the page`);
+    //         
     //         return Array.from(elements);
     //     } catch (error) {
     //         console.error('[Highlight] Error in findProductElements:', error);
@@ -1196,13 +1196,13 @@ if (checkRequiredParameters()) {
 
     // Call highlightStoredSelectors when the page loads
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('[Highlight] DOM Content Loaded, highlighting elements...');
+        
         highlightStoredSelectors();
     });
 
     // Also call highlightStoredSelectors when the page is fully loaded
     window.addEventListener('load', () => {
-        console.log('[Highlight] Window Loaded, highlighting elements...');
+        
         highlightStoredSelectors();
     });
 
@@ -1221,8 +1221,8 @@ if (checkRequiredParameters()) {
 
         // Generate selector for this element
         const selector = getSmartSelector(targetElement);
-        console.log('[Hover] SmartSelector:', selector);
-        console.log('[Hover] Stored selectors from DB:', storedSelectorsFromDB);
+        
+        
 
         // Check if this element matches any selector from DB
         let isStored = false;
@@ -1346,5 +1346,5 @@ if (checkRequiredParameters()) {
         });
     }
 } else {
-    console.log('Required parameters not found. Script will not execute.');
+    
 }

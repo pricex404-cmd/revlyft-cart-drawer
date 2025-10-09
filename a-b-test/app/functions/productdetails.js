@@ -427,7 +427,7 @@ export const handleProductDetailActivateDeactivate = async (testIds, activeRowIn
             setRows(newRows);
 
             // Show success message (you might want to use a toast system here)
-            console.log(`Product details test ${action}d successfully`);
+            
             setIsActionModalOpen(false);
         } catch (error) {
             console.error('Error in handleProductDetailActivateDeactivate:', error);
