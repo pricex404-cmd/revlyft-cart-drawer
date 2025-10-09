@@ -3179,13 +3179,6 @@ async function isReturningVisitor(storeId) {
                 // ✅ FIXED: Calculate status BEFORE setting cookies
                 const elapsed = now - dbData;
                 const correctStatus = elapsed >= THIRTY_MINUTES ? 'returning' : 'new';
-                
-                console.log('🔍 Found user in database:', { 
-                    firstVisit: dbData, 
-                    elapsed, 
-                    calculatedStatus: correctStatus 
-                });
-                
                 // Set cookies ONCE with correct status
                 setVisitorStatusToCookie(dbData, correctStatus);
                 return correctStatus === 'returning';
@@ -3781,11 +3774,6 @@ async function manageTestTimers() {
         // Get current timestamp in the correct timezone
         const now = new Date();
         const currentTime = now.toISOString();
-        console.log('⏰ Current time:', {
-            iso: currentTime,
-            local: now.toString(),
-            timestamp: now.getTime()
-        });
 
         // Process each test from the object
         Object.entries(testData).forEach(([testId, testInfo]) => {
@@ -3808,25 +3796,13 @@ async function manageTestTimers() {
             if (isActive && !existingTimer) {
 
                 setCookie(testTimerKey, timestamp, 3); // Set for 3 days
-                console.log('✅ Timer set for test:', {
-                    testId,
-                    type: testType,
-                    status: testStatus,
-                    timestamp,
-                    localTime: new Date().toString()
-                });
             }
             // If test is not active and timer exists, remove it
             else if (!isActive && existingTimer) {
                 setCookie(testTimerKey, '', -1); // Remove cookie
                 
             } else {
-                console.log('ℹ️ Timer already exists or test inactive:', {
-                    testId,
-                    type: testType,
-                    status: testStatus,
-                    existingTimer: existingTimer || 'none'
-                });
+ 
             }
         });
     } catch (error) {

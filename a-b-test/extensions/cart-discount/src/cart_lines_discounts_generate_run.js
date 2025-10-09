@@ -138,14 +138,6 @@ export function cartLinesDiscountsGenerateRun(input) {
   const { showTimer = false, timerMinutes } = configuration.discountConfig || {};
   const parsedTimerMinutes = Number(timerMinutes);
   const timeFrame = Number.isFinite(parsedTimerMinutes) && parsedTimerMinutes > 0 ? parsedTimerMinutes : 30;
-  // Log which discount is being processed
-  console.log('Processing discount with configuration:', JSON.stringify({
-    testVariants: testVariants.map(v => ({
-      name: v.name,
-      percentage: v.percentage
-    })),
-    discountConfig: configuration.discountConfig
-  }));
 
   // Check test targeting from testTargetingAttribute
   const testData = JSON.parse(input.cart.testTargetingAttribute?.value ?? "{}");
@@ -201,20 +193,9 @@ export function cartLinesDiscountsGenerateRun(input) {
       // Calculate time difference in minutes
       const timeDifferenceMinutes = Math.abs(currentTime.getTime() - testStartTime.getTime()) / (1000 * 60);
 
-      console.log('Timer check details:', {
-        testStartTime: testStartTime.toISOString(),
-        currentTime: currentTime.toISOString(),
-        timeDifferenceMinutes: Math.floor(timeDifferenceMinutes),
-        isWithinWindow: timeDifferenceMinutes <= timeFrame
-      });
-
       // Check if within allowed minutes
       if (timeDifferenceMinutes > timeFrame) {
-        console.log(`No discount appliedd: Test timer exceeded ${timeFrame} minutes`, {
-          testStartTime: testStartTime.toISOString(),
-          currentTime: currentTime.toISOString(),
-          timeDifferenceMinutes: Math.floor(timeDifferenceMinutes)
-        });
+
         return { operations: [] };
       }
 
@@ -295,21 +276,6 @@ export function cartLinesDiscountsGenerateRun(input) {
     const amount = parseFloat(line.cost?.subtotalAmount?.amount) || 0;
     return sum + amount;
   }, 0);
-
-  // Log detailed cart information
-  console.log('Checking threshold:', {
-    type,
-    thresholdValue,
-    totalItemsInCart: totalItems,
-    cartTotal: cartTotal,
-    numberOfLines: input.cart.lines.length,
-    cartLines: input.cart.lines.map(line => ({
-      id: line.merchandise?.id,
-      title: line.merchandise?.title,
-      quantity: line.quantity,
-      cost: line.cost?.subtotalAmount?.amount
-    }))
-  });
   const currencyCode = input.cart.lines?.[0]?.cost?.subtotalAmount?.currencyCode || 
   input.cart.cost?.subtotalAmount?.currencyCode || 'USD';
 const currencySymbol = getCurrencySymbol(currencyCode);
@@ -395,12 +361,6 @@ const currencySymbol = getCurrencySymbol(currencyCode);
     },
   });
 
-  console.log('Applying discount:', {
-    discountPercentage,
-    totalItems,
-    cartTotal,
-    message: activeMessage
-  });
 
   return {
     operations,

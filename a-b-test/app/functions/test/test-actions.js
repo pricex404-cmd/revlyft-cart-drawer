@@ -34,13 +34,6 @@ export const handleSaveTest = async (shop, testId, testData, isStartingTest = fa
             }
         }
 
-        console.log('🔍 handleSaveTest: Final data structure:', {
-            testType: testType,
-            hasDiscountConfig: !!updatedTestData.discountConfig,
-            hasSelectedProducts: !!updatedTestData.selectedProducts,
-            allKeys: Object.keys(updatedTestData)
-        });
-
         // Save test data
         await saveTestData(shop, testId, updatedTestData);
 

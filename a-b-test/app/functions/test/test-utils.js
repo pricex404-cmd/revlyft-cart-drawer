@@ -90,10 +90,7 @@ export const validateTestConfiguration = (testData, testType) => {
 
 // Function to check if any prices have been modified
 export const checkIfPricesModified = (testGroups, selectedProducts) => {
-    console.log('🔍 checkIfPricesModified called with:', {
-        testGroupsLength: testGroups.length,
-        selectedProductsLength: selectedProducts.length
-    });
+
 
     if (!selectedProducts.length || !testGroups.length) return false;
 
