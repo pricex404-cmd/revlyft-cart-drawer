@@ -166,118 +166,194 @@ function findDiscountElement() {
 // Global flag to prevent infinite discount message retries
 window.rv_DiscountMessageRetryLimitReached = false;
 
-// Function to create or update timer UI - now integrates with progress bar
+// Global timer state persistence to prevent flickering
+window.rv_TimerState = {
+    lastTimerHTML: null,
+    lastUpdateTime: 0,
+    isTimerActive: false,
+    currentMinutes: 0,
+    currentSeconds: 0,
+    updateInProgress: false
+};
+
+// Function to create or update timer UI - now integrates with progress bar with anti-flicker
 function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
     if (window.rv_DiscountMessageRetryLimitReached) {
         return;
     }
     
-    // Look for progress bar message element first
-    let progressMessage = document.querySelector('.progress-message');
+    // Prevent concurrent updates
+    if (window.rv_TimerState.updateInProgress) {
+        return;
+    }
     
-    if (!progressMessage) {
-        // Fallback to discount message element
-        const discountMessage = findDiscountElement();
-        if (!discountMessage) {
-            if (timerExpired) {
-                console.log('⏳ No progress bar or discount message found and timer expired, will NOT retry.');
-                return;
-            }
-            // Limit retries to 4
-            if (retryCount >= 4) {
-                console.log('⏳ No progress bar or discount message found after 4 retries, will NOT retry again.');
-                window.rv_DiscountMessageRetryLimitReached = true;
-                return;
-            }
-            console.log('⏳ No progress bar or discount message found, will retry...');
-            setTimeout(() => updateTimerUI(timeString, timerExpired, retryCount + 1), 500);
-            return;
+    window.rv_TimerState.updateInProgress = true;
+    
+    try {
+        // Support both "MM:SS" string and {minutes, seconds}
+        let minutes = 0;
+        let seconds = 0;
+        if (typeof timeString === 'string' && timeString.includes(':')) {
+            const parts = timeString.split(':');
+            minutes = parseInt(parts[0], 10) || 0;
+            seconds = parseInt(parts[1], 10) || 0;
+        } else if (timeString && typeof timeString === 'object') {
+            minutes = parseInt(timeString.minutes, 10) || 0;
+            seconds = parseInt(timeString.seconds, 10) || 0;
         }
-    }
-
-    console.log('✅ Updating timer UI within progress bar');
-    
-    // Support both "MM:SS" string and {minutes, seconds}
-    let minutes = 0;
-    let seconds = 0;
-    if (typeof timeString === 'string' && timeString.includes(':')) {
-        const parts = timeString.split(':');
-        minutes = parseInt(parts[0], 10) || 0;
-        seconds = parseInt(parts[1], 10) || 0;
-    } else if (timeString && typeof timeString === 'object') {
-        minutes = parseInt(timeString.minutes, 10) || 0;
-        seconds = parseInt(timeString.seconds, 10) || 0;
-    }
-
-    const boxStyle = RV_STYLES.timeBox;
-    const sepStyle = RV_STYLES.timeSep;
-    const wrapStyle = RV_STYLES.timeWrap;
-    
-    // Create timer HTML
-    const timerHTML = `<div style="${RV_STYLES.timerDiv.replace('margin: 10px 0;', 'margin: 8px 0 12px 0;')}">
-        <span style="${RV_STYLES.clockIcon}">⏰</span>
-        <span style="${RV_STYLES.textSpan}">⚡ Hurry! This special offer expires in 
-            <span style="display:block"></span>
-            <span class="rv-time-wrap" style="${wrapStyle}">
-                <span style="${boxStyle}">${minutes}m</span>
-                <span style="${sepStyle}">:</span>
-                <span style="${boxStyle}">${seconds}s</span>
+        
+        // Update global state
+        window.rv_TimerState.currentMinutes = minutes;
+        window.rv_TimerState.currentSeconds = seconds;
+        window.rv_TimerState.isTimerActive = true;
+        window.rv_TimerState.lastUpdateTime = Date.now();
+        
+        const boxStyle = RV_STYLES.timeBox;
+        const sepStyle = RV_STYLES.timeSep;
+        const wrapStyle = RV_STYLES.timeWrap;
+        
+        // Create timer HTML
+        const timerHTML = `<div style="${RV_STYLES.timerDiv.replace('margin: 10px 0;', 'margin: 8px 0 12px 0;')}">
+            <span style="${RV_STYLES.clockIcon}">⏰</span>
+            <span style="${RV_STYLES.textSpan}">⚡ Hurry! This special offer expires in 
+                <span style="display:block"></span>
+                <span class="rv-time-wrap" style="${wrapStyle}">
+                    <span style="${boxStyle}">${minutes}m</span>
+                    <span style="${sepStyle}">:</span>
+                    <span style="${boxStyle}">${seconds}s</span>
+                </span>
             </span>
-        </span>
-    </div>`;
-    
-    if (progressMessage) {
-        // Check if timer already exists in progress message
-        let existingTimer = progressMessage.querySelector('.rv-timer-in-progress');
-        if (!existingTimer) {
-            // Create timer container within progress message
-            existingTimer = document.createElement('div');
-            existingTimer.className = 'rv-timer-in-progress';
-            existingTimer.style.cssText = 'margin-bottom: 8px;';
-            progressMessage.insertBefore(existingTimer, progressMessage.firstChild);
+        </div>`;
+        
+        // Store the HTML for persistence
+        window.rv_TimerState.lastTimerHTML = timerHTML;
+        
+        // Look for progress bar message element first
+        let progressMessage = document.querySelector('.progress-message');
+        
+        if (!progressMessage) {
+            // Fallback to discount message element
+            const discountMessage = findDiscountElement();
+            if (!discountMessage) {
+                if (timerExpired) {
+                    console.log('⏳ No progress bar or discount message found and timer expired, will NOT retry.');
+                    return;
+                }
+                // Limit retries to 4
+                if (retryCount >= 4) {
+                    console.log('⏳ No progress bar or discount message found after 4 retries, will NOT retry again.');
+                    window.rv_DiscountMessageRetryLimitReached = true;
+                    return;
+                }
+                console.log('⏳ No progress bar or discount message found, will retry...');
+                setTimeout(() => updateTimerUI(timeString, timerExpired, retryCount + 1), 500);
+                return;
+            }
         }
-        existingTimer.innerHTML = timerHTML;
-    } else {
-        // Fallback: create separate timer div if no progress bar
-        let timerDiv = document.getElementById('rv-discount-timer');
-        if (!timerDiv) {
-            const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
-            let offerBlock = document.getElementById('rv-offer-block');
-            if (!offerBlock && cartHeaderContainer) {
-                offerBlock = document.createElement('div');
-                offerBlock.id = 'rv-offer-block';
-                offerBlock.style.cssText = RV_STYLES.offerBlock;
-                cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
+
+        console.log('✅ Updating timer UI within progress bar');
+        
+        if (progressMessage) {
+            // Check if timer already exists in progress message
+            let existingTimer = progressMessage.querySelector('.rv-timer-in-progress');
+            if (!existingTimer) {
+                // Create timer container within progress message
+                existingTimer = document.createElement('div');
+                existingTimer.className = 'rv-timer-in-progress';
+                existingTimer.style.cssText = 'margin-bottom: 8px; transition: opacity 0.3s ease;';
+                progressMessage.insertBefore(existingTimer, progressMessage.firstChild);
             }
             
-            timerDiv = document.createElement('div');
-            timerDiv.id = 'rv-discount-timer';
-            timerDiv.innerHTML = timerHTML;
-            
-            if (offerBlock) {
-                offerBlock.appendChild(timerDiv);
-            } else if (discountMessage) {
-                discountMessage.insertAdjacentElement('afterend', timerDiv);
+            // Only update if content actually changed to prevent flicker
+            if (existingTimer.innerHTML !== timerHTML) {
+                existingTimer.innerHTML = timerHTML;
             }
         } else {
-            timerDiv.innerHTML = timerHTML;
+            // Fallback: create separate timer div if no progress bar
+            let timerDiv = document.getElementById('rv-discount-timer');
+            if (!timerDiv) {
+                const cartHeaderContainer = document.querySelector('cart-drawer .drawer__header, .drawer__header');
+                let offerBlock = document.getElementById('rv-offer-block');
+                if (!offerBlock && cartHeaderContainer) {
+                    offerBlock = document.createElement('div');
+                    offerBlock.id = 'rv-offer-block';
+                    offerBlock.style.cssText = RV_STYLES.offerBlock;
+                    cartHeaderContainer.insertAdjacentElement('afterend', offerBlock);
+                }
+                
+                timerDiv = document.createElement('div');
+                timerDiv.id = 'rv-discount-timer';
+                timerDiv.style.cssText = 'transition: opacity 0.3s ease;';
+                timerDiv.innerHTML = timerHTML;
+                
+                if (offerBlock) {
+                    offerBlock.appendChild(timerDiv);
+                } else if (discountMessage) {
+                    discountMessage.insertAdjacentElement('afterend', timerDiv);
+                }
+            } else {
+                // Only update if content actually changed
+                if (timerDiv.innerHTML !== timerHTML) {
+                    timerDiv.innerHTML = timerHTML;
+                }
+            }
         }
+    } finally {
+        window.rv_TimerState.updateInProgress = false;
     }
+}
+
+// Function to preserve timer during DOM changes
+function preserveTimerDuringUpdate() {
+    if (!window.rv_TimerState.isTimerActive || !window.rv_TimerState.lastTimerHTML) {
+        return;
+    }
+    
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+        const progressMessage = document.querySelector('.progress-message');
+        if (progressMessage) {
+            let existingTimer = progressMessage.querySelector('.rv-timer-in-progress');
+            if (!existingTimer && window.rv_TimerState.lastTimerHTML) {
+                // Timer was removed during update, restore it
+                existingTimer = document.createElement('div');
+                existingTimer.className = 'rv-timer-in-progress';
+                existingTimer.style.cssText = 'margin-bottom: 8px; transition: opacity 0.3s ease;';
+                existingTimer.innerHTML = window.rv_TimerState.lastTimerHTML;
+                progressMessage.insertBefore(existingTimer, progressMessage.firstChild);
+                console.log('🔄 Timer restored after DOM update');
+            }
+        }
+    });
 }
 
 // Function to remove timer UI only (not the cookie)
 function removeTimerUI() {
+    // Update state
+    window.rv_TimerState.isTimerActive = false;
+    window.rv_TimerState.lastTimerHTML = null;
+    
     // Remove timer from progress bar if it exists
     const progressTimer = document.querySelector('.rv-timer-in-progress');
     if (progressTimer) {
-        progressTimer.remove();
+        progressTimer.style.opacity = '0';
+        setTimeout(() => {
+            if (progressTimer.parentNode) {
+                progressTimer.remove();
+            }
+        }, 300);
         console.log('🗑️ Timer UI removed from progress bar');
     }
     
     // Also remove standalone timer div if it exists
     const timerDiv = document.getElementById('rv-discount-timer');
     if (timerDiv) {
-        timerDiv.remove();
+        timerDiv.style.opacity = '0';
+        setTimeout(() => {
+            if (timerDiv.parentNode) {
+                timerDiv.remove();
+            }
+        }, 300);
         console.log('🗑️ Standalone timer UI removed');
     }
 }
@@ -361,7 +437,10 @@ function manageDiscountCountdown() {
                 }
                 if (!timerExpired) {
                     const timeString = formatTime(remaining.minutes, remaining.seconds);
-                    updateTimerUI(timeString, timerExpired);
+                    // Debounce timer updates to prevent excessive re-renders
+                    if (!window.rv_TimerState.updateInProgress) {
+                        updateTimerUI(timeString, timerExpired);
+                    }
                 }
             }, 1000);
         });
@@ -967,23 +1046,38 @@ function observeCartChanges() {
     // Create a MutationObserver to watch for changes in the cart
     const observer = new MutationObserver(async (mutations) => {
         let shouldTrack = false;
+        let progressBarChanged = false;
 
         for (const mutation of mutations) {
             if (mutation.type === 'childList' || mutation.type === 'characterData') {
                 // Skip timer-related changes
                 if (mutation.target.id === 'rv-discount-timer' ||
                     mutation.target.id === 'rv-discount-timer-text' ||
+                    mutation.target.classList?.contains('rv-timer-in-progress') ||
                     (mutation.target.parentElement && mutation.target.parentElement.id === 'rv-discount-timer')) {
                     continue;
+                }
+
+                // Check if progress bar was modified
+                const progressBarModified = Array.from(mutation.addedNodes).some(node =>
+                    node.nodeType === Node.ELEMENT_NODE &&
+                    (node.classList?.contains('progress-message') || node.querySelector?.('.progress-message'))
+                ) || Array.from(mutation.removedNodes).some(node =>
+                    node.nodeType === Node.ELEMENT_NODE &&
+                    (node.classList?.contains('progress-message') || node.querySelector?.('.progress-message'))
+                ) || (mutation.target.classList?.contains('progress-message'));
+
+                if (progressBarModified) {
+                    progressBarChanged = true;
                 }
 
                 // Check if cart items changed
                 const cartItemsChanged = Array.from(mutation.addedNodes).some(node =>
                     node.nodeType === Node.ELEMENT_NODE &&
-                    (node.classList.contains('cart-item') || node.querySelector && node.querySelector('.cart-item'))
+                    (node.classList?.contains('cart-item') || node.querySelector?.('.cart-item'))
                 ) || Array.from(mutation.removedNodes).some(node =>
                     node.nodeType === Node.ELEMENT_NODE &&
-                    (node.classList.contains('cart-item') || node.querySelector && node.querySelector('.cart-item'))
+                    (node.classList?.contains('cart-item') || node.querySelector?.('.cart-item'))
                 );
 
                 // Check if quantity inputs changed
@@ -996,9 +1090,14 @@ function observeCartChanges() {
 
                 if (cartItemsChanged || quantityChanged || discountMessageChanged) {
                     shouldTrack = true;
-                    break;
                 }
             }
+        }
+
+        // Preserve timer if progress bar was changed
+        if (progressBarChanged) {
+            console.log('🔄 Progress bar changed, preserving timer');
+            preserveTimerDuringUpdate();
         }
 
         if (shouldTrack) {
@@ -1094,15 +1193,21 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
     initializeScript();
 }
 
-// Watch for cart updates
+// Watch for cart updates with timer preservation
 document.addEventListener('cart:updated', () => {
-    console.log('🛒 Cart updated, reinitializing');
+    console.log('🛒 Cart updated, preserving timer and reinitializing');
+    
+    // Preserve timer immediately
+    preserveTimerDuringUpdate();
+    
     setTimeout(() => {
         manageDiscountCountdown();
+        // Ensure timer is preserved after reinitialization
+        setTimeout(preserveTimerDuringUpdate, 200);
     }, 500);
 });
 
-// Watch for cart drawer
+// Watch for cart drawer with timer preservation
 const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
         for (const node of mutation.addedNodes) {
@@ -1110,9 +1215,15 @@ const observer = new MutationObserver((mutations) => {
                 node.classList &&
                 (node.classList.contains('cart-drawer') ||
                     node.classList.contains('drawer--right'))) {
-                console.log('🛒 Cart drawer detected, reinitializing');
+                console.log('🛒 Cart drawer detected, preserving timer and reinitializing');
+                
+                // Preserve timer immediately
+                preserveTimerDuringUpdate();
+                
                 setTimeout(() => {
                     manageDiscountCountdown();
+                    // Ensure timer is preserved after reinitialization
+                    setTimeout(preserveTimerDuringUpdate, 200);
                 }, 500);
                 break;
             }
