@@ -10,9 +10,10 @@ export function TimerInput({ timerMinutes, onTimerChange, disabled = false }) {
 
     return (
         <TextField
+            placeholder="Enter timer duration"
             label="Timer duration (minutes)"
             type="number"
-            value={timerMinutes?.toString() ?? "30"}
+            value={timerMinutes?.toString() ?? ""}
             onChange={handleChange}
             autoComplete="off"
             min={1}

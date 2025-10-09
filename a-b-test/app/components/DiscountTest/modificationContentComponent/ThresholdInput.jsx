@@ -24,6 +24,7 @@ export function ThresholdInput({
             label={discountType === "value" ? "Cart Value Threshold" : "Cart Quantity Threshold"}
             type="text"
             value={threshold}
+            placeholder="Enter Cart Value Threshold"
             onChange={handleInputChange}
             prefix={discountType === "value" ? getCurrencySymbol(currency) : ""}
             helpText={

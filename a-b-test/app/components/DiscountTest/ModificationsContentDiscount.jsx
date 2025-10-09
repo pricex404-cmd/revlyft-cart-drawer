@@ -15,7 +15,7 @@ export function ModificationsContentDiscount({
     // Use props instead of local state
     const discountType = discountConfig?.type || "value";
     const threshold = discountConfig?.threshold || "";
-    const timerMinutes = discountConfig?.timerMinutes || "30";
+    const timerMinutes = discountConfig?.timerMinutes || "";
     const showTimer = discountConfig?.showTimer !== undefined ? discountConfig.showTimer : true;
 
     // Initialize groups with 0% discount if they don't have a value set
@@ -28,7 +28,7 @@ export function ModificationsContentDiscount({
                 return {
                     ...group,
                     // Set control group to 0% and make it non-editable
-                    discountPercentageValue: isControlGroup ? "0" : (group.discountPercentageValue || "0")
+                    discountPercentageValue: isControlGroup ? "0" : (group.discountPercentageValue || "")
                 };
             });
 
@@ -98,7 +98,7 @@ export function ModificationsContentDiscount({
                 return {
                     ...group,
                     discountPercentageValue: value,
-                    discountError: (value === "" || isNaN(numValue) || numValue < 0 || numValue >= 100)
+                    discountError: ( numValue < 0 || numValue >= 100)
                         ? "Please enter a valid discount percentage (0-100)"
                         : ""
                 };
