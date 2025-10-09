@@ -120,11 +120,11 @@ function formatTime(minutes, seconds) {
 
 // Function to find discount message element
 function findDiscountElement() {
-    console.log('🔍 Looking for discount element');
+    
 
     // Get all text content in the cart
     const cartText = document.body.innerText;
-    console.log('📝 Cart text found:', cartText.includes('Add $') && cartText.includes('% off'));
+ 
 
     // Try multiple selectors
     const selectors = [
@@ -139,10 +139,10 @@ function findDiscountElement() {
 
     for (const selector of selectors) {
         const element = document.querySelector(selector);
-        console.log(`🔍 Checking selector: "${selector}"`, element ? '✅ Found!' : '❌ Not found');
+        
         if (element) {
             const text = element.textContent;
-            console.log('📝 Element text:', text);
+            
             if (text.includes('% off')) {
                 return element;
             }
@@ -154,12 +154,12 @@ function findDiscountElement() {
     for (const element of elements) {
         const text = element.textContent;
         if (text && text.includes('Add $') && text.includes('% off')) {
-            console.log('🎯 Found element by text content:', element);
+            
             return element;
         }
     }
 
-    console.log('❌ No discount element found');
+    
     return null;
 }
 
@@ -236,22 +236,22 @@ function updateTimerUI(timeString, timerExpired = false, retryCount = 0) {
             const discountMessage = findDiscountElement();
             if (!discountMessage) {
                 if (timerExpired) {
-                    console.log('⏳ No progress bar or discount message found and timer expired, will NOT retry.');
+                    
                     return;
                 }
                 // Limit retries to 4
                 if (retryCount >= 4) {
-                    console.log('⏳ No progress bar or discount message found after 4 retries, will NOT retry again.');
+                    
                     window.rv_DiscountMessageRetryLimitReached = true;
                     return;
                 }
-                console.log('⏳ No progress bar or discount message found, will retry...');
+                
                 setTimeout(() => updateTimerUI(timeString, timerExpired, retryCount + 1), 500);
                 return;
             }
         }
 
-        console.log('✅ Updating timer UI within progress bar');
+        
         
         if (progressMessage) {
             // Check if timer already exists in progress message
@@ -321,7 +321,7 @@ function preserveTimerDuringUpdate() {
                 existingTimer.style.cssText = 'margin-bottom: 8px; transition: opacity 0.3s ease;';
                 existingTimer.innerHTML = window.rv_TimerState.lastTimerHTML;
                 progressMessage.insertBefore(existingTimer, progressMessage.firstChild);
-                console.log('🔄 Timer restored after DOM update');
+                
             }
         }
     });
@@ -342,7 +342,7 @@ function removeTimerUI() {
                 progressTimer.remove();
             }
         }, 300);
-        console.log('🗑️ Timer UI removed from progress bar');
+        
     }
     
     // Also remove standalone timer div if it exists
@@ -354,14 +354,14 @@ function removeTimerUI() {
                 timerDiv.remove();
             }
         }, 300);
-        console.log('🗑️ Standalone timer UI removed');
+        
     }
 }
 
 // Function to manage discount countdown
 function manageDiscountCountdown() {
     try {
-        console.log('🔄 Starting discount countdown');
+        
 
         // Look for discount test timer cookie
         const cookies = document.cookie.split(';');
@@ -376,7 +376,7 @@ function manageDiscountCountdown() {
                 // Extract testId from the cookie name
                 // Remove prefix and suffix to get just the testId
                 testId = name.replace('rv_tests_start_time_', '').replace('_discount_active', '');
-                console.log('🍪 Found discount timer cookie:', name, discountStartTime);
+                
                 break;
             }
         }
@@ -396,7 +396,7 @@ function manageDiscountCountdown() {
             }
 
             if (!abTestsData || !testId || !abTestsData[testId]) {
-                console.log('❌ No AB test data or active test found for timer initialization');
+                
                 return;
             }
 
@@ -408,12 +408,12 @@ function manageDiscountCountdown() {
             const userVariant = getVariantForUser(testGroups, hashValue);
             const variantIndex = testGroups.findIndex(group => group.id.toString() === userVariant.id.toString());
             if (variantIndex === 0) {
-                console.log('🛑 User is in control group (variant index 0), skipping timer UI and DOM lookups.');
+   
                 return;
             }
             // Respect showTimer flag from DB
             if (!showTimer) {
-                console.log('⏹️ showTimer disabled in config, skipping timer UI.');
+                
                 return;
             }
 
@@ -423,7 +423,7 @@ function manageDiscountCountdown() {
                 const cookieName = `rv_tests_start_time_${testId}_discount_active`;
                 document.cookie = `${cookieName}=${encodeURIComponent(nowIso)}; path=/`;
                 discountStartTime = nowIso;
-                console.log('🍪 Created discount timer cookie:', cookieName, discountStartTime);
+                
             }
             // Start the countdown only for non-control group
             let timerExpired = false;
@@ -467,7 +467,7 @@ function getShopifyDomainFromScript() {
                     const url = new URL(document.currentScript.src);
                     const shopParam = url.searchParams.get('shop');
                     if (shopParam) {
-                        console.log('🔍 Found shop parameter in current script:', shopParam);
+                        
                         return shopParam;
                     }
                 } catch (urlError) {
@@ -485,7 +485,7 @@ function getShopifyDomainFromScript() {
                     const url = new URL(script.src);
                     const shopParam = url.searchParams.get('shop');
                     if (shopParam) {
-                        console.log('🔍 Found shop parameter in script URL:', shopParam);
+                        
                         return shopParam;
                     }
                 } catch (urlError) {
@@ -498,14 +498,14 @@ function getShopifyDomainFromScript() {
         const urlParams = new URLSearchParams(window.location.search);
         const shopParam = urlParams.get('shop');
         if (shopParam) {
-            console.log('🔍 Found shop parameter in page URL:', shopParam);
+            
             return shopParam;
         }
 
         // Method 3: Check if current domain is already a myshopify domain
         const currentDomain = window.location.hostname;
         if (currentDomain.includes('.myshopify.com')) {
-            console.log('🔍 Current domain is already a Shopify domain:', currentDomain);
+            
             return currentDomain;
         }
 
@@ -549,7 +549,7 @@ async function fetchShopifyDomain() {
     // First try to get domain from script parameters (faster and doesn't require API call)
     const scriptDomain = getShopifyDomainFromScript();
     if (scriptDomain) {
-        console.log('🔍 Using Shopify domain from script:', scriptDomain);
+        
         return scriptDomain;
     }
 
@@ -649,13 +649,13 @@ function getVariantForUser(testVariants, hashValue) {
 
         if (hashValue <= cumulativePercentage) {
             selectedVariant = variant;
-            console.log(`🎯 User assigned to variant: "${variant.name}" (${variant.percentage}% of users)`);
+        
             break;
         }
     }
 
     if (!selectedVariant) {
-        console.log("🎯 No variant selected for this user");
+        
         return null;
     }
 
@@ -667,7 +667,7 @@ async function trackCartDrawerMessageAnalytics(messageType, testId, variantIndex
     try {
         const ip = getCookie('rv_finalDevId');
         if (!ip) {
-            console.log('❌ No IP found in cookies for analytics');
+            
             return;
         }
 
@@ -698,7 +698,7 @@ async function trackCartDrawerMessageAnalytics(messageType, testId, variantIndex
             throw new Error(`Failed to update ${messageType} data: ${updateResponse.status}`);
         }
 
-        console.log(`📊 Successfully tracked ${messageType} for cart drawer message`);
+        
     } catch (error) {
         console.error(`❌ Error tracking ${messageType}:`, error);
     }
@@ -757,7 +757,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
     try {
         // Prevent concurrent tracking calls
         if (globalTrackingState.trackingInProgress) {
-            console.log('⚠️ Tracking already in progress, skipping duplicate call');
+            
             return;
         }
 
@@ -766,13 +766,13 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
             eventData.currentItemCount === 0 &&
             eventData.itemsToThreshold === 0
         ) {
-            console.log('🚫 Not on cart page or empty cart, skipping analytics.');
+            
             return;
         }
 
         const ip = getCookie('rv_finalDevId');
         if (!ip) {
-            console.log('❌ No IP found in cookies for analytics');
+            
             return;
         }
 
@@ -785,7 +785,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
                 const now = Date.now();
                 const start = new Date(discountStartTime).getTime();
                 if (now - start > (timerMinutes * 60 * 1000)) {
-                    console.log('⏰ Discount timer expired, skipping analytics');
+                    
                     return;
                 }
             } catch (e) {
@@ -793,7 +793,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
                 const now = Date.now();
                 const start = new Date(discountStartTime).getTime();
                 if (now - start > 30 * 60 * 1000) {
-                    console.log('⏰ Discount timer expired, skipping analytics');
+                    
                     return;
                 }
             }
@@ -807,7 +807,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
         if (globalTrackingState.lastTrackedData &&
             globalTrackingState.lastTrackedData.eventKey === eventKey &&
             (currentTime - globalTrackingState.lastTrackingTime) < 5000) { // 5 second window
-            console.log('⚠️ Skipping duplicate event - same state within 5 seconds');
+            
             return;
         }
 
@@ -868,7 +868,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
         });
 
         if (isDuplicate) {
-            console.log('⚠️ Skipping duplicate event - already exists in database');
+            
             globalTrackingState.trackingInProgress = false;
             return;
         }
@@ -896,7 +896,7 @@ async function trackUserBehaviorAnalytics(testId, variantIndex, eventData) {
         };
         globalTrackingState.lastTrackingTime = currentTime;
 
-        console.log(`📊 Successfully tracked user behavior for ${eventData.isControlGroup ? 'control group' : 'test group'}`);
+        
     } catch (error) {
         console.error('❌ Error tracking user behavior:', error);
     } finally {
@@ -923,13 +923,13 @@ function getCartInfo() {
         }
     });
 
-    console.log('🛒 Current cart items:', totalItems);
+    
     return totalItems;
 }
  
 // Improved cart change observation with better duplicate prevention
 function observeCartChanges() {
-    console.log('👀 Setting up cart change observer for all groups');
+    
 
     let lastTrackedState = {
         itemCount: -1, // Initialize with -1 to ensure first tracking
@@ -964,7 +964,7 @@ function observeCartChanges() {
 
             // Skip if no meaningful change and not manual trigger
             if (!isManual && !hasStateChanged && timeSinceLastTrack < 3000) {
-                console.log('⚠️ No significant cart changes detected, skipping tracking');
+                
                 return;
             }
 
@@ -982,7 +982,7 @@ function observeCartChanges() {
                         const now = Date.now();
                         const start = new Date(discountStartTime).getTime();
                         if (now - start > (timerMinutes * 60 * 1000)) {
-                            console.log('⏰ Discount timer expired, skipping cart change analytics');
+                            
                             continue;
                         }
                     }
@@ -1096,12 +1096,12 @@ function observeCartChanges() {
 
         // Preserve timer if progress bar was changed
         if (progressBarChanged) {
-            console.log('🔄 Progress bar changed, preserving timer');
+            
             preserveTimerDuringUpdate();
         }
 
         if (shouldTrack) {
-            console.log('🔄 Cart change detected, scheduling tracking');
+            
             debouncedTrackCartChange();
         }
     });
@@ -1110,7 +1110,7 @@ function observeCartChanges() {
     function startObserving(retryCount = 0) {
         const cartDrawer = document.querySelector('cart-drawer');
         if (cartDrawer) {
-            console.log('✅ Cart drawer found, starting observation for all groups');
+            
             observer.observe(cartDrawer, {
                 childList: true,
                 characterData: true,
@@ -1120,7 +1120,7 @@ function observeCartChanges() {
             // NEW: Support for cart page
             const cartPage = document.querySelector('.cart__items');
             if (cartPage) {
-                console.log('✅ Cart page found, starting observation for all groups');
+                
                 observer.observe(cartPage, {
                     childList: true,
                     characterData: true,
@@ -1128,10 +1128,10 @@ function observeCartChanges() {
                 });
             } else {
                 if (retryCount >= 4) {
-                    console.log('⏳ Cart drawer/page not found after 4 retries, will NOT retry again.');
+                    
                     return;
                 }
-                console.log('⏳ Cart drawer/page not found, will retry...');
+                
                 setTimeout(() => startObserving(retryCount + 1), 500);
             }
         }
@@ -1146,7 +1146,7 @@ function observeCartChanges() {
             if (mutation.addedNodes) {
                 mutation.addedNodes.forEach((node) => {
                     if (node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'CART-DRAWER') {
-                        console.log('🛒 Cart drawer dynamically added, initializing observer');
+                        
                         startObserving();
                     }
                 });
@@ -1165,7 +1165,7 @@ function observeCartChanges() {
 
 // Wait for DOM to be ready
 function initializeTimer() {
-    console.log('🚀 Initializing discount timer script');
+    
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', manageDiscountCountdown);
     } else {
@@ -1175,7 +1175,7 @@ function initializeTimer() {
 
 // Initialize everything
 function initializeScript() {
-    console.log('🚀 Initializing enhanced A/B test script');
+    
 
     // Initialize timer for test groups
     initializeTimer();
@@ -1189,13 +1189,13 @@ document.addEventListener('DOMContentLoaded', initializeScript);
 
 // Also try to initialize immediately in case DOM is already loaded
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    console.log('🏃‍♂️ DOM already loaded, initializing immediately');
+    
     initializeScript();
 }
 
 // Watch for cart updates with timer preservation
 document.addEventListener('cart:updated', () => {
-    console.log('🛒 Cart updated, preserving timer and reinitializing');
+    
     
     // Preserve timer immediately
     preserveTimerDuringUpdate();
@@ -1215,7 +1215,7 @@ const observer = new MutationObserver((mutations) => {
                 node.classList &&
                 (node.classList.contains('cart-drawer') ||
                     node.classList.contains('drawer--right'))) {
-                console.log('🛒 Cart drawer detected, preserving timer and reinitializing');
+                
                 
                 // Preserve timer immediately
                 preserveTimerDuringUpdate();
