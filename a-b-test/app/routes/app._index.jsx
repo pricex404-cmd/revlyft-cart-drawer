@@ -443,7 +443,7 @@ export default function Index() {
         }
 
         const data = await response.json();
-        console.log("data", data)
+
 
         if (data) {
           // Filter to only keep entries with proper test structure
@@ -706,7 +706,7 @@ export default function Index() {
   };
 
   const handleTestTypeSelect = (type) => {
-    console.log('Test type selected:', type);
+
     setSelectedTestType(type);
   };
 
@@ -744,7 +744,6 @@ export default function Index() {
         if (currencyResponse.ok && currencyData.currencyCode) {
           shopCurrency = currencyData.currencyCode;
         }
-        console.log("shopCurrency", shopCurrency)
       } catch (error) {
         console.error('Failed to fetch shop currency:', error);
       }
@@ -1136,7 +1135,7 @@ export default function Index() {
 <script src="https://app.revlyft.com/assets/revlyft-price-query-selector-script.js?shop=${shop}" defer></script>
 <script src="https://app.revlyft.com/assets/revlyft-abtest-script.js?shop=${shop}" defer></script>
 <script src="https://app.revlyft.com/assets/revlyft-discount-abtest-script.js?shop=${shop}" defer></script>`;
-    console.log("scriptTemplate", scriptTemplate);
+
     try {
       await navigator.clipboard.writeText(scriptTemplate);
       setIsCopied(true);
