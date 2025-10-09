@@ -11,3 +11,10 @@ type = "revlyft_scripts"
 name = "Revlyft Scripts"
 target = "head"
 
+
+# NEW: Add progress bar block
+[[settings.blocks]]
+type = "discount_progress_bar"
+name = "Discount Progress Bar"
+target = "section"
+
