@@ -17,19 +17,26 @@ export function GroupDiscountConfig({
                 <BlockStack gap="400">
                     {testGroups.map(group => {
                         const isControlGroup = group.name.toLowerCase().includes('control');
-
+console.log("hhhhhhh",group.discountPercentageValue)
                         return (
                             <TextField
+                                placeholder="Enter Discount Value"
                                 key={group.id}
                                 label={group.name}
-                                type="number"
+                                type="text"
                                 suffix="%"
-                                value={group.discountPercentageValue || "0"}
-                                onChange={(value) => onDiscountChange(group.id, value)}
+                                value={group.discountPercentageValue || ""}
+                                onChange={(value) => {
+                                    // Only allow numbers and empty string
+                                    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+                                        onDiscountChange(group.id, value);
+                                    }
+                                }}
                                 error={group.discountError}
                                 disabled={isControlGroup}
                                 helpText={isControlGroup ? "Control group discount cannot be modified" : "Enter a discount percentage between 0 and 100"}
                                 autoComplete="off"
+                                inputMode="decimal"
                             />
                         );
                     })}
