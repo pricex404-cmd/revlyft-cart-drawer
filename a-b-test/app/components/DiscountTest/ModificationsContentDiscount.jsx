@@ -15,7 +15,7 @@ export function ModificationsContentDiscount({
     // Use props instead of local state
     const discountType = discountConfig?.type || "value";
     const threshold = discountConfig?.threshold || "";
-    const timerMinutes = discountConfig?.timerMinutes || "30";
+    const timerMinutes = discountConfig?.timerMinutes || "";
     const showTimer = discountConfig?.showTimer !== undefined ? discountConfig.showTimer : true;
 
     // Initialize groups with 0% discount if they don't have a value set

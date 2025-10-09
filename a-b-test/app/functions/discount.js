@@ -673,7 +673,7 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
         type: discountConfig.type || 'value',
         threshold: discountConfig.threshold || '',
         showTimer: typeof discountConfig.showTimer === 'boolean' ? discountConfig.showTimer : false,
-        timerMinutes: discountConfig.timerMinutes ?? '30'
+        timerMinutes: discountConfig.timerMinutes ?? ""
       }
     };
 

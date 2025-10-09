@@ -202,7 +202,11 @@ export const checkIfProductDetailsModified = (testGroups, selectedProducts) => {
 // Function to check if discount modifications have been made
 export const checkIfDiscountModified = (testGroups, discountConfig) => {
     if (!testGroups.length) return false;
+    if (discountConfig.showTimer === true && discountConfig.timerMinutes === "") {
 
+        return false;
+    }
+ 
     // Check if discount configuration is set
     if (!discountConfig.type || !discountConfig.threshold) return false;
 
