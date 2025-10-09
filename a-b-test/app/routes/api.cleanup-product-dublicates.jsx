@@ -72,10 +72,7 @@ export const action = async ({ request }) => {
             for (const [productId, productData] of Object.entries(group.products || {})) {
                 if (productData.createdProductId) {
                     try {
-                        console.log('Deleting duplicate product:', {
-                            productId: productData.createdProductId,
-                            groupName: group.name
-                        });
+
                         await logToFile('Attempting to delete duplicate product', {
                             productId: productData.createdProductId,
                             groupName: group.name,
@@ -210,22 +207,13 @@ export const action = async ({ request }) => {
                                 continue;
                             } else {
                                 const changes = adjustInventoryJson.data.inventoryAdjustQuantities.inventoryAdjustmentGroup.changes || [];
-                                console.log('Successfully updated inventory:', {
-                                    productId: `gid://shopify/Product/${productId}`,
-                                    changes: changes
-                                });
+
                                 await logToFile('Successfully updated inventory', {
                                     productId: `gid://shopify/Product/${productId}`,
                                     changes: changes
                                 });
                             }
                         }
-
-                        console.log('Successfully deleted product:', {
-                            productId: productData.createdProductId,
-                            groupName: group.name,
-                            inventoryAdded: duplicateInventory
-                        });
                         await logToFile('Successfully deleted product', {
                             productId: productData.createdProductId,
                             groupName: group.name,
@@ -251,12 +239,6 @@ export const action = async ({ request }) => {
             }
         }
 
-        console.log('Deletion process completed', {
-            deletedProductsCount,
-            hasErrors,
-            errorCount: errors.length,
-            allOperationsSuccessful
-        });
         await logToFile('Deletion process completed', {
             deletedProductsCount,
             hasErrors,

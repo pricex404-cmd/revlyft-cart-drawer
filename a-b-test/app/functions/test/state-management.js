@@ -48,11 +48,6 @@ export const getInitialAnalyticsState = (testData) => {
 };
 
 export const isTestDataComplete = (selectedProducts, testGroups, targetingState, analyticsState, testType) => {
-    console.log('🔍 isTestDataComplete called with:', {
-        selectedProductsLength: selectedProducts.length,
-        testGroupsLength: testGroups.length,
-        testType
-    });
 
     if (selectedProducts.length === 0) {
         
@@ -120,23 +115,12 @@ export const isTestDataComplete = (selectedProducts, testGroups, targetingState,
     const hasTargeting = Object.keys(targetingState).length > 0;
     const hasAnalytics = Object.keys(analyticsState).length > 0;
 
-    console.log('📊 Final validation results:', {
-        hasProductModifications,
-        hasTargeting,
-        hasAnalytics,
-        final: hasProductModifications && hasTargeting && hasAnalytics
-    });
-
     return hasProductModifications && hasTargeting && hasAnalytics;
 };
 
 // Separate function for discount test validation
 export const isDiscountTestDataComplete = (testGroups, targetingState, analyticsState, discountConfig) => {
-    console.log('💰 isDiscountTestDataComplete called with:',discountConfig, {
-        testGroupsLength: testGroups.length,
-        hasDiscountConfig: !!discountConfig,
-        discountConfig
-    });
+
 
     // Check if we have test groups
     if (testGroups.length === 0) {
@@ -162,14 +146,6 @@ export const isDiscountTestDataComplete = (testGroups, targetingState, analytics
     const hasTargeting = Object.keys(targetingState).length > 0;
     const hasAnalytics = Object.keys(analyticsState).length > 0;
 
-    console.log('📊 Discount test validation results:', {
-        nonControlGroupsCount: nonControlGroups.length,
-        hasDiscountValues,
-        hasDiscountConfig,
-        hasTargeting,
-        hasAnalytics,
-        final: hasDiscountValues && hasDiscountConfig && hasTargeting && hasAnalytics
-    });
 
     return hasDiscountValues && hasDiscountConfig && hasTargeting && hasAnalytics;
 }; 

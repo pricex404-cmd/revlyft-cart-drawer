@@ -66,12 +66,6 @@ export function formatGQLQuery(functionId, title, productId, startsAt, endsAt, m
     const metafieldJsonString = JSON.stringify(metafieldConfig);
     const escapedJsonString = metafieldJsonString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
-    // Debug: Log the final metafield value that will be saved
-    
-    
-    console.log('🎯 Original vs Optimized size reduction:',
-      `${JSON.stringify({ testVariants }).length} -> ${metafieldJsonString.length} bytes`);
-
     // Log size information but don't throw error (handled upstream)
     if (metafieldJsonString.length > 10000) {
 
@@ -236,15 +230,6 @@ export async function createProductDiscount(admin, title, functionId, testVarian
     ]);
 
     const responseJson = await response.json();
-
-
-
-    console.log('✅ GraphQL response received:', {
-      hasErrors: !!responseJson.data?.discountAutomaticAppCreate?.userErrors?.length,
-      errorCount: responseJson.data?.discountAutomaticAppCreate?.userErrors?.length || 0
-    });
-
-    // Check for GraphQL errors first
     if (responseJson.errors) {
 
       console.error('❌ GraphQL errors:', responseJson.errors);
@@ -330,7 +315,6 @@ export async function deleteDiscount(admin, discountId) {
     });
 
     const responseJson = await response.json();
-    console.log('Delete discount response:', JSON.stringify(responseJson, null, 2));
 
     if (responseJson.errors) {
       console.error('GraphQL errors:', responseJson.errors);
@@ -654,14 +638,6 @@ export async function deactivateAllActiveDiscountTests(sanitizedDomain, shop, cu
  */
 export async function createCartDiscount(admin, title, functionId, testVariants, discountConfig) {
   try {
-    console.log('🛒 Starting cart discount creation:', {
-      title,
-      functionId,
-      testVariantsCount: testVariants.length,
-      discountType: discountConfig.type,
-      threshold: discountConfig.threshold
-    });
-
     // Create the metafield configuration object
     const metafieldConfig = {
       testVariants: testVariants.map(variant => ({
@@ -676,28 +652,9 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
         timerMinutes: discountConfig.timerMinutes ?? ""
       }
     };
-
-    console.log('📊 Cart discount configuration:', {
-      variantCount: metafieldConfig.testVariants.length,
-      variants: metafieldConfig.testVariants.map(v => ({
-        name: v.name,
-        percentage: v.percentage
-      })),
-      discountType: metafieldConfig.discountConfig.type,
-      threshold: metafieldConfig.discountConfig.threshold,
-      showTimer: metafieldConfig.discountConfig.showTimer,
-      timerMinutes: metafieldConfig.discountConfig.timerMinutes
-    });
-
     // Convert to JSON string and properly escape for GraphQL
     const metafieldJsonString = JSON.stringify(metafieldConfig);
     const escapedJsonString = metafieldJsonString.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-
-    // Debug: Log the final metafield value that will be saved
-    console.log('💾 Cart discount metafield:', {
-      length: metafieldJsonString.length,
-      sizeInKB: (metafieldJsonString.length / 1024).toFixed(2)
-    });
 
     // Check metafield size limit
     if (metafieldJsonString.length > 10000) {
@@ -751,13 +708,6 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
 
     const response = await admin.graphql(graphqlQuery);
     const responseJson = await response.json();
-
-    console.log('📡 Cart discount API response received:', {
-      hasErrors: !!responseJson.data?.discountAutomaticAppCreate?.userErrors?.length,
-      errorCount: responseJson.data?.discountAutomaticAppCreate?.userErrors?.length || 0,
-      discountId: responseJson.data?.discountAutomaticAppCreate?.automaticAppDiscount?.discountId
-    });
-
     // Check for user errors
     if (responseJson.data?.discountAutomaticAppCreate?.userErrors?.length > 0) {
       console.error('❌ Cart discount creation failed:', {
@@ -775,11 +725,6 @@ export async function createCartDiscount(admin, title, functionId, testVariants,
     }
 
     const createdDiscount = responseJson.data.discountAutomaticAppCreate.automaticAppDiscount;
-    console.log('✅ Cart discount created successfully:', {
-      discountId: createdDiscount.discountId,
-      title: createdDiscount.title,
-      startsAt: createdDiscount.startsAt
-    });
 
     return {
       discountCreated: true,

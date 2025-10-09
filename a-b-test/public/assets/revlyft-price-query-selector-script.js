@@ -635,14 +635,6 @@ if (checkRequiredParameters()) {
     let modalYesButton = document.querySelector('.modal-button.yes');
     let modalNoButton = document.querySelector('.modal-button.no');
 
-    // Debug logging
-    console.log('Modal elements after initialization:', {
-        modalOverlay,
-        modalYesButton,
-        modalNoButton,
-        modalHTML: modalOverlay ? modalOverlay.outerHTML : 'not found'
-    });
-
     // Function to show modal
     function showModal() {
         
@@ -668,14 +660,6 @@ if (checkRequiredParameters()) {
                 modalContent.style.visibility = 'visible';
                 modalContent.style.opacity = '1';
             }
-
-            console.log('Modal should be visible now', {
-                display: modalOverlay.style.display,
-                visibility: modalOverlay.style.visibility,
-                opacity: modalOverlay.style.opacity,
-                zIndex: modalOverlay.style.zIndex,
-                contentExists: !!modalOverlay.querySelector('.modal-content')
-            });
         } else {
             console.error('Modal overlay element not found! Recreating modal...');
             document.body.insertAdjacentHTML('beforeend', modalHTML);
@@ -724,14 +708,6 @@ if (checkRequiredParameters()) {
         modalOverlay = document.querySelector('.modal-overlay');
         modalYesButton = document.querySelector('.modal-button.yes');
         modalNoButton = document.querySelector('.modal-button.no');
-
-        console.log('Modal elements in click handler:', {
-            modalOverlay,
-            modalYesButton,
-            modalNoButton,
-            modalHTML: modalOverlay ? modalOverlay.outerHTML : 'not found',
-            contentExists: modalOverlay ? !!modalOverlay.querySelector('.modal-content') : false
-        });
 
         // Show modal
         showModal();
