@@ -22,13 +22,13 @@ function getVariantForUser(testVariants, hashValue) {
 
         if (hashValue <= cumulativePercentage) {
             selectedVariant = variant;
-            console.log(`🎯 User assigned to variant: "${variant.name}" (${variant.percentage}% of users)`);
+            
             break;
         }
     }
 
     if (!selectedVariant) {
-        console.log("🎯 No variant selected for this user");
+        
         return null;
     }
 
@@ -65,7 +65,7 @@ const logToFile = (message) => {
         // If file doesn't exist, just write the new message
         fs.writeFileSync(logFile, logMessage);
     }
-    console.log(message);
+    
 };
 
 // File to store processed webhook IDs

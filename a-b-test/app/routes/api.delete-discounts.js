@@ -27,7 +27,7 @@ export const action = async ({ request }) => {
 
         // Delete the discount directly using the discountId
         const deleteResult = await deleteDiscount(admin, discountId);
-        console.log('Delete result:', JSON.stringify(deleteResult, null, 2));
+        
 
         if (!deleteResult.discountDeleted) {
             const error = deleteResult.errors[0]?.message || 'Unknown error';

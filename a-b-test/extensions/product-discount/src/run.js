@@ -185,7 +185,7 @@ export function run(input) {
 
     // Round the discount percentage to 2 decimal places for consistency
     const roundedDiscountPercentage = Math.round(discountPercentage * 100) / 100;
-    console.log('roundedDiscountPercentage', roundedDiscountPercentage);
+    
     discounts.push({
       value: {
         percentage: {

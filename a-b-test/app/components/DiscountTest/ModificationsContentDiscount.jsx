@@ -40,20 +40,6 @@ export function ModificationsContentDiscount({
         }
     }, [testGroups, onTestGroupsChange]);
 
-    // Debug: Log props on component mount and when they change
-    useEffect(() => {
-        console.log('💰 ModificationsContentDiscount props:', {
-            discountConfig,
-            hasSetDiscountConfig: !!setDiscountConfig,
-            testGroupsCount: testGroups?.length || 0,
-            groups: testGroups?.map(g => ({
-                name: g.name,
-                isControl: g.name.toLowerCase().includes('control'),
-                discount: g.discountPercentageValue
-            }))
-        });
-    }, [discountConfig, setDiscountConfig, testGroups]);
-
     // Update discount type
     const setDiscountType = (type) => {
         

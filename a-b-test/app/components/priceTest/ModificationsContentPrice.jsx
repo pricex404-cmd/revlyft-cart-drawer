@@ -28,19 +28,6 @@ import useProductModifications from './useProductModifications';
     basicInfo,
     setBasicInfo
 }) => {
-    
-    console.log('Props received:', {
-        products: products?.length,
-        testGroups: testGroups?.length,
-        selectedProducts: selectedProducts?.length,
-        isTestStarted,
-
-        multiVariantProductIds,
-        compareAtPriceProductIds
-    });
-
-    
-
     // Use the custom hook for product modifications
     const {
         showProductList,
@@ -250,14 +237,6 @@ import useProductModifications from './useProductModifications';
             // Check if all variants have the same price
             const firstPrice = allVariants[0]?.price || 0;
             const hasSamePrice = allVariants.every(variant => variant.price === firstPrice);
-
-            console.log('Multi-variant product analysis:', {
-                productTitle: product.title,
-                variantCount: allVariants.length,
-                prices: allVariants.map(v => v.price),
-                hasSamePrice: hasSamePrice,
-                firstPrice: firstPrice
-            });
 
             if (hasSamePrice) {
                 // Treat as normal product - all variants have same price

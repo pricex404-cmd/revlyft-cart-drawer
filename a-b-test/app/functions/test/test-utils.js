@@ -99,8 +99,6 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
 
     // Get all non-control groups
     const nonControlGroups = testGroups.filter(group => !group.name.toLowerCase().includes('control'));
-    console.log('📊 Non-control groups found:', nonControlGroups.length);
-    console.log('🎯 Non-control group names:', nonControlGroups.map(g => g.name));
 
     if (nonControlGroups.length === 0) return false;
 
@@ -112,8 +110,7 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
             const productId = product.productId.match(/(\d+)$/)?.[1] || product.productId;
             const groupProductData = group.products?.[productId];
 
-            console.log(`📦 Checking product ${product.title} (ID: ${productId})`);
-            console.log(`🔗 Group product data exists:`, !!groupProductData);
+            
 
             if (!groupProductData) {
                 
@@ -137,7 +134,7 @@ export const checkIfPricesModified = (testGroups, selectedProducts) => {
                     const variantKey = extractShopifyProductId(productVariant.variantId);
                     const groupVariantData = groupProductData.variants?.[variantKey];
 
-                    console.log(`🎯 Checking variant: ${productVariant.title} (Key: ${variantKey})`);
+                    
 
                     if (!groupVariantData) {
                         

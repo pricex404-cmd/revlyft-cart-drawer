@@ -4,18 +4,17 @@ import { existsSync } from 'fs';
 
 export async function loader({ request }) {
     try {
-        console.log('Received request for price-modifier.js');
-        console.log('Request URL:', request.url);
-        console.log('Request headers:', Object.fromEntries(request.headers.entries()));
+        
+        
+        
 
         // Read the JavaScript file from the public directory
         const filePath = join(process.cwd(), 'public', 'price-modifier.js');
-        console.log('Reading file from:', filePath);
-        console.log('File exists:', existsSync(filePath));
-        console.log('Current working directory:', process.cwd());
+        
+        
 
         const content = await readFile(filePath, 'utf-8');
-        console.log('File content length:', content.length);
+        
 
         // Return the JavaScript content with proper headers
         const response = new Response(content, {
@@ -27,7 +26,7 @@ export async function loader({ request }) {
             },
         });
 
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+    
         return response;
     } catch (error) {
         console.error('Error serving price-modifier.js:', error);

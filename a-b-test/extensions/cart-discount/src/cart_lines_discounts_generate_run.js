@@ -328,7 +328,7 @@ const currencySymbol = getCurrencySymbol(currencyCode);
   // Check threshold based on type
   if (thresholdValue > 0) {
     if (type === 'quantity' && totalItems < thresholdValue) {
-      console.log(`No discount applied: Total quantity (${totalItems}) is less than threshold (${thresholdValue})`);
+    
       return {
         operations: [{
           orderDiscountsAdd: {
@@ -349,7 +349,7 @@ const currencySymbol = getCurrencySymbol(currencyCode);
       };
     }
     if (type === 'value' && cartTotal < thresholdValue) {
-      console.log(`No discount applied: Cart total (${currencySymbol} ${cartTotal}) is less than threshold (${currencySymbol} ${thresholdValue})`);
+
       return {
         operations: [{
           orderDiscountsAdd: {

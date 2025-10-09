@@ -31,7 +31,7 @@ export const action = async ({ request }) => {
             return json({ error: 'Invalid action' }, { status: 400 });
         }
 
-        console.log('Operation result:', JSON.stringify(result, null, 2));
+        
 
         if (!result.success) {
             const error = result.errors[0]?.message || 'Unknown error';

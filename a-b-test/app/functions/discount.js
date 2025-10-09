@@ -380,7 +380,7 @@ export async function getDiscountsByTestId(admin, testId, storedDiscountId) {
   const response = await admin.graphql(GET_DISCOUNT_AUTOMATIC_APPS);
   const responseJson = await response.json();
 
-  console.log('All discounts:', JSON.stringify(responseJson.data.discountAutomaticApps.edges, null, 2));
+
 
   // Filter discounts that have the test ID in their configuration
   const discounts = responseJson.data.discountAutomaticApps.edges
@@ -399,7 +399,7 @@ export async function getDiscountsByTestId(admin, testId, storedDiscountId) {
       }
     });
 
-  console.log('Filtered discounts:', JSON.stringify(discounts, null, 2));
+  
   return discounts;
 }
 
@@ -414,7 +414,7 @@ export async function activateDiscount(admin, discountId) {
     });
 
     const responseJson = await response.json();
-    console.log('Activate discount response:', JSON.stringify(responseJson, null, 2));
+  
 
     if (responseJson.errors) {
       console.error('GraphQL errors:', responseJson.errors);
@@ -449,7 +449,7 @@ export async function deactivateDiscount(admin, discountId) {
     });
 
     const responseJson = await response.json();
-    console.log('Deactivate discount response:', JSON.stringify(responseJson, null, 2));
+    
 
     if (responseJson.errors) {
       console.error('GraphQL errors:', responseJson.errors);
