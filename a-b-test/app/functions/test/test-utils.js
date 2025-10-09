@@ -55,10 +55,13 @@ export const validateTestConfiguration = (testData, testType) => {
             issues.push('Discount configuration is missing');
         } else {
             if (!testData.discountConfig.type) {
-                issues.push('Discount type (value/quantity) not selected');
+                issues.push('Discount type (value/quantity/timer/timershow) not selected');
             }
             if (!testData.discountConfig.threshold) {
                 issues.push('Discount threshold not set');
+            }
+            if (!testData.discountConfig.showTimer) {
+                issues.push('Discount timer not set');
             }
         }
 
@@ -203,10 +206,10 @@ export const checkIfProductDetailsModified = (testGroups, selectedProducts) => {
 export const checkIfDiscountModified = (testGroups, discountConfig) => {
     if (!testGroups.length) return false;
     if (discountConfig.showTimer === true && discountConfig.timerMinutes === "") {
-
+console.log("mmmmmm",discountConfig.timerMinutes)
         return false;
     }
- 
+console.log("discountConfigggg",discountConfig)
     // Check if discount configuration is set
     if (!discountConfig.type || !discountConfig.threshold) return false;
 

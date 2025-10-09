@@ -406,7 +406,9 @@ export default function Test() {
     // Add discount configuration state
     const [discountConfig, setDiscountConfig] = useState(testData?.discountConfig || {
         type: 'value',
-        threshold: ''
+        threshold: '',
+        showTimer: false,
+        timerMinutes: ''
     });
 
     const [currentTabId, setCurrentTabId] = useState(tabParam || 'testGroups');

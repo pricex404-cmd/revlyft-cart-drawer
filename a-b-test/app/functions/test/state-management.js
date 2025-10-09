@@ -132,7 +132,7 @@ export const isTestDataComplete = (selectedProducts, testGroups, targetingState,
 
 // Separate function for discount test validation
 export const isDiscountTestDataComplete = (testGroups, targetingState, analyticsState, discountConfig) => {
-    console.log('💰 isDiscountTestDataComplete called with:', {
+    console.log('💰 isDiscountTestDataComplete called with:',discountConfig, {
         testGroupsLength: testGroups.length,
         hasDiscountConfig: !!discountConfig,
         discountConfig
@@ -155,7 +155,8 @@ export const isDiscountTestDataComplete = (testGroups, targetingState, analytics
     });
 
     // Check if discount configuration is set
-    const hasDiscountConfig = discountConfig && discountConfig.type && discountConfig.threshold !== '';
+    const hasDiscountConfig = discountConfig && discountConfig.type && discountConfig.threshold !== ''&& !(discountConfig.showTimer==true && discountConfig.timerMinutes=="") 
+  
 
     // Check if we have targeting and analytics data
     const hasTargeting = Object.keys(targetingState).length > 0;
