@@ -107,7 +107,7 @@ const WarningBanner = ({ title, message, onDismiss, type = 'warning' }) => {
                     </InlineStack>
                 </div>
             </div>
-            <div style={bannerStyles.spacer} />
+            {/* <div style={bannerStyles.spacer} /> */}
         </>
     );
 };

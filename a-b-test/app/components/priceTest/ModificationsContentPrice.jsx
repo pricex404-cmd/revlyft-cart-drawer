@@ -458,7 +458,7 @@ import useProductModifications from './useProductModifications';
             }
             
             // Validate that the resulting discount is not 100% or more
-            if (discountPercentage >= 100) {
+            if (discountPercentage > 100) {
                 setWarningMessage('Price too low - would result in 100% discount. Please enter a higher price.');
                 setShowPriceWarning(true);
                 setTimeout(() => setShowPriceWarning(false), 3000);
