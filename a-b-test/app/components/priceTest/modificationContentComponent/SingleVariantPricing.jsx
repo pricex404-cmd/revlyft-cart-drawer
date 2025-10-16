@@ -69,7 +69,8 @@ export const SingleVariantPricing = ({
                                     </div>
                                 ) : (
                                     <div>
-                                        <input
+                                            <input
+
                                             type="number"
                                             step="0.01"
                                             value={formatDisplayValue(currentPrice)}
