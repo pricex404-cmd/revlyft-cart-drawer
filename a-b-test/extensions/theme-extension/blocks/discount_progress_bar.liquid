@@ -5,15 +5,15 @@
 {% assign cart_total = cart.total_price | divided_by: 100.0 %}
 {% assign item_count = cart.item_count %}
 
-<div class="revlyft-discount-progress" id="revlyft-progress-{{ block.id }}">
-  <div class="progress-wrapper" id="progress-wrapper-{{ block.id }}" style="display: none;">
-    <div class="progress-message" id="progress-message-{{ block.id }}"></div>
-    <div class="progress-bar-container">
-      <div class="progress-bar" id="progress-bar-{{ block.id }}">
-        <div class="progress-fill" id="progress-fill-{{ block.id }}">&#8203;</div>
+<div class="revlyft-discount-progress-block" id="revlyft-progress-block-{{ block.id }}">
+  <div class="progress-wrapper-block" id="progress-wrapper-block-{{ block.id }}" style="display: none;">
+    <div class="progress-message-block" id="progress-message-block-{{ block.id }}"></div>
+    <div class="progress-bar-container-block">
+      <div class="progress-bar-block" id="progress-bar-block-{{ block.id }}">
+        <div class="progress-fill-block" id="progress-fill-block-{{ block.id }}">&#8203;</div>
       </div>
     </div>
-    <div class="progress-subtext" id="progress-subtext-{{ block.id }}"></div>
+    <div class="progress-subtext-block" id="progress-subtext-block-{{ block.id }}"></div>
   </div>
 </div>
 
@@ -80,7 +80,7 @@
     }
 
     function renderProgress(cart) {
-      const wrapper = document.getElementById('progress-wrapper-' + blockId);
+      const wrapper = document.getElementById('progress-wrapper-block-' + blockId);
       if (!wrapper) return;
 
       const discountMessage = cart.cart_level_discount_applications[0]?.title;
@@ -91,9 +91,9 @@
         return;
       }
 
-      const msgEl = document.getElementById('progress-message-' + blockId);
-      const fillEl = document.getElementById('progress-fill-' + blockId);
-      const subEl = document.getElementById('progress-subtext-' + blockId);
+      const msgEl = document.getElementById('progress-message-block-' + blockId);
+      const fillEl = document.getElementById('progress-fill-block-' + blockId);
+      const subEl = document.getElementById('progress-subtext-block-' + blockId);
 
       let progress = 0;
       let achieved = false;
@@ -159,24 +159,22 @@
 </script>
 
 <style>
-  .revlyft-discount-progress {
+  .revlyft-discount-progress-block {
     font-family: inherit;
   }
-  .progress-wrapper {
+  .progress-wrapper-block {
     background-color: #f3f4f6;
     border-radius: 12px;
-    padding: 16px;
-    margin: 16px 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
-  .progress-message {
+  .progress-message-block {
     font-size: 16px;
     font-weight: 600;
     color: #111827;
     text-align: center;
     margin-bottom: 12px;
   }
-  .progress-bar-container {
+  .progress-bar-container-block {
     position: relative;
     height: 8px;
     background-color: #e5e7eb;
@@ -184,7 +182,7 @@
     overflow: hidden;
     margin: 0 8px;
   }
-  .progress-bar {
+  .progress-bar-block {
     position: relative;
     width: 100%;
     background: #e5e7eb; /* or your desired bar background */
@@ -192,7 +190,7 @@
     border-radius: 4px;
     overflow: hidden;
   }
-  .progress-fill {
+  .progress-fill-block {
     height: 100%;
     width: 0;
     background: #3b82f6; /* fallback color */
@@ -203,16 +201,16 @@
     top: 0;
   }
 
-  .progress-subtext {
+  .progress-subtext-block {
     font-size: 12px;
     color: #6b7280;
     text-align: center;
     margin-top: 8px;
   }
-  .discount-achieved .progress-message {
+  .discount-achieved .progress-message-block {
     color: #059669;
   }
-  .discount-achieved .progress-bar {
+  .discount-achieved .progress-bar-block {
     background: linear-gradient(90deg, #10b981, #047857);
   }
 </style>
