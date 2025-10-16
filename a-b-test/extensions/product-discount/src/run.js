@@ -15,21 +15,79 @@ const EMPTY_DISCOUNT = {
 };
 
 /**
- * Generate a consistent hash for a customer ID to ensure consistent test group assignment
- * @param {string} customerId - The customer ID to hash
+ * Generate a consistent hash for a user identifier to ensure consistent test group assignment
+ * @param {string} identifier - The user identifier to hash (IP address, customer ID, etc.)
  * @returns {number} - A value between 0 and 100
  */
-function generateConsistentHash(customerId) {
+function generateConsistentHash(identifier) {
   let hash = 0;
-  if (customerId.length === 0) return hash;
+  if (identifier.length === 0) return hash;
 
-  for (let i = 0; i < customerId.length; i++) {
-    const char = customerId.charCodeAt(i);
+  for (let i = 0; i < identifier.length; i++) {
+    const char = identifier.charCodeAt(i);
     hash = ((hash << 5) - hash) + char;
     hash = hash & hash; // Convert to 32bit integer
   }
   // Convert to a value between 0 and 100
   return Math.abs(hash % 100);
+}
+
+/**
+ * Check if user is excluded from pricing tests based on targeting attributes
+ * @param {RunInput} input - The Shopify function input
+ * @returns {boolean} - True if user should be excluded from pricing tests
+ */
+function isUserExcludedFromPricingTestsTargetingCheck(input) {
+  const testTargetingAttribute = input?.cart?.testTargetingAttribute?.value;
+  
+  if (!testTargetingAttribute) {
+    return false;
+  }
+
+  try {
+    const testData = JSON.parse(testTargetingAttribute);
+
+    // Check if user is NOT targeted for any active pricing tests
+    for (const [testKey, isTargeted] of Object.entries(testData)) {
+      if (isTargeted === 'false' && testKey.includes('_pricing_active')) {
+        return true;
+      }
+    }
+  } catch (error) {
+    // Continue processing if test data parsing fails
+    return false;
+  }
+
+  return false;
+}
+
+/**
+ * Determine which test group the user belongs to based on IP and hash attributes
+ * @param {RunInput} input - The Shopify function input
+ * @param {any[]} testGroups - Array of test groups with percentage distributions
+ * @returns {any|null} - The assigned test group or null if no group assigned
+ */
+function getUserTestGroup(input, testGroups) {
+  const userIpAttribute = input?.cart?.userIpAttribute?.value;
+
+  // Calculate user hash value
+  const userHashValue = input?.cart?.hashValueAttribute?.value 
+    ? parseInt(input.cart.hashValueAttribute.value, 10)
+    : userIpAttribute 
+      ? generateConsistentHash(userIpAttribute)
+      : 0;
+
+  // Use weighted random assignment based on percentages
+  let percentageThreshold = 0;
+  for (const testGroup of testGroups) {
+    percentageThreshold += testGroup.percentage;
+    
+    if (userHashValue < percentageThreshold) {
+      return testGroup;
+    }
+  }
+
+  return null;
 }
 
 /**
@@ -48,71 +106,29 @@ export function run(input) {
     configuration = {};
   }
 
-  // Get test variants from configuration or use default
-  const testVariants = configuration.testVariants || [];
+  // Get test groups from configuration or use default
+  // @ts-ignore - configuration is parsed JSON object
+  const testGroups = configuration.testVariants || [];
 
-  if (testVariants.length === 0) {
+  if (testGroups.length === 0) {
     return EMPTY_DISCOUNT;
   }
 
-  // Check if user is targeted for any active pricing tests
-  const testTargetingAttribute = input?.cart?.testTargetingAttribute?.value;
-  if (testTargetingAttribute) {
-    try {
-      const testData = JSON.parse(testTargetingAttribute);
-
-      // Check if user is NOT targeted for any active pricing tests
-      for (const [testKey, isTargeted] of Object.entries(testData)) {
-        if (isTargeted === 'false' && testKey.includes('_pricing_active')) {
-          return EMPTY_DISCOUNT;
-        }
-      }
-    } catch (error) {
-      // Continue processing if test data parsing fails
-    }
-  }
-
-  // Get the hash value from the cart attribute if available
-  const hashValueAttribute = input?.cart?.hashValueAttribute?.value;
-  const userIpAttribute = input?.cart?.userIpAttribute?.value;
-
-  // Use hash value if available, otherwise calculate it from device ID
-  let userHashValue;
-  if (hashValueAttribute) {
-    userHashValue = parseInt(hashValueAttribute, 10);
-  } else if (userIpAttribute) {
-    userHashValue = generateConsistentHash(userIpAttribute);
-  } else {
-    userHashValue = 0;
-  }
-
-  // Select variant based on hash value
-  let selectedVariant = null;
-  let cumulativePercentage = 0;
-
-  // FOR TESTING: Force selection of the first non-control variant when no device ID
-  if (!userIpAttribute && testVariants.length > 1) {
-    selectedVariant = testVariants[1]; // Use the first non-control variant
-  } else {
-    // Normal variant selection logic
-    for (const variant of testVariants) {
-      cumulativePercentage += variant.percentage;
-
-      // If the user's hash value falls within this variant's range, select it
-      if (userHashValue < cumulativePercentage) {
-        selectedVariant = variant;
-        break;
-      }
-    }
-  }
-
-  // If no variant was selected, return empty discount
-  if (!selectedVariant) {
+  // Check if user should be excluded from pricing tests based ON TARGETING AUDIENCE JSON
+  if (isUserExcludedFromPricingTestsTargetingCheck(input)) {
     return EMPTY_DISCOUNT;
   }
 
-  // Check if we're in control group
-  const isControlGroup = selectedVariant === testVariants[0];
+  // Determine which test group the user belongs to
+  const assignedTestGroup = getUserTestGroup(input, testGroups);
+
+  // If no test group was assigned, return empty discount
+  if (!assignedTestGroup) {
+    return EMPTY_DISCOUNT;
+  }
+
+  // Check if user is in control group (no discounts)
+  const isControlGroup = assignedTestGroup === testGroups[0];
 
   // Get cart lines and process discounts
   const lines = input?.cart?.lines || [];
@@ -125,30 +141,32 @@ export function run(input) {
       continue;
     }
 
-    const productId = line?.merchandise?.product?.id || "";
-    const variantId = line?.merchandise?.id || "";
-
-    // Extract the numeric part from the product ID and variant ID
-    const numericProductId = productId.split("/").pop();
-    const numericVariantId = variantId.split("/").pop();
-
-    if (!numericProductId || !selectedVariant.products ||
-      !(numericProductId in selectedVariant.products)) {
-      continue;
-    }
-
-    const productConfig = selectedVariant.products[numericProductId];
-
-    if (!productConfig || typeof productConfig !== 'object') {
-      continue;
-    }
-
     // Skip applying discounts if it's the control group
     if (isControlGroup) {
       continue;
     }
 
+    const productId = line?.merchandise?.product?.id || "";
+    const variantId = line?.merchandise?.id || "";
+    const lineQuantity = line?.quantity || 1;
+
+    // Extract the numeric part from the product ID and variant ID
+    const numericProductId = productId.split("/").pop();
+    const numericVariantId = variantId.split("/").pop();
+
+    if (!numericProductId || !assignedTestGroup.products ||
+      !(numericProductId in assignedTestGroup.products)) {
+      continue;
+    }
+
+    const productConfig = assignedTestGroup.products[numericProductId];
+
+    if (!productConfig || typeof productConfig !== 'object') {
+      continue;
+    }
+
     let discountPercentage;
+    let fixedAmountOff;
 
     // Get the actual price per item from the cart
     // @ts-ignore - cart line cost property exists at runtime
@@ -164,7 +182,7 @@ export function run(input) {
 
     // Check if this is a multi-variant product
     if (productConfig.isMultiVariant && productConfig.variants && numericVariantId) {
-      // Handle multi-variant product - get variant-specific discount percentage
+      // Handle multi-variant product - get variant-specific discount data
       const variantConfig = productConfig.variants[numericVariantId];
 
       if (!variantConfig || typeof variantConfig !== 'object') {
@@ -172,33 +190,37 @@ export function run(input) {
       }
 
       discountPercentage = Number(variantConfig.discountPercentage);
+      fixedAmountOff = Number(variantConfig.fixedAmountOff);
     } else {
       // Handle single variant product - use existing logic
       discountPercentage = Number(productConfig.discountPercentage);
+      fixedAmountOff = Number(productConfig.fixedAmountOff);
     }
 
-    // Skip if discount percentage is not valid
-    if (isNaN(discountPercentage) || discountPercentage <= 0 ||
-      isNaN(cartPrice) || cartPrice <= 0) {
+    // Skip if cart price is invalid
+    if (isNaN(cartPrice) || cartPrice <= 0) {
       continue;
     }
 
-    // Round the discount percentage to 2 decimal places for consistency
-    const roundedDiscountPercentage = Math.round(discountPercentage * 100) / 100;
-    
-    discounts.push({
-      value: {
-        percentage: {
-          value: roundedDiscountPercentage.toString()
-        }
-      },
-      targets: [{
-        productVariant: {
-          id: line.merchandise.id
-        }
-      }],
-      message: `Exclusive offer for you`
-    });
+    // Apply fixed amount discount only
+    if (!isNaN(fixedAmountOff) && fixedAmountOff > 0) {
+      // Calculate total discount amount by multiplying by quantity
+      const totalDiscountAmount = fixedAmountOff * lineQuantity;
+      
+      discounts.push({
+        value: {
+          fixedAmount: {
+            amount: totalDiscountAmount.toString()
+          }
+        },
+        targets: [{
+          productVariant: {
+            id: line.merchandise.id
+          }
+        }],
+        message: `Exclusive offer for you`
+      });
+    }
   }
 
   // If there are no eligible discounts, return empty discount

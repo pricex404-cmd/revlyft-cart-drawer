@@ -35,17 +35,19 @@ export function formatGQLQuery(functionId, title, productId, startsAt, endsAt, m
           isMultiVariant: productData.isMultiVariant
         };
 
-        // For single variant products, keep discountPercentage at product level
+        // For single variant products, keep discount data at product level
         if (!productData.isMultiVariant) {
           optimizedProduct.discountPercentage = productData.discountPercentage;
+          optimizedProduct.fixedAmountOff = productData.fixedAmountOff;
         }
 
-        // For all products, keep optimized variants (only discountPercentage)
+        // For all products, keep optimized variants with discount data
         if (productData.variants) {
           optimizedProduct.variants = Object.entries(productData.variants).reduce((variantAcc, [variantId, variantData]) => {
             variantAcc[variantId] = {
-              // Only keep discountPercentage - used for discount calculation
-              discountPercentage: variantData.discountPercentage
+              // Keep both percentage and fixed amount for discount calculation
+              discountPercentage: variantData.discountPercentage,
+              fixedAmountOff: variantData.fixedAmountOff
             };
             return variantAcc;
           }, {});
@@ -147,17 +149,19 @@ export async function createProductDiscount(admin, title, functionId, testVarian
           isMultiVariant: productData.isMultiVariant
         };
 
-        // For single variant products, keep discountPercentage at product level
+        // For single variant products, keep discount data at product level
         if (!productData.isMultiVariant) {
           optimizedProduct.discountPercentage = productData.discountPercentage;
+          optimizedProduct.fixedAmountOff = productData.fixedAmountOff;
         }
 
-        // For all products, keep optimized variants (only discountPercentage)
+        // For all products, keep optimized variants with discount data
         if (productData.variants) {
           optimizedProduct.variants = Object.entries(productData.variants).reduce((variantAcc, [variantId, variantData]) => {
             variantAcc[variantId] = {
-              // Only keep discountPercentage - used for discount calculation
-              discountPercentage: variantData.discountPercentage
+              // Keep both percentage and fixed amount for discount calculation
+              discountPercentage: variantData.discountPercentage,
+              fixedAmountOff: variantData.fixedAmountOff
             };
             return variantAcc;
           }, {});

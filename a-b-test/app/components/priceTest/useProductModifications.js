@@ -98,7 +98,8 @@ export const useProductModifications = ({
                             title: variant.title,
                             originalPrice: parseFloat(variant.price || '0'),
                             modifiedPrice: parseFloat(variant.price || '0'),
-                            discountPercentage: 0 // Initialize with 0% discount
+                            discountPercentage: 0, // Initialize with 0% discount
+                            fixedAmountOff: 0 // Initialize with 0 fixed amount off
                         };
                         return acc;
                     }, {})

@@ -2371,6 +2371,8 @@ function debounce(func, wait) {
 
 
 
+
+
 /**
  * Track add to cart events
  */
@@ -2698,6 +2700,8 @@ function setupCartTracking() {
 
 
 
+
+
 /**
  * Initialize analytics tracking
  */
@@ -2918,15 +2922,18 @@ function formatPriceToMatchOriginal(originalFormat, newPrice) {
 
     // Format the new price to match original decimal places
     let formattedPrice;
+    
+    // Ensure no precision loss - round to avoid floating point issues
+    const roundedPrice = Math.round(newPrice * 100) / 100;
 
     // Check if original uses comma as decimal separator
     if (originalNumericPart.includes(',') && !originalNumericPart.includes('.')) {
         // Format like 19,99
-        formattedPrice = newPrice.toFixed(decimalPlaces).replace('.', ',');
+        formattedPrice = roundedPrice.toFixed(decimalPlaces).replace('.', ',');
     } else if (originalNumericPart.includes('.') && originalNumericPart.includes(',') &&
         originalNumericPart.lastIndexOf(',') > originalNumericPart.lastIndexOf('.')) {
         // European format like 1.999,99
-        const formatted = newPrice.toFixed(decimalPlaces);
+        const formatted = roundedPrice.toFixed(decimalPlaces);
         const [integerPart, decimalPart] = formatted.split('.');
 
         // Add thousands separators with dots and decimal with comma
@@ -2934,7 +2941,7 @@ function formatPriceToMatchOriginal(originalFormat, newPrice) {
         formattedPrice = decimalPart ? `${withThousands},${decimalPart}` : withThousands;
     } else {
         // Standard format like 1,999.99 or 19.99
-        const formatted = newPrice.toFixed(decimalPlaces);
+        const formatted = roundedPrice.toFixed(decimalPlaces);
         const [integerPart, decimalPart] = formatted.split('.');
 
         // Add thousands separators with commas
@@ -3461,37 +3468,42 @@ async function processAllProducts(activeTests, hashValue) {
             // Get price modification for this product (may be null for control groups)
             const productConfig = userVariant.products && userVariant.products[productId];
 
-            // Determine discount percentage for price modifications (if applicable)
+            // Determine discount percentage and exact modified price for price modifications (if applicable)
             let discountPercentage = 0;
+            let exactModifiedPrice = null;
             let shouldApplyPriceModification = false;
 
             if (productConfig) {
                 if (productConfig.samePrice === true) {
-                    // For products with same price across variants, use product-level discount percentage
+                    // For products with same price across variants, use product-level values
                     discountPercentage = Number(productConfig.discountPercentage || 0);
+                    exactModifiedPrice = productConfig.modifiedPrice;
                 } else if (productConfig.samePrice === false && isProductPage && currentVariantId) {
-                    // For products with different variant prices on product page, use variant-specific discount percentage
+                    // For products with different variant prices on product page, use variant-specific values
                     const cleanVariantId = getCleanId(currentVariantId);
                     const variantConfig = productConfig.variants && productConfig.variants[cleanVariantId];
 
                     if (variantConfig) {
                         discountPercentage = Number(variantConfig.discountPercentage || 0);
+                        exactModifiedPrice = variantConfig.modifiedPrice;
                     }
                 } else if (productConfig.samePrice === false && !isProductPage) {
                     // For collection pages with different variant prices, skip price modification but still process analytics
                     discountPercentage = 0;
+                    exactModifiedPrice = null;
                 } else {
-                    // Fallback to product-level discount percentage
+                    // Fallback to product-level values
                     discountPercentage = Number(productConfig.discountPercentage || 0);
+                    exactModifiedPrice = productConfig.modifiedPrice;
                 }
 
-                // Only apply price modification if discount percentage is valid and greater than 0
-                shouldApplyPriceModification = !isNaN(discountPercentage) && discountPercentage > 0;
+                // Apply price modification if we have exact modified price OR valid discount percentage > 0
+                shouldApplyPriceModification = (exactModifiedPrice && exactModifiedPrice > 0) || (!isNaN(discountPercentage) && discountPercentage > 0);
             }
 
         
 
-            // Note: We continue with view tracking even if no productConfig or discountPercentage is 0
+            // Note: We continue with view tracking even if no productConfig or pricing data
             // This ensures control groups are properly tracked
 
             // Find elements containing this product ID
@@ -3534,7 +3546,17 @@ async function processAllProducts(activeTests, hashValue) {
                                 const priceInfo = extractPriceFromText(currentPriceText);
 
                                 if (priceInfo.value > 0) {
-                                    const modifiedPrice = priceInfo.value * (1 - discountPercentage / 100);
+                                    let modifiedPrice;
+                                    
+                                    // Use exact modified price if available, otherwise fallback to percentage calculation
+                                    if (exactModifiedPrice && exactModifiedPrice > 0) {
+                                        modifiedPrice = exactModifiedPrice;
+                                        console.log(`💰 Updated price element ${index + 1} for product ${productId}: Using exact price ${modifiedPrice} (was ${priceInfo.value})`);
+                                    } else {
+                                        modifiedPrice = priceInfo.value * (1 - discountPercentage / 100);
+                                        console.log(`💰 Updated price element ${index + 1} for product ${productId}: ${discountPercentage}% discount (was ${priceInfo.value}, now ${modifiedPrice})`);
+                                    }
+                                    
                                     updatePriceElementWithFormat(priceElement, modifiedPrice, priceInfo.originalFormat);
                                     
                                 }

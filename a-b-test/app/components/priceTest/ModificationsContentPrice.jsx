@@ -268,6 +268,7 @@ import useProductModifications from './useProductModifications';
                             originalPrice: firstPrice,
                             modifiedPrice: firstPrice,
                             discountPercentage: 0, // Initialize with 0% discount
+                            fixedAmountOff: 0, // Initialize with 0 fixed amount off
                             // Store all variants with same price
                             variants: allVariants.reduce((acc, variant) => {
                                 const variantKey = extractShopifyProductId(variant.variantId);
@@ -276,7 +277,8 @@ import useProductModifications from './useProductModifications';
                                     title: variant.title,
                                     originalPrice: variant.price,
                                     modifiedPrice: variant.price,
-                                    discountPercentage: 0 // Initialize with 0% discount
+                                    discountPercentage: 0, // Initialize with 0% discount
+                                    fixedAmountOff: 0 // Initialize with 0 fixed amount off
                                 };
                                 return acc;
                             }, {})
@@ -350,13 +352,15 @@ import useProductModifications from './useProductModifications';
                         originalPrice: defaultPrice,
                         modifiedPrice: defaultPrice,
                         discountPercentage: 0, // Initialize with 0% discount
+                        fixedAmountOff: 0, // Initialize with 0 fixed amount off
                         variants: {
                             [numericVariantId]: {
                                 variantId: firstVariant?.id || '',
                                 title: firstVariant?.title || 'Default Title',
                                 originalPrice: defaultPrice,
                                 modifiedPrice: defaultPrice,
-                                discountPercentage: 0 // Initialize with 0% discount
+                                discountPercentage: 0, // Initialize with 0% discount
+                                fixedAmountOff: 0 // Initialize with 0 fixed amount off
                             }
                         }
                     }
@@ -396,8 +400,8 @@ import useProductModifications from './useProductModifications';
         const numericProductId = extractShopifyProductId(productId);
         const product = selectedProducts.find(p => extractShopifyProductId(p.productId) === numericProductId);
 
-        // Calculate newPrice and discountPercentage based on input type
-        let newPrice, discountPercentage;
+        // Calculate newPrice, discountPercentage, and fixedAmountOff based on input type
+        let newPrice, discountPercentage, fixedAmountOff;
         let originalPrice;
 
         // Get original price based on product type and variant
@@ -411,7 +415,7 @@ import useProductModifications from './useProductModifications';
         }
 
         if (inputType === 'percentage') {
-            // User entered discount percentage, calculate modified price
+            // User entered discount percentage, calculate modified price and fixed amount off
             discountPercentage = parseFloat(newValue) || 0;
 
             // Validate percentage is between 0 and 99 (less than 100%)
@@ -426,12 +430,18 @@ import useProductModifications from './useProductModifications';
             
             // Round to 2 decimal places to prevent floating point precision issues
             newPrice = Math.round(newPrice * 100) / 100;
+            
+            // Calculate fixed amount off from percentage input
+            fixedAmountOff = originalPrice - newPrice;
         } else {
-            // User entered fixed price, calculate discount percentage
+            // User entered fixed price, calculate discount percentage and fixed amount off
             newPrice = parseFloat(newValue) || 0;
             
             // Round to 2 decimal places to prevent floating point precision issues
             newPrice = Math.round(newPrice * 100) / 100;
+            
+            // Calculate fixed amount off directly from fixed price input
+            fixedAmountOff = originalPrice - newPrice;
             
             discountPercentage = calculateDiscountPercentage(originalPrice, newPrice);
             
@@ -482,7 +492,8 @@ import useProductModifications from './useProductModifications';
                         updatedVariants[variantKey] = {
                             ...variants[variantKey],
                             modifiedPrice: newPrice,
-                            discountPercentage: discountPercentage
+                            discountPercentage: discountPercentage,
+                            fixedAmountOff: fixedAmountOff
                         };
                     });
 
@@ -496,6 +507,7 @@ import useProductModifications from './useProductModifications';
                                 samePrice: true,
                                 modifiedPrice: newPrice, // Also store at product level for easy access
                                 discountPercentage: discountPercentage, // Store discount at product level
+                                fixedAmountOff: fixedAmountOff, // Store fixed amount off for Shopify discounts
                                 variants: updatedVariants
                             }
                         }
@@ -527,7 +539,8 @@ import useProductModifications from './useProductModifications';
                                     [numericVariantId]: {
                                         ...variants[numericVariantId],
                                         modifiedPrice: newPrice,
-                                        discountPercentage: discountPercentage
+                                        discountPercentage: discountPercentage,
+                                        fixedAmountOff: fixedAmountOff
                                     }
                                 }
                             }
@@ -565,13 +578,15 @@ import useProductModifications from './useProductModifications';
                                 originalPrice: productOriginalPrice,
                                 modifiedPrice: newPrice,
                                 discountPercentage: discountPercentage, // Add discount percentage
+                                fixedAmountOff: fixedAmountOff, // Add fixed amount off for Shopify discounts
                                 variants: {
                                     [numericVariantId]: {
                                         variantId: variantId,
                                         title: variantData.title || 'Default Title',
                                         originalPrice: productOriginalPrice,
                                         modifiedPrice: newPrice,
-                                        discountPercentage: discountPercentage // Add discount percentage for variant
+                                        discountPercentage: discountPercentage, // Add discount percentage for variant
+                                        fixedAmountOff: fixedAmountOff // Add fixed amount off for variant
                                     }
                                 }
                             }
@@ -776,7 +791,8 @@ import useProductModifications from './useProductModifications';
                                     title: variant.title,
                                     originalPrice: variant.price,
                                     modifiedPrice: variant.price,
-                                    discountPercentage: 0 // Initialize with 0% discount
+                                    discountPercentage: 0, // Initialize with 0% discount
+                                    fixedAmountOff: 0 // Initialize with 0 fixed amount off
                                 }
                             }
                         }
