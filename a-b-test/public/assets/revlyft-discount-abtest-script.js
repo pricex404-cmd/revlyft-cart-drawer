@@ -22,8 +22,8 @@ const RV_STYLES = {
     timerDiv: `
         margin: 10px 0;
         padding: 8px 12px;
-        background-color: #fff8e6;
-        border: 1px solid #ffd700;
+        background-color: #f3f4f5;;
+        border: 1px solid #888888;
         border-radius: 14px;
         color: #1f2937;
         font-weight: bold;
@@ -54,7 +54,7 @@ const RV_STYLES = {
     timeBox: `
         display:inline-block;
         padding:4px 12px;
-        border:1px solid #ffd089;
+    border:1px rgb(176, 172, 172);
         background:#fff;
         border-radius:10px;
         min-width:54px;
