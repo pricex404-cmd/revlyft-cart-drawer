@@ -37,6 +37,7 @@
     "countries-list": "^3.1.1",
     "firebase": "^11.6.0",
     "isbot": "^5.1.0",
+    "nodemailer": "^7.0.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "uuid": "^11.1.0",
