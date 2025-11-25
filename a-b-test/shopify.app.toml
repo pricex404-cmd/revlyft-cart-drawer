@@ -1,13 +1,12 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "fd42c12a5e7f6cb90bb1d9ab6e422cdc"
-application_url = "https://app.Revlyft.com"
+client_id = "6b875b7af59dea219173107a9a907592"
+name = "ab-test-dewang"
+application_url = "https://revlyft-test.up.railway.app"
 embedded = true
-name = "Revlyft"
-handle = "ab-test-18"
 
 [build]
-automatically_update_urls_on_dev = false
+automatically_update_urls_on_dev = true
 
 [webhooks]
 api_version = "2025-01"
@@ -38,13 +37,13 @@ api_version = "2025-01"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_inventory,read_orders,read_script_tags,write_discounts,write_files,write_inventory,write_products,write_script_tags"
+scopes = "read_orders,read_script_tags,write_discounts,write_products,write_script_tags,write_files,read_inventory,write_inventory,read_customers,read_products"
 
 [auth]
 redirect_urls = [
-  "https://app.revlyft.com/auth/callback",
-  "https://app.revlyft.com/auth/shopify/callback",
-  "https://app.revlyft.com/api/auth/callback"
+  "https://revlyft-test.up.railway.app/auth/callback",
+  "https://revlyft-test.up.railway.app/auth/shopify/callback",
+  "https://revlyft-test.up.railway.app/api/auth/callback"
 ]
 
 [pos]

@@ -9,6 +9,7 @@ import prisma from "./db.server";
 import fs from 'fs';
 import path from 'path';
 import { CREATE_SCRIPT_TAG, GET_SHOP_DETAILS } from "./utils/graphqlQueries";
+import { sendInstallationNotification, sendWelcomeEmail, sendErrorNotification } from "./utils/emailNotifications";
 
 // Helper function to write logs to a file
 const logToFile = (message) => {
@@ -45,62 +46,72 @@ const shopify = shopifyApp({
       logToFile(`Installation started at: ${new Date().toISOString()}`);
       logToFile(`Shop: ${session.shop}`);
 
+      try {
+        // Get shop details from Shopify
+        const shopResponse = await admin.graphql(GET_SHOP_DETAILS);
+        const shopData = await shopResponse.json();
+        const shopInfo = shopData.data.shop;
 
-      // Create script tag after app installation
-      // try {
-      //   await admin.graphql(
-      //     CREATE_SCRIPT_TAG,
-      //     {
-      //       variables: {
-      //         input: {
-      //           src: `${process.env.SHOPIFY_APP_URL}/assets/abtest-script.js`,
-      //           displayScope: "ONLINE_STORE",
-      //           cache: true
-      //         }
-      //       }
-      //     }
-      //   );
-      //   logToFile('Script tag was successfully created during installation');
+        // Prepare installation data for email notification
+        const installationData = {
+          shop: session.shop,
+          storeName: shopInfo.name || "",
+          email: shopInfo.email || "",
+          country: shopInfo.billingAddress?.country || "",
+          plan: shopInfo.plan?.displayName || "",
+          ownerName: shopInfo.shopOwner || "",
+          installedAt: new Date().toISOString(),
+          installationId: `install-${Date.now()}-${session.shop.replace('.myshopify.com', '')}`
+        };
 
-      //   // Get shop details
-      //   const shopResponse = await admin.graphql(GET_SHOP_DETAILS);
-      //   const shopData = await shopResponse.json();
-      //   const shopInfo = shopData.data.shop;
+        logToFile(`Shop details collected: ${JSON.stringify(installationData)}`);
 
-      //   // Make API call to notify about installation
-      //   // const webhookData = {
-      //   //   platform: "shopify",
-      //   //   plugin_status: 'Installed',
-      //   //   shop_name: session.shop.split('.')[0],
-      //   //   date: new Date().toISOString().split('T')[0],
-      //   //   plugin_script_url: `${process.env.SHOPIFY_APP_URL}/assets/addCartAttribute.js`,
-      //   //   store_username: shopInfo.name || "",
-      //   //   store_email: shopInfo.email || "",
-      //   //   store_phone:  "",
-      //   //   store_url: `https://${session.shop}`
-      //   // };
+        // Send email notification (async - don't await to avoid blocking installation)
+        sendInstallationNotification(installationData)
+          .then(result => {
+            if (result.success) {
+              logToFile(`✅ Installation email sent successfully: ${result.messageId}`);
+            } else {
+              logToFile(`❌ Email notification failed: ${result.error}`);
+              // Send error notification if main notification fails
+              sendErrorNotification({
+                shop: session.shop,
+                error: `Installation email failed: ${result.error}`,
+                type: 'email_notification_failure'
+              }).catch(err => logToFile(`Error notification also failed: ${err.message}`));
+            }
+          })
+          .catch(error => {
+            logToFile(`❌ Email notification error: ${error.message}`);
+          });
 
-      //   // logToFile(`Making API call to notify about installation with data: ${JSON.stringify(webhookData)}`);
+        // Send welcome email to shop owner (async - don't await to avoid blocking installation)
+        sendWelcomeEmail(installationData)
+          .then(result => {
+            if (result.success) {
+              logToFile(`✅ Welcome email sent successfully to ${result.recipient}: ${result.messageId}`);
+            } else {
+              logToFile(`❌ Welcome email failed: ${result.error || result.reason}`);
+            }
+          })
+          .catch(error => {
+            logToFile(`❌ Welcome email error: ${error.message}`);
+          });
 
-      //   // const apiResponse = await fetch('https://us-central1-revlyft-21.cloudfunctions.net/ShopifyPluginWebHook/', {
-      //   //   method: 'POST',
-      //   //   headers: {
-      //   //     'Content-Type': 'application/json',
-      //   //   },
-      //   //   body: JSON.stringify(webhookData)
-      //   // });
+        logToFile(`Installation data prepared and email notifications initiated`);
 
-      //   // if (!apiResponse.ok) {
-      //   //   logToFile(`API call failed with status: ${apiResponse.status}`);
-      //   //   const errorText = await apiResponse.text();
-      //   //   logToFile(`Error details: ${errorText}`);
-      //   // } else {
-      //   //   logToFile(`Successfully notified about installation`);
-      //   // }
-
-      // } catch (error) {
-      //   logToFile(`Error during installation process: ${error}`);
-      // }
+      } catch (error) {
+        logToFile(`Error during installation process: ${error.message}`);
+        logToFile(`Error stack: ${error.stack}`);
+        
+        // Send error notification for installation failures
+        sendErrorNotification({
+          shop: session.shop,
+          error: error.message,
+          stack: error.stack,
+          type: 'installation_error'
+        }).catch(err => logToFile(`Error notification failed: ${err.message}`));
+      }
 
       logToFile(`===== INSTALLATION PROCESS COMPLETE =====`);
     },
