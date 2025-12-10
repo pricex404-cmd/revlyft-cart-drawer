@@ -298,6 +298,12 @@ const CreateTestModal = ({
       title: 'Discount Test',
       description: 'Test different discount percentages on cart value across customer groups.'
     },
+    {
+      type: 'cartUpsell',
+      icon: SandboxIcon,
+      title: 'Cart Upsell',
+      description: 'Configure upsell products to display in the cart drawer and increase average order value.'
+    },
     // {
     //   type: 'productDetails',
     //   icon: SandboxIcon,
@@ -813,17 +819,23 @@ export default function Index() {
         throw new Error('Failed to create test');
       }
 
-      // Create query parameters
-      const searchParams = new URLSearchParams({
-        action: 'new',
-        type: selectedTestType,
-        tab: 'testGroups',
-        name: testName,
-        description: testDescription
-      });
+      // Navigate based on test type
+      if (selectedTestType === 'cartUpsell') {
+        // Navigate to cart upsell configuration page
+        navigate(`/app/cart-upsell/${testId}?action=new&name=${encodeURIComponent(testName)}&description=${encodeURIComponent(testDescription)}`);
+      } else {
+        // Create query parameters for A/B tests
+        const searchParams = new URLSearchParams({
+          action: 'new',
+          type: selectedTestType,
+          tab: 'testGroups',
+          name: testName,
+          description: testDescription
+        });
 
-      // Navigate to the dynamic test route with both testId and query parameters
-      navigate(`/app/test/${testId}?${searchParams.toString()}`);
+        // Navigate to the dynamic test route with both testId and query parameters
+        navigate(`/app/test/${testId}?${searchParams.toString()}`);
+      }
       handleCloseModal();
     } catch (error) {
       console.error('Error creating test:', error);

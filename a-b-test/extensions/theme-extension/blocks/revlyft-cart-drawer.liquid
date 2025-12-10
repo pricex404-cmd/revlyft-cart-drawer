@@ -1,0 +1,22 @@
+{% comment %}
+  Revlyft Cart Drawer - App Embed
+  This block loads the cart drawer script that displays a customized cart experience
+  based on configurations saved in the Revlyft admin panel.
+{% endcomment %}
+
+{% assign shop_domain = shop.permanent_domain %}
+
+<script>
+  // Make shop domain available globally for the cart drawer script
+  window.REVLYFT_SHOP_DOMAIN = "{{ shop_domain }}";
+</script>
+
+<script src="https://app.revlyft.com/assets/revlyft-cart-drawer.js?shop={{ shop_domain }}" defer></script>
+
+{% schema %}
+{
+  "name": "Revlyft Cart Drawer",
+  "target": "body",
+  "settings": []
+}
+{% endschema %}
