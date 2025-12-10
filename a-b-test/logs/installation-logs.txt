@@ -6,3 +6,19 @@
 [2025-08-13T15:41:40.375Z] Installation started at: 2025-08-13T15:41:40.375Z
 [2025-08-13T15:41:40.375Z] Shop: jugunu-store.myshopify.com
 [2025-08-13T15:41:40.375Z] ===== INSTALLATION PROCESS COMPLETE =====
+[2025-11-26T14:59:30.313Z] ========= APP INSTALLATION TRIGGERED =========
+[2025-11-26T14:59:30.314Z] Installation started at: 2025-11-26T14:59:30.314Z
+[2025-11-26T14:59:30.314Z] Shop: snitch-copy.myshopify.com
+[2025-11-26T14:59:30.770Z] Shop details collected: {"shop":"snitch-copy.myshopify.com","storeName":"snitch copy","email":"pricex404@gmail.com","country":"","plan":"","ownerName":"","installedAt":"2025-11-26T14:59:30.770Z","installationId":"install-1764169170770-snitch-copy"}
+[2025-11-26T14:59:30.789Z] Installation data prepared and email notifications initiated
+[2025-11-26T14:59:30.790Z] ===== INSTALLATION PROCESS COMPLETE =====
+[2025-11-26T14:59:32.038Z] ✅ Installation email sent successfully: <42e7382f-ca06-1792-a4e5-a49bb0470ff5@gmail.com>
+[2025-11-26T14:59:32.214Z] ✅ Welcome email sent successfully to pricex404@gmail.com: <2526f13b-eefe-45cd-fefb-054df9eae8e7@gmail.com>
+[2025-12-09T14:45:27.337Z] ========= APP INSTALLATION TRIGGERED =========
+[2025-12-09T14:45:27.339Z] Installation started at: 2025-12-09T14:45:27.339Z
+[2025-12-09T14:45:27.340Z] Shop: snitch-copy.myshopify.com
+[2025-12-09T14:45:28.080Z] Shop details collected: {"shop":"snitch-copy.myshopify.com","storeName":"snitch copy","email":"pricex404@gmail.com","country":"","plan":"","ownerName":"","installedAt":"2025-12-09T14:45:28.079Z","installationId":"install-1765291528079-snitch-copy"}
+[2025-12-09T14:45:28.100Z] Installation data prepared and email notifications initiated
+[2025-12-09T14:45:28.101Z] ===== INSTALLATION PROCESS COMPLETE =====
+[2025-12-09T14:45:30.773Z] ✅ Installation email sent successfully: <1b548dcc-1f04-39ca-1df3-2cb7213a8c6b@gmail.com>
+[2025-12-09T14:45:30.776Z] ✅ Welcome email sent successfully to pricex404@gmail.com: <45c620ed-d3d8-18e6-64bc-cb20ac4482a8@gmail.com>
