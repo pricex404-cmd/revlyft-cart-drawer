@@ -438,24 +438,35 @@
 
   /**
    * Override default cart links to open our drawer
+   * Uses capture phase to intercept clicks before theme handlers
    */
   function overrideCartLinks() {
-    // Find all cart links and buttons
-    const cartTriggers = document.querySelectorAll('a[href="/cart"], a[href*="/cart"], [data-cart-drawer], .cart-icon, #cart-icon, .header__icon--cart');
-    
-    cartTriggers.forEach(trigger => {
-      trigger.addEventListener('click', (e) => {
-        // Only prevent default if it's a cart link
-        const href = trigger.getAttribute('href');
-        if (href && (href === '/cart' || href.includes('/cart'))) {
+    document.addEventListener('click', function(e) {
+      const cartTrigger = e.target.closest(
+        'a[href="/cart"], a[href^="/cart?"], .cart-icon, .header__icon--cart, .cart-notification-button, [data-cart-drawer], #cart-icon'
+      );
+      
+      if (!cartTrigger) return;
+      
+      // Check if it's an anchor tag
+      if (cartTrigger.tagName === 'A') {
+        const href = cartTrigger.getAttribute('href');
+        
+        // Only intercept exact /cart or /cart? links
+        if (href === '/cart' || (href && href.startsWith('/cart?'))) {
           e.preventDefault();
-          e.stopPropagation();
-          openCart();
+          e.stopImmediatePropagation();
+          window.revlyftOpenCart?.();
         }
-      });
-    });
-
-    console.log(`🔗 Overriding ${cartTriggers.length} cart triggers`);
+      } else {
+        // Non-anchor cart triggers (icons, buttons) - always intercept
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        window.revlyftOpenCart?.();
+      }
+    }, true);
+    
+    console.log('🔗 Global cart interceptor active (capture phase)');
   }
 
   /**
@@ -495,15 +506,52 @@
     // Attach event listeners
     attachCartEventListeners();
 
-    // Override cart links
-    setTimeout(() => {
-      overrideCartLinks();
-    }, 1000); // Delay to ensure all elements are loaded
+    // Override cart links (global capture-phase interceptor)
+    overrideCartLinks();
+
+    // Intercept Add-to-Cart actions
+    interceptAddToCart();
 
     // Listen for cart updates from other scripts
     document.addEventListener('cart:updated', refreshCart);
 
     console.log('✅ Revlyft Cart Drawer initialized');
+  }
+
+  /**
+   * Intercept Add-to-Cart AJAX calls
+   */
+  function interceptAddToCart() {
+    if (window.__REVLYFT_FETCH_PATCHED__) return;
+    
+    window.__REVLYFT_FETCH_PATCHED__ = true;
+    const originalFetch = window.fetch;
+    
+    window.fetch = function(...args) {
+      const [url] = args;
+      const urlString = typeof url === 'string' ? url : url?.toString() || '';
+      
+      if (urlString.includes('/cart/add')) {
+        return originalFetch.apply(this, args)
+          .then(async (response) => {
+            if (response.ok) {
+              try {
+                response.clone();
+                await window.revlyftRefreshCart?.();
+                setTimeout(() => window.revlyftOpenCart?.(), 100);
+              } catch (err) {
+                // Silent fail
+              }
+            }
+            return response;
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }
+      
+      return originalFetch.apply(this, args);
+    };
   }
 
   // Initialize when DOM is ready

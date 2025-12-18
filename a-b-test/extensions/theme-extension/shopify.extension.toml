@@ -18,9 +18,10 @@ type = "discount_progress_bar"
 name = "Discount Progress Bar"
 target = "section"
 
-# Cart Drawer App Embed
-[[settings.blocks]]
-type = "revlyft-cart-drawer"
+# Cart Drawer App Embed (recommended approach for cart functionality)
+[settings.app_embed_blocks]
+
+[[settings.app_embed_blocks.blocks]]
+type = "revlyft-cart-drawer-embed"
 name = "Revlyft Cart Drawer"
-target = "body"
 

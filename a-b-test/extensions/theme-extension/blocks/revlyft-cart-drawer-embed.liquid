@@ -1,6 +1,6 @@
 {% comment %}
   Revlyft Cart Drawer - App Embed
-  This block loads the cart drawer script that displays a customized cart experience
+  This app embed loads the cart drawer script that displays a customized cart experience
   based on configurations saved in the Revlyft admin panel.
 {% endcomment %}
 
@@ -17,6 +17,11 @@
 {
   "name": "Revlyft Cart Drawer",
   "target": "body",
-  "settings": []
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Enable this to replace your theme's cart drawer with a customizable Revlyft cart. Configure colors, progress bars, and upsells in the Revlyft admin panel."
+    }
+  ]
 }
 {% endschema %}
