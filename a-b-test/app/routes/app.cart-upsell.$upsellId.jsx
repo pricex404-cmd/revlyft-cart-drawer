@@ -184,8 +184,10 @@ export default function CartUpsellConfiguration() {
               marginBottom: '32px',
               border: '1px solid #e5e7eb',
               borderRadius: '12px',
-              padding: '20px',
-              backgroundColor: '#f9fafb'
+              padding: '24px',
+              backgroundColor: '#f9fafb',
+              width: '100%',
+              maxWidth: '100%'
             }}>
               <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>Colors</h3>
               
@@ -1030,7 +1032,7 @@ export default function CartUpsellConfiguration() {
             {/* Progress Bar */}
             {cartConfig.progressBar.enabled && (
               <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5' }}>
-                <div style={{ marginBottom: '6px', fontSize: '10px' }}>
+                <div style={{ marginBottom: '6px', fontSize: '10px', color: cartConfig.appearance.cartTextColor }}>
                   Add ${(cartConfig.progressBar.goal - 29.99).toFixed(2)} to unlock {cartConfig.progressBar.goalText}
                 </div>
                 <div style={{
@@ -1093,7 +1095,7 @@ export default function CartUpsellConfiguration() {
                     }}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '6px', paddingRight: '24px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '6px', paddingRight: '24px', color: cartConfig.appearance.cartTextColor }}>
                       {product.title}
                     </div>
                     <div style={{ 
@@ -1129,7 +1131,8 @@ export default function CartUpsellConfiguration() {
                       </div>
                       <div style={{ 
                         fontSize: '12px', 
-                        fontWeight: '700'
+                        fontWeight: '700',
+                        color: cartConfig.appearance.cartTextColor
                       }}>
                         ${product.price}
                       </div>
@@ -1150,8 +1153,8 @@ export default function CartUpsellConfiguration() {
               backgroundColor: cartConfig.appearance.cartAccentColor
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: '600' }}>Subtotal:</span>
-                <span style={{ fontSize: '13px', fontWeight: '600' }}>$59.98</span>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>Subtotal:</span>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>$59.98</span>
               </div>
               <button style={{
                 width: '100%',

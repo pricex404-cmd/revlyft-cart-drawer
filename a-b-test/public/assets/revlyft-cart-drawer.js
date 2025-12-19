@@ -122,10 +122,10 @@
           border-radius: 8px;
         ">
         <div style="flex: 1;">
-          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500; padding-right: 24px;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500; padding-right: 24px; color: inherit;">
             ${item.product_title}
           </h3>
-          ${item.variant_title ? `<p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">${item.variant_title}</p>` : ''}
+          ${item.variant_title ? `<p style="margin: 0 0 8px 0; font-size: 13px; color: inherit; opacity: 0.7;">${item.variant_title}</p>` : ''}
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <div style="
               border: 1px solid #e0e0e0;
@@ -142,7 +142,7 @@
                 font-size: 16px;
                 font-weight: 600;
               ">−</button>
-              <span style="padding: 0 16px; font-weight: 600; font-size: 14px;">${item.quantity}</span>
+              <span style="padding: 0 16px; font-weight: 600; font-size: 14px; color: inherit;">${item.quantity}</span>
               <button class="revlyft-qty-btn" data-action="increase" data-key="${item.key}" style="
                 padding: 8px 14px;
                 background: none;
@@ -152,7 +152,7 @@
                 font-weight: 600;
               ">+</button>
             </div>
-            <span style="font-weight: 600;">${formatPrice(item.final_line_price)}</span>
+            <span style="font-weight: 600; color: inherit;">${formatPrice(item.final_line_price)}</span>
           </div>
         </div>
       </div>
@@ -233,7 +233,7 @@
 
         ${progressBar.enabled ? `
           <div style="padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px;">
+            <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px; color: inherit;">
               ${progressPercentage >= 100 
                 ? progressBar.goalText 
                 : `Add ${formatPrice(remainingAmount)} to unlock ${progressBar.goalText}`
@@ -285,10 +285,10 @@
             background-color: ${appearance.cartAccentColor};
           ">
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-              <span style="font-size: 16px; font-weight: 600;">Subtotal:</span>
-              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600;">${formatPrice(subtotal)}</span>
+              <span style="font-size: 16px; font-weight: 600; color: inherit;">Subtotal:</span>
+              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: inherit;">${formatPrice(subtotal)}</span>
             </div>
-            <div style="margin-bottom: 12px; font-size: 12px; color: #666; text-align: center;">
+            <div style="margin-bottom: 12px; font-size: 12px; color: inherit; opacity: 0.7; text-align: center;">
               Taxes and shipping calculated at checkout
             </div>
             <button id="revlyft-checkout-btn" style="
