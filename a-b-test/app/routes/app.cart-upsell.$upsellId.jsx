@@ -687,7 +687,37 @@ export default function CartUpsellConfiguration() {
         zIndex: 20,
         boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
-        <h1 style={{ fontSize: '24px', fontWeight: '600', margin: 0, color: '#111827' }}>Cart Appearance</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <button
+            onClick={() => window.history.back()}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              color: '#6b7280'
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M12 4L6 10L12 16" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <h1 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: '#111827' }}>Cart Appearance</h1>
+            <span style={{
+              padding: '4px 12px',
+              backgroundColor: '#d1fae5',
+              color: '#065f46',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: '500'
+            }}>
+              Active
+            </span>
+          </div>
+        </div>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button
             onClick={() => window.location.reload()}
