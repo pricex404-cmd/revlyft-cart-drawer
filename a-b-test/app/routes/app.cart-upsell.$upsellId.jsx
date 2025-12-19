@@ -790,7 +790,7 @@ export default function CartUpsellConfiguration() {
                   gap: '6px'
                 }}
               >
-                <span>🎨</span>
+                <span style={{ filter: 'grayscale(1)' }}>🎨</span>
                 <span>Design</span>
               </button>
               <button
@@ -809,7 +809,7 @@ export default function CartUpsellConfiguration() {
                   gap: '6px'
                 }}
               >
-                <span>📋</span>
+                <span style={{ filter: 'grayscale(1)' }}>📋</span>
                 <span>Header</span>
               </button>
             </div>
@@ -840,7 +840,7 @@ export default function CartUpsellConfiguration() {
                   gap: '6px'
                 }}
               >
-                <span>📢</span>
+                <span style={{ filter: 'grayscale(1)' }}>📢</span>
                 <span>Announcements</span>
               </button>
               <button
@@ -859,7 +859,7 @@ export default function CartUpsellConfiguration() {
                   gap: '6px'
                 }}
               >
-                <span>📊</span>
+                <span style={{ filter: 'grayscale(1)' }}>📊</span>
                 <span>Progress Bar</span>
               </button>
               <button
@@ -878,7 +878,7 @@ export default function CartUpsellConfiguration() {
                   gap: '6px'
                 }}
               >
-                <span>🎁</span>
+                <span style={{ filter: 'grayscale(1)' }}>🎁</span>
                 <span>Upsells</span>
               </button>
             </div>
@@ -916,7 +916,7 @@ export default function CartUpsellConfiguration() {
 
         {/* Right Preview Panel - Separate Section */}
         <div style={{ 
-          width: '480px',
+          width: '380px',
           backgroundColor: '#f9fafb',
           borderLeft: '1px solid #e5e7eb',
           padding: '24px',
