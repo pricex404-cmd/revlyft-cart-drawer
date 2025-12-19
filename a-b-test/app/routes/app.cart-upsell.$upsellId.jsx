@@ -676,7 +676,7 @@ export default function CartUpsellConfiguration() {
     <Page>
       {/* Header Bar - Full Width */}
       <div style={{
-        padding: '16px 24px',
+        padding: '20px 32px',
         borderBottom: '1px solid #e5e7eb',
         display: 'flex',
         justifyContent: 'space-between',
@@ -684,21 +684,31 @@ export default function CartUpsellConfiguration() {
         backgroundColor: '#fff',
         position: 'sticky',
         top: 0,
-        zIndex: 20
+        zIndex: 20,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
       }}>
-        <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Cart Appearance</h1>
+        <h1 style={{ fontSize: '24px', fontWeight: '600', margin: 0, color: '#111827' }}>Cart Appearance</h1>
         <div style={{ display: 'flex', gap: '12px' }}>
           <button
             onClick={() => window.location.reload()}
             style={{
-              padding: '8px 16px',
+              padding: '10px 20px',
               backgroundColor: '#fff',
               color: '#374151',
               border: '1px solid #d1d5db',
               borderRadius: '6px',
-              fontSize: '13px',
+              fontSize: '14px',
               fontWeight: '500',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#f9fafb';
+              e.currentTarget.style.borderColor = '#9ca3af';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#fff';
+              e.currentTarget.style.borderColor = '#d1d5db';
             }}
           >
             Discard
@@ -707,15 +717,22 @@ export default function CartUpsellConfiguration() {
             onClick={saveConfiguration}
             disabled={isSaving}
             style={{
-              padding: '8px 16px',
+              padding: '10px 20px',
               backgroundColor: '#000',
               color: '#fff',
               border: 'none',
               borderRadius: '6px',
-              fontSize: '13px',
+              fontSize: '14px',
               fontWeight: '500',
               cursor: isSaving ? 'not-allowed' : 'pointer',
-              opacity: isSaving ? 0.6 : 1
+              opacity: isSaving ? 0.6 : 1,
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              if (!isSaving) e.currentTarget.style.backgroundColor = '#1f2937';
+            }}
+            onMouseLeave={(e) => {
+              if (!isSaving) e.currentTarget.style.backgroundColor = '#000';
             }}
           >
             {isSaving ? 'Saving...' : 'Save'}
@@ -725,7 +742,7 @@ export default function CartUpsellConfiguration() {
 
       <div style={{ 
         position: 'fixed',
-        top: '116px',
+        top: '130px',
         left: 0,
         right: 0,
         bottom: 0,
@@ -893,7 +910,11 @@ export default function CartUpsellConfiguration() {
           backgroundColor: '#f9fafb',
           borderLeft: '1px solid #e5e7eb',
           padding: '24px',
-          overflowY: 'auto'
+          overflowY: 'auto',
+          position: 'sticky',
+          top: 0,
+          alignSelf: 'flex-start',
+          maxHeight: '100vh'
         }}>
           <div style={{ 
             fontSize: '12px', 
