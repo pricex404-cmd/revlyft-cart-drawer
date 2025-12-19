@@ -666,8 +666,8 @@ export default function CartUpsell() {
                   overflow: 'auto',
                   border: '1px solid #e1e3e5',
                   fontFamily: cartConfig.appearance.fontFamily,
-                  fontSize: cartConfig.appearance.fontSize === 'small' ? '12px' : 
-                           cartConfig.appearance.fontSize === 'large' ? '15px' : '13px',
+                  fontSize: cartConfig.appearance.fontSize === 'small' ? '11px' : 
+                           cartConfig.appearance.fontSize === 'large' ? '13px' : '12px',
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
@@ -752,8 +752,11 @@ export default function CartUpsell() {
                         }}
                         onMouseEnter={(e) => e.currentTarget.style.color = '#999'}
                         onMouseLeave={(e) => e.currentTarget.style.color = '#ccc'}>
-                          <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor">
-                            <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
                           </svg>
                         </button>
                         <img 
