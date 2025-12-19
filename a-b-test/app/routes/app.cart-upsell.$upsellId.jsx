@@ -674,9 +674,58 @@ export default function CartUpsellConfiguration() {
 
   return (
     <Page>
+      {/* Header Bar - Full Width */}
+      <div style={{
+        padding: '16px 24px',
+        borderBottom: '1px solid #e5e7eb',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        position: 'sticky',
+        top: 0,
+        zIndex: 20
+      }}>
+        <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Cart Appearance</h1>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            onClick={() => window.location.reload()}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#fff',
+              color: '#374151',
+              border: '1px solid #d1d5db',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: '500',
+              cursor: 'pointer'
+            }}
+          >
+            Discard
+          </button>
+          <button
+            onClick={saveConfiguration}
+            disabled={isSaving}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#000',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '13px',
+              fontWeight: '500',
+              cursor: isSaving ? 'not-allowed' : 'pointer',
+              opacity: isSaving ? 0.6 : 1
+            }}
+          >
+            {isSaving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
+
       <div style={{ 
         position: 'fixed',
-        top: '56px',
+        top: '116px',
         left: 0,
         right: 0,
         bottom: 0,
@@ -690,14 +739,14 @@ export default function CartUpsellConfiguration() {
           borderRight: '1px solid #e5e7eb',
           overflowY: 'auto'
         }}>
-          <div style={{ padding: '16px' }}>
-            <div style={{ marginBottom: '8px' }}>
+          <div style={{ padding: '12px' }}>
+            <div style={{ marginBottom: '4px' }}>
               <div style={{ 
-                fontSize: '12px', 
+                fontSize: '11px', 
                 fontWeight: '600', 
                 color: '#6b7280', 
                 textTransform: 'uppercase',
-                padding: '8px 12px'
+                padding: '6px 8px'
               }}>
                 General
               </div>
@@ -706,15 +755,15 @@ export default function CartUpsellConfiguration() {
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 8px',
                   border: 'none',
                   backgroundColor: activeSection === 'design' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '6px'
                 }}
               >
                 <span>🎨</span>
@@ -725,15 +774,15 @@ export default function CartUpsellConfiguration() {
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 8px',
                   border: 'none',
                   backgroundColor: activeSection === 'header' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '6px'
                 }}
               >
                 <span>📋</span>
@@ -741,13 +790,13 @@ export default function CartUpsellConfiguration() {
               </button>
             </div>
 
-            <div style={{ marginBottom: '8px', marginTop: '16px' }}>
+            <div style={{ marginBottom: '4px', marginTop: '12px' }}>
               <div style={{ 
-                fontSize: '12px', 
+                fontSize: '11px', 
                 fontWeight: '600', 
                 color: '#6b7280', 
                 textTransform: 'uppercase',
-                padding: '8px 12px'
+                padding: '6px 8px'
               }}>
                 Body
               </div>
@@ -756,15 +805,15 @@ export default function CartUpsellConfiguration() {
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 8px',
                   border: 'none',
                   backgroundColor: activeSection === 'announcements' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '6px'
                 }}
               >
                 <span>📢</span>
@@ -775,15 +824,15 @@ export default function CartUpsellConfiguration() {
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 8px',
                   border: 'none',
                   backgroundColor: activeSection === 'progress-bar' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '6px'
                 }}
               >
                 <span>📊</span>
@@ -794,15 +843,15 @@ export default function CartUpsellConfiguration() {
                 style={{
                   width: '100%',
                   textAlign: 'left',
-                  padding: '10px 12px',
+                  padding: '7px 8px',
                   border: 'none',
                   backgroundColor: activeSection === 'upsells' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '6px',
+                  borderRadius: '4px',
                   cursor: 'pointer',
-                  fontSize: '14px',
+                  fontSize: '13px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px'
+                  gap: '6px'
                 }}
               >
                 <span>🎁</span>
@@ -819,55 +868,6 @@ export default function CartUpsellConfiguration() {
           flexDirection: 'column',
           backgroundColor: '#fff'
         }}>
-          {/* Header Bar */}
-          <div style={{
-            padding: '16px 24px',
-            borderBottom: '1px solid #e5e7eb',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: '#fff',
-            position: 'sticky',
-            top: 0,
-            zIndex: 10
-          }}>
-            <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Cart Appearance</h1>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button
-                onClick={() => window.location.reload()}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#fff',
-                  color: '#374151',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  fontWeight: '500',
-                  cursor: 'pointer'
-                }}
-              >
-                Discard
-              </button>
-              <button
-                onClick={saveConfiguration}
-                disabled={isSaving}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#000',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  fontWeight: '500',
-                  cursor: isSaving ? 'not-allowed' : 'pointer',
-                  opacity: isSaving ? 0.6 : 1
-                }}
-              >
-                {isSaving ? 'Saving...' : 'Save'}
-              </button>
-            </div>
-          </div>
-
           {/* Content Area */}
           <div style={{ flex: 1, overflowY: 'auto' }}>
           {showSuccessToast && (
