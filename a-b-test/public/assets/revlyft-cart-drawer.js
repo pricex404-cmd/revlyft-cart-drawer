@@ -76,6 +76,79 @@
   }
 
   /**
+   * Create HTML for cart items only
+   */
+  function createCartItemsHTML(items) {
+    if (items.length === 0) {
+      return `
+        <div style="text-align: center; padding: 40px 20px; color: #999;">
+          <p style="font-size: 18px; margin-bottom: 8px;">Your cart is empty</p>
+          <p style="font-size: 14px;">Add some products to get started!</p>
+        </div>
+      `;
+    }
+
+    return items.map(item => `
+      <div class="revlyft-cart-item" data-key="${item.key}" style="
+        display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+      ">
+        <img src="${item.image}" alt="${item.title}" style="
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 8px;
+        ">
+        <div style="flex: 1;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500;">
+            ${item.product_title}
+          </h3>
+          ${item.variant_title ? `<p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">${item.variant_title}</p>` : ''}
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="revlyft-qty-btn" data-action="decrease" data-key="${item.key}" style="
+                width: 28px;
+                height: 28px;
+                border: 1px solid rgba(0,0,0,0.2);
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+              ">−</button>
+              <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+              <button class="revlyft-qty-btn" data-action="increase" data-key="${item.key}" style="
+                width: 28px;
+                height: 28px;
+                border: 1px solid rgba(0,0,0,0.2);
+                background: white;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+              ">+</button>
+            </div>
+            <span style="font-weight: 600;">${formatPrice(item.final_line_price)}</span>
+          </div>
+        </div>
+        <button class="revlyft-remove-btn" data-key="${item.key}" style="
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px;
+          color: #999;
+          font-size: 20px;
+        ">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
+            <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
+          </svg>
+        </button>
+      </div>
+    `).join('');
+  }
+
+  /**
    * Create cart drawer HTML
    */
   function createCartDrawerHTML(config, cart) {
@@ -149,7 +222,7 @@
 
         ${progressBar.enabled ? `
           <div style="padding: 16px 20px; border-bottom: 1px solid rgba(0,0,0,0.1);">
-            <div style="margin-bottom: 8px; font-size: 13px;">
+            <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px;">
               ${progressPercentage >= 100 
                 ? progressBar.goalText 
                 : `Add ${formatPrice(remainingAmount)} to unlock ${progressBar.goalText}`
@@ -162,7 +235,7 @@
               border-radius: 4px;
               overflow: hidden;
             ">
-              <div style="
+              <div id="revlyft-progress-bar-fill" style="
                 width: ${progressPercentage}%;
                 height: 100%;
                 background-color: ${progressBar.barColor};
@@ -178,71 +251,7 @@
           overflow-y: auto;
           padding: 20px;
         ">
-          ${cart.items.map(item => `
-            <div class="revlyft-cart-item" data-key="${item.key}" style="
-              display: flex;
-              gap: 16px;
-              margin-bottom: 20px;
-              padding-bottom: 20px;
-              border-bottom: 1px solid rgba(0,0,0,0.1);
-            ">
-              <img src="${item.image}" alt="${item.title}" style="
-                width: 80px;
-                height: 80px;
-                object-fit: cover;
-                border-radius: 8px;
-              ">
-              <div style="flex: 1;">
-                <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500;">
-                  ${item.product_title}
-                </h3>
-                ${item.variant_title ? `<p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">${item.variant_title}</p>` : ''}
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <button class="revlyft-qty-btn" data-action="decrease" data-key="${item.key}" style="
-                      width: 28px;
-                      height: 28px;
-                      border: 1px solid rgba(0,0,0,0.2);
-                      background: white;
-                      border-radius: 4px;
-                      cursor: pointer;
-                      font-size: 16px;
-                    ">−</button>
-                    <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
-                    <button class="revlyft-qty-btn" data-action="increase" data-key="${item.key}" style="
-                      width: 28px;
-                      height: 28px;
-                      border: 1px solid rgba(0,0,0,0.2);
-                      background: white;
-                      border-radius: 4px;
-                      cursor: pointer;
-                      font-size: 16px;
-                    ">+</button>
-                  </div>
-                  <span style="font-weight: 600;">${formatPrice(item.final_line_price)}</span>
-                </div>
-              </div>
-              <button class="revlyft-remove-btn" data-key="${item.key}" style="
-                background: none;
-                border: none;
-                cursor: pointer;
-                padding: 4px;
-                color: #999;
-                font-size: 20px;
-              ">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-                  <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
-                </svg>
-              </button>
-            </div>
-          `).join('')}
-
-          ${cart.items.length === 0 ? `
-            <div style="text-align: center; padding: 40px 20px; color: #999;">
-              <p style="font-size: 18px; margin-bottom: 8px;">Your cart is empty</p>
-              <p style="font-size: 14px;">Add some products to get started!</p>
-            </div>
-          ` : ''}
+          ${createCartItemsHTML(cart.items)}
         </div>
 
         ${upsell.enabled && cart.items.length > 0 ? `
@@ -259,14 +268,14 @@
 
         <!-- Cart Footer -->
         ${cart.items.length > 0 ? `
-          <div style="
+          <div id="revlyft-cart-footer" style="
             padding: 20px;
             border-top: 1px solid rgba(0,0,0,0.1);
             background-color: ${appearance.cartAccentColor};
           ">
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
               <span style="font-size: 16px; font-weight: 600;">Subtotal:</span>
-              <span style="font-size: 16px; font-weight: 600;">${formatPrice(subtotal)}</span>
+              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600;">${formatPrice(subtotal)}</span>
             </div>
             <div style="margin-bottom: 12px; font-size: 12px; color: #666; text-align: center;">
               Taxes and shipping calculated at checkout
@@ -376,21 +385,62 @@
   }
 
   /**
-   * Refresh cart display
+   * Refresh cart display (smart update - only updates changed sections)
    */
   async function refreshCart() {
     cartData = await fetchCartData();
     if (cartData && cartConfig) {
-      const cartContainer = document.getElementById('revlyft-cart-container');
-      if (cartContainer) {
-        cartContainer.innerHTML = createCartDrawerHTML(cartConfig, cartData);
-        attachCartEventListeners();
+      const { appearance, progressBar } = cartConfig;
+      const subtotal = cartData.total_price;
+      const itemCount = cartData.item_count;
+
+      // Update item count in header
+      const headerTitle = document.querySelector('#revlyft-cart-drawer h2');
+      if (headerTitle) {
+        headerTitle.textContent = `Your Cart (${itemCount})`;
+      }
+
+      // Update progress bar if enabled
+      if (progressBar.enabled && progressBar.goal) {
+        const progressPercentage = Math.min((subtotal / (progressBar.goal * 100)) * 100, 100);
+        const remainingAmount = Math.max((progressBar.goal * 100) - subtotal, 0);
+        
+        const progressText = document.querySelector('#revlyft-progress-text');
+        const progressBarFill = document.querySelector('#revlyft-progress-bar-fill');
+        
+        if (progressText) {
+          progressText.textContent = progressPercentage >= 100 
+            ? progressBar.goalText 
+            : `Add ${formatPrice(remainingAmount)} to unlock ${progressBar.goalText}`;
+        }
+        if (progressBarFill) {
+          progressBarFill.style.width = `${progressPercentage}%`;
+        }
+      }
+
+      // Update cart items section
+      const itemsContainer = document.getElementById('revlyft-cart-items');
+      if (itemsContainer) {
+        itemsContainer.innerHTML = createCartItemsHTML(cartData.items);
+        attachItemEventListeners(); // Only re-attach item-specific listeners
+      }
+
+      // Update subtotal in footer
+      const subtotalElement = document.querySelector('#revlyft-subtotal');
+      if (subtotalElement) {
+        subtotalElement.textContent = formatPrice(subtotal);
+      }
+
+      // Show/hide footer based on item count
+      const footer = document.querySelector('#revlyft-cart-footer');
+      if (footer) {
+        footer.style.display = itemCount > 0 ? 'block' : 'none';
       }
     }
   }
 
   /**
-   * Attach event listeners to cart elements
+   * Attach event listeners to cart elements (one-time setup)
    */
   function attachCartEventListeners() {
     // Close button
@@ -413,6 +463,14 @@
       });
     }
 
+    // Attach item listeners
+    attachItemEventListeners();
+  }
+
+  /**
+   * Attach event listeners to cart items (called after item updates)
+   */
+  function attachItemEventListeners() {
     // Quantity buttons
     document.querySelectorAll('.revlyft-qty-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
@@ -512,6 +570,9 @@
     // Intercept Add-to-Cart actions
     interceptAddToCart();
 
+    // Hide theme's native cart drawer
+    hideThemeCartDrawer();
+
     // Listen for cart updates from other scripts
     document.addEventListener('cart:updated', refreshCart);
 
@@ -552,6 +613,35 @@
       
       return originalFetch.apply(this, args);
     };
+  }
+
+  /**
+   * Hide theme's native cart drawer to prevent dual carts
+   */
+  function hideThemeCartDrawer() {
+    // Inject CSS to hide common theme cart drawer selectors
+    const style = document.createElement('style');
+    style.id = 'revlyft-hide-theme-cart';
+    style.textContent = `
+      /* Hide common theme cart drawers */
+      cart-drawer,
+      #cart-drawer,
+      .cart-drawer,
+      [id*="CartDrawer"],
+      [class*="cart-drawer"],
+      drawer-element[id*="cart"],
+      .drawer[id*="cart"],
+      #shopify-section-cart-drawer,
+      .cart-notification,
+      .cart-notification-wrapper {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+    console.log('🚫 Theme cart drawer hidden');
   }
 
   // Initialize when DOM is ready
