@@ -672,20 +672,6 @@ export default function CartUpsell() {
                   flexDirection: 'column'
                 }}>
                   
-                  {/* Announcement Bar */}
-                  {cartConfig.announcementBar.enabled && (
-                    <div style={{
-                      backgroundColor: cartConfig.announcementBar.backgroundColor,
-                      color: cartConfig.announcementBar.textColor,
-                      padding: '12px 16px',
-                      textAlign: 'center',
-                      fontSize: '13px',
-                      fontWeight: '500'
-                    }}>
-                      {cartConfig.announcementBar.text}
-                    </div>
-                  )}
-
                   {/* Cart Header */}
                   <div style={{ padding: '20px 20px 16px 20px', borderBottom: '1px solid #e1e3e5' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -700,6 +686,20 @@ export default function CartUpsell() {
                       }}>✕</button>
                     </div>
                   </div>
+
+                  {/* Announcement Bar */}
+                  {cartConfig.announcementBar.enabled && (
+                    <div style={{
+                      backgroundColor: cartConfig.announcementBar.backgroundColor,
+                      color: cartConfig.announcementBar.textColor,
+                      padding: '12px 16px',
+                      textAlign: 'center',
+                      fontSize: '13px',
+                      fontWeight: '500'
+                    }}>
+                      {cartConfig.announcementBar.text}
+                    </div>
+                  )}
 
                   {/* Progress Bar */}
                   {cartConfig.progressBar.enabled && (
@@ -732,12 +732,30 @@ export default function CartUpsell() {
                   }}>
                     {products && products.length > 0 ? products.map((product, index) => (
                       <div key={product.id} style={{ 
+                        position: 'relative',
                         display: 'flex', 
                         gap: '16px',
                         marginBottom: index < products.length - 1 ? '20px' : '0',
                         paddingBottom: index < products.length - 1 ? '20px' : '0',
                         borderBottom: index < products.length - 1 ? '1px solid #f0f0f0' : 'none'
                       }}>
+                        <button style={{
+                          position: 'absolute',
+                          top: '0',
+                          right: '0',
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '4px',
+                          color: '#ccc',
+                          transition: 'color 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.color = '#999'}
+                        onMouseLeave={(e) => e.currentTarget.style.color = '#ccc'}>
+                          <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor">
+                            <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
+                          </svg>
+                        </button>
                         <img 
                           src={product.image || "data:image/svg+xml,%3Csvg width='90' height='90' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='90' height='90' fill='%23e8f4ff'/%3E%3Crect x='25' y='25' width='40' height='40' fill='%23b3d9ff' rx='4'/%3E%3Ccircle cx='35' cy='35' r='3' fill='%23ffffff'/%3E%3C/svg%3E"}
                           alt={product.title}
@@ -750,17 +768,8 @@ export default function CartUpsell() {
                           }}
                         />
                         <div style={{ flex: 1 }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                            <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px' }}>
-                              {product.title}
-                            </div>
-                            <button style={{
-                              background: 'none',
-                              border: 'none',
-                              cursor: 'pointer',
-                              fontSize: '16px',
-                              padding: '0 0 0 8px'
-                            }}>🗑️</button>
+                          <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '8px', paddingRight: '24px' }}>
+                            {product.title}
                           </div>
                           <div style={{ 
                             display: 'flex', 

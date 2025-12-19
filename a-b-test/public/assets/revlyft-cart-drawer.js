@@ -90,12 +90,28 @@
 
     return items.map(item => `
       <div class="revlyft-cart-item" data-key="${item.key}" style="
+        position: relative;
         display: flex;
         gap: 16px;
         margin-bottom: 20px;
         padding-bottom: 20px;
         border-bottom: 1px solid rgba(0,0,0,0.1);
       ">
+        <button class="revlyft-remove-btn" data-key="${item.key}" style="
+          position: absolute;
+          top: 0;
+          right: 0;
+          background: none;
+          border: none;
+          cursor: pointer;
+          padding: 4px;
+          color: #ccc;
+          transition: color 0.2s;
+        " onmouseover="this.style.color='#999'" onmouseout="this.style.color='#ccc'">
+          <svg width="16" height="16" viewBox="0 0 18 18" fill="currentColor">
+            <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
+          </svg>
+        </button>
         <img src="${item.image}" alt="${item.title}" style="
           width: 80px;
           height: 80px;
@@ -103,47 +119,39 @@
           border-radius: 8px;
         ">
         <div style="flex: 1;">
-          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500;">
+          <h3 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 500; padding-right: 24px;">
             ${item.product_title}
           </h3>
           ${item.variant_title ? `<p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">${item.variant_title}</p>` : ''}
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="
+              border: 1px solid #e0e0e0;
+              border-radius: 8px;
+              display: flex;
+              align-items: center;
+              backgroundColor: #f9f9f9;
+            ">
               <button class="revlyft-qty-btn" data-action="decrease" data-key="${item.key}" style="
-                width: 28px;
-                height: 28px;
-                border: 1px solid rgba(0,0,0,0.2);
-                background: white;
-                border-radius: 4px;
+                padding: 8px 14px;
+                background: none;
+                border: none;
                 cursor: pointer;
                 font-size: 16px;
+                font-weight: 600;
               ">−</button>
-              <span style="min-width: 30px; text-align: center;">${item.quantity}</span>
+              <span style="padding: 0 16px; font-weight: 600; font-size: 14px;">${item.quantity}</span>
               <button class="revlyft-qty-btn" data-action="increase" data-key="${item.key}" style="
-                width: 28px;
-                height: 28px;
-                border: 1px solid rgba(0,0,0,0.2);
-                background: white;
-                border-radius: 4px;
+                padding: 8px 14px;
+                background: none;
+                border: none;
                 cursor: pointer;
                 font-size: 16px;
+                font-weight: 600;
               ">+</button>
             </div>
             <span style="font-weight: 600;">${formatPrice(item.final_line_price)}</span>
           </div>
         </div>
-        <button class="revlyft-remove-btn" data-key="${item.key}" style="
-          background: none;
-          border: none;
-          cursor: pointer;
-          padding: 4px;
-          color: #999;
-          font-size: 20px;
-        ">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor">
-            <path d="M6 18c0 .55.45 1 1 1h4c.55 0 1-.45 1-1V6H6v12zM13 2h-2.5l-1-1h-3l-1 1H3v2h12V2z"/>
-          </svg>
-        </button>
       </div>
     `).join('');
   }
