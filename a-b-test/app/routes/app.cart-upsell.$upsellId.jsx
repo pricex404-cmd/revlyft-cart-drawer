@@ -815,9 +815,61 @@ export default function CartUpsellConfiguration() {
         {/* Middle Configuration Panel */}
         <div style={{ 
           flex: 1,
-          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
           backgroundColor: '#fff'
         }}>
+          {/* Header Bar */}
+          <div style={{
+            padding: '16px 24px',
+            borderBottom: '1px solid #e5e7eb',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            position: 'sticky',
+            top: 0,
+            zIndex: 10
+          }}>
+            <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0 }}>Cart Appearance</h1>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#fff',
+                  color: '#374151',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                Discard
+              </button>
+              <button
+                onClick={saveConfiguration}
+                disabled={isSaving}
+                style={{
+                  padding: '8px 16px',
+                  backgroundColor: '#000',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  opacity: isSaving ? 0.6 : 1
+                }}
+              >
+                {isSaving ? 'Saving...' : 'Save'}
+              </button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div style={{ flex: 1, overflowY: 'auto' }}>
           {showSuccessToast && (
             <div style={{
               position: 'sticky',
@@ -832,6 +884,7 @@ export default function CartUpsellConfiguration() {
             </div>
           )}
           {renderConfigPanel()}
+          </div>
         </div>
 
         {/* Right Preview Panel */}
@@ -861,15 +914,15 @@ export default function CartUpsellConfiguration() {
             overflow: 'auto',
             border: '1px solid #e1e3e5',
             fontFamily: cartConfig.appearance.fontFamily,
-            fontSize: cartConfig.appearance.fontSize === 'small' ? '11px' : 
-                     cartConfig.appearance.fontSize === 'large' ? '13px' : '12px',
+            fontSize: cartConfig.appearance.fontSize === 'small' ? '10px' : 
+                     cartConfig.appearance.fontSize === 'large' ? '12px' : '11px',
             display: 'flex',
             flexDirection: 'column'
           }}>
             {/* Cart Header */}
-            <div style={{ padding: '20px 20px 16px 20px', borderBottom: '1px solid #e1e3e5' }}>
+            <div style={{ padding: '16px 16px 12px 16px', borderBottom: '1px solid #e1e3e5' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ fontSize: '20px', fontWeight: '700' }}>Your Cart (2 items)</div>
+                <div style={{ fontSize: '16px', fontWeight: '700' }}>Your Cart (2 items)</div>
                 <button style={{ 
                   background: 'none', 
                   border: 'none', 
@@ -886,9 +939,9 @@ export default function CartUpsellConfiguration() {
               <div style={{
                 backgroundColor: cartConfig.announcementBar.backgroundColor,
                 color: cartConfig.announcementBar.textColor,
-                padding: '12px 16px',
+                padding: '10px 14px',
                 textAlign: 'center',
-                fontSize: '13px',
+                fontSize: '10px',
                 fontWeight: '500'
               }}>
                 {cartConfig.announcementBar.text}
@@ -897,15 +950,15 @@ export default function CartUpsellConfiguration() {
 
             {/* Progress Bar */}
             {cartConfig.progressBar.enabled && (
-              <div style={{ padding: '16px', borderBottom: '1px solid #e1e3e5' }}>
-                <div style={{ marginBottom: '8px', fontSize: '13px' }}>
+              <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5' }}>
+                <div style={{ marginBottom: '6px', fontSize: '10px' }}>
                   Add ${(cartConfig.progressBar.goal - 29.99).toFixed(2)} to unlock {cartConfig.progressBar.goalText}
                 </div>
                 <div style={{
                   width: '100%',
-                  height: '8px',
+                  height: '5px',
                   backgroundColor: cartConfig.progressBar.backgroundColor,
-                  borderRadius: '4px',
+                  borderRadius: '3px',
                   overflow: 'hidden'
                 }}>
                   <div style={{
@@ -919,7 +972,7 @@ export default function CartUpsellConfiguration() {
             )}
 
             {/* Cart Items */}
-            <div style={{ padding: '20px', flex: 1 }}>
+            <div style={{ padding: '14px', flex: 1 }}>
               {products && products.length > 0 ? products.map((product, index) => (
                 <div key={product.id} style={{ 
                   position: 'relative',
@@ -961,7 +1014,7 @@ export default function CartUpsellConfiguration() {
                     }}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '8px', paddingRight: '24px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '600', marginBottom: '6px', paddingRight: '24px' }}>
                       {product.title}
                     </div>
                     <div style={{ 
@@ -972,31 +1025,31 @@ export default function CartUpsellConfiguration() {
                     }}>
                       <div style={{ 
                         border: '1px solid #e0e0e0',
-                        borderRadius: '8px',
+                        borderRadius: '6px',
                         display: 'flex',
                         alignItems: 'center',
                         backgroundColor: '#f9f9f9'
                       }}>
                         <button style={{ 
-                          padding: '6px 10px', 
+                          padding: '4px 8px', 
                           background: 'none', 
                           border: 'none',
                           cursor: 'pointer',
-                          fontSize: '14px',
+                          fontSize: '11px',
                           fontWeight: '600'
                         }}>-</button>
-                        <span style={{ padding: '0 12px', fontWeight: '600', fontSize: '13px' }}>1</span>
+                        <span style={{ padding: '0 10px', fontWeight: '600', fontSize: '11px' }}>1</span>
                         <button style={{ 
-                          padding: '6px 10px', 
+                          padding: '4px 8px', 
                           background: 'none', 
                           border: 'none',
                           cursor: 'pointer',
-                          fontSize: '14px',
+                          fontSize: '11px',
                           fontWeight: '600'
                         }}>+</button>
                       </div>
                       <div style={{ 
-                        fontSize: '14px', 
+                        fontSize: '12px', 
                         fontWeight: '700'
                       }}>
                         ${product.price}
@@ -1013,22 +1066,22 @@ export default function CartUpsellConfiguration() {
 
             {/* Footer */}
             <div style={{
-              padding: '20px',
+              padding: '14px',
               borderTop: '1px solid #e1e3e5',
               backgroundColor: cartConfig.appearance.cartAccentColor
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <span style={{ fontSize: '16px', fontWeight: '600' }}>Subtotal:</span>
-                <span style={{ fontSize: '16px', fontWeight: '600' }}>$59.98</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '13px', fontWeight: '600' }}>Subtotal:</span>
+                <span style={{ fontSize: '13px', fontWeight: '600' }}>$59.98</span>
               </div>
               <button style={{
                 width: '100%',
-                padding: '14px',
+                padding: '11px',
                 backgroundColor: cartConfig.appearance.cartTextColor,
                 color: cartConfig.appearance.cartBackgroundColor,
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '15px',
+                fontSize: '12px',
                 fontWeight: '600',
                 cursor: 'pointer'
               }}>
@@ -1037,35 +1090,6 @@ export default function CartUpsellConfiguration() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Floating Save Button */}
-      <div style={{
-        position: 'fixed',
-        bottom: '24px',
-        left: '260px',
-        right: '500px',
-        display: 'flex',
-        justifyContent: 'center',
-        zIndex: 10
-      }}>
-        <button
-          onClick={saveConfiguration}
-          disabled={isSaving}
-          style={{
-            padding: '12px 32px',
-            backgroundColor: '#000',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: isSaving ? 'not-allowed' : 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
-          }}
-        >
-          {isSaving ? 'Saving...' : 'Save Configuration'}
-        </button>
       </div>
     </Page>
   );
