@@ -174,14 +174,23 @@ export default function CartUpsellConfiguration() {
       case 'design':
         return (
           <div style={{ padding: '24px' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px' }}>Design</h2>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ filter: 'grayscale(1)' }}>🎨</span>
+              Design
+            </h2>
             
             {/* Colors Section */}
-            <div style={{ marginBottom: '32px' }}>
-              <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#6b7280' }}>Colors</h3>
+            <div style={{ 
+              marginBottom: '32px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '12px',
+              padding: '20px',
+              backgroundColor: '#f9fafb'
+            }}>
+              <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>Colors</h3>
               
               {/* Background Color */}
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Background color
                 </label>
@@ -198,7 +207,8 @@ export default function CartUpsellConfiguration() {
                       padding: '10px 50px 10px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
-                      fontSize: '14px'
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
                     }}
                   />
                   <input
@@ -224,7 +234,7 @@ export default function CartUpsellConfiguration() {
               </div>
 
               {/* Cart Accent Color */}
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Cart accent color
                 </label>
@@ -241,7 +251,8 @@ export default function CartUpsellConfiguration() {
                       padding: '10px 50px 10px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
-                      fontSize: '14px'
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
                     }}
                   />
                   <input
@@ -267,7 +278,7 @@ export default function CartUpsellConfiguration() {
               </div>
 
               {/* Cart Text Color */}
-              <div style={{ marginBottom: '20px' }}>
+              <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Cart text color
                 </label>
@@ -284,7 +295,8 @@ export default function CartUpsellConfiguration() {
                       padding: '10px 50px 10px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
-                      fontSize: '14px'
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
                     }}
                   />
                   <input
@@ -327,7 +339,8 @@ export default function CartUpsellConfiguration() {
                       padding: '10px 50px 10px 12px',
                       border: '1px solid #d1d5db',
                       borderRadius: '6px',
-                      fontSize: '14px'
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
                     }}
                   />
                   <input
@@ -351,31 +364,6 @@ export default function CartUpsellConfiguration() {
                   />
                 </div>
               </div>
-            </div>
-
-            {/* Font Size */}
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                Font Size
-              </label>
-              <select
-                value={cartConfig.appearance.fontSize}
-                onChange={(e) => setCartConfig({
-                  ...cartConfig,
-                  appearance: { ...cartConfig.appearance, fontSize: e.target.value }
-                })}
-                style={{ 
-                  width: '100%',
-                  padding: '10px 12px',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '6px',
-                  fontSize: '14px'
-                }}
-              >
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-              </select>
             </div>
           </div>
         );
@@ -880,6 +868,68 @@ export default function CartUpsellConfiguration() {
               >
                 <span style={{ filter: 'grayscale(1)' }}>🎁</span>
                 <span>Upsells</span>
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '4px', marginTop: '12px' }}>
+              <div style={{ 
+                fontSize: '11px', 
+                fontWeight: '600', 
+                color: '#6b7280', 
+                textTransform: 'uppercase',
+                padding: '6px 8px'
+              }}>
+                Footer
+              </div>
+              <button
+                onClick={() => setActiveSection('footer-content')}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '7px 8px',
+                  border: 'none',
+                  backgroundColor: activeSection === 'footer-content' ? '#f3f4f6' : 'transparent',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span style={{ filter: 'grayscale(1)' }}>📝</span>
+                <span>Footer Content</span>
+              </button>
+            </div>
+
+            <div style={{ marginBottom: '4px', marginTop: '12px' }}>
+              <div style={{ 
+                fontSize: '11px', 
+                fontWeight: '600', 
+                color: '#6b7280', 
+                textTransform: 'uppercase',
+                padding: '6px 8px'
+              }}>
+                Settings
+              </div>
+              <button
+                onClick={() => setActiveSection('advanced-settings')}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '7px 8px',
+                  border: 'none',
+                  backgroundColor: activeSection === 'advanced-settings' ? '#f3f4f6' : 'transparent',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span style={{ filter: 'grayscale(1)' }}>⚙️</span>
+                <span>Advanced Settings</span>
               </button>
             </div>
           </div>
