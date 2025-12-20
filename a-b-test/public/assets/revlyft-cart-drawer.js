@@ -294,9 +294,9 @@
             <button id="revlyft-checkout-btn" style="
               width: 100%;
               padding: 16px;
-              background-color: ${appearance.cartAccentColor};
-              color: ${appearance.cartTextColor};
-              border: 2px solid ${appearance.cartTextColor};
+              background-color: #000000;
+              color: #ffffff;
+              border: none;
               border-radius: 8px;
               font-size: 16px;
               font-weight: 600;
