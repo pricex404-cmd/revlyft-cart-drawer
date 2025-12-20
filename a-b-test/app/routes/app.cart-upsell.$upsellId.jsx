@@ -78,6 +78,7 @@ export default function CartUpsellConfiguration() {
       cartTextColor: '#000000',
       cartAccentColor: '#4CAF50',
       savingsTextColor: '#FF5722',
+      subtotalTextColor: '#000000',
       fontFamily: 'Arial, sans-serif',
       fontSize: 'medium'
     },
@@ -327,7 +328,7 @@ export default function CartUpsellConfiguration() {
               </div>
 
               {/* Savings Text Color */}
-              <div>
+              <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Savings text color
                 </label>
@@ -354,6 +355,50 @@ export default function CartUpsellConfiguration() {
                     onChange={(e) => setCartConfig({
                       ...cartConfig,
                       appearance: { ...cartConfig.appearance, savingsTextColor: e.target.value }
+                    })}
+                    style={{ 
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Subtotal Text Color */}
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Subtotal text color
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.appearance.subtotalTextColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      appearance: { ...cartConfig.appearance, subtotalTextColor: e.target.value }
+                    })}
+                    style={{ 
+                      width: '100%',
+                      padding: '10px 50px 10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.appearance.subtotalTextColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      appearance: { ...cartConfig.appearance, subtotalTextColor: e.target.value }
                     })}
                     style={{ 
                       position: 'absolute',
@@ -1122,7 +1167,7 @@ export default function CartUpsellConfiguration() {
                           fontSize: '11px',
                           fontWeight: '600'
                         }}>-</button>
-                        <span style={{ padding: '0 10px', fontWeight: '600', fontSize: '11px' }}>1</span>
+                        <span style={{ padding: '0 10px', fontWeight: '600', fontSize: '11px', color: '#000000' }}>1</span>
                         <button style={{ 
                           padding: '4px 8px', 
                           background: 'none', 
@@ -1156,8 +1201,8 @@ export default function CartUpsellConfiguration() {
               backgroundColor: cartConfig.appearance.cartAccentColor
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>Subtotal:</span>
-                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>Subtotal:</span>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>
                   {products && products.length > 0 
                     ? new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(
                         products.reduce((sum, product) => sum + (parseFloat(product.price) || 0), 0)

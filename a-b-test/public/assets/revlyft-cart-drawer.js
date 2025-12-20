@@ -299,8 +299,8 @@
             background-color: ${appearance.cartAccentColor};
           ">
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-              <span style="font-size: 16px; font-weight: 600; color: inherit;">Subtotal:</span>
-              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: inherit;">${formatPrice(subtotal)}</span>
+              <span style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">Subtotal:</span>
+              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">${formatPrice(subtotal)}</span>
             </div>
             <button id="revlyft-checkout-btn" style="
               width: 100%;
