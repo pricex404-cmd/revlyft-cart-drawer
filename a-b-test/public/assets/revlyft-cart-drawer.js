@@ -199,10 +199,10 @@
         <div style="
           padding: 20px;
           border-bottom: 1px solid rgba(0,0,0,0.1);
-          background-color: ${appearance.cartAccentColor};
+          background-color: ${appearance.cartBackgroundColor};
         ">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin: 0; font-size: 24px; font-weight: 600;">Your Cart (${itemCount})</h2>
+            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: inherit;">Your Cart (${itemCount})</h2>
             <button id="revlyft-close-cart" style="
               background: none;
               border: none;
