@@ -202,7 +202,30 @@ export default function CartUpsellConfiguration() {
         if (response.ok) {
           const data = await response.json();
           if (data) {
-            setCartConfig(data);
+            setCartConfig({
+              general: {
+                inheritThemeFont: data.general?.inheritThemeFont ?? true,
+                showStrikethroughPrices: data.general?.showStrikethroughPrices ?? true,
+                enableSubtotalLine: data.general?.enableSubtotalLine ?? true
+              },
+              appearance: {
+                ...cartConfig.appearance,
+                ...data.appearance
+              },
+              announcementBar: {
+                ...cartConfig.announcementBar,
+                ...data.announcementBar
+              },
+              progressBar: {
+                ...cartConfig.progressBar,
+                ...data.progressBar
+              },
+              upsell: {
+                ...cartConfig.upsell,
+                ...data.upsell
+              },
+              metadata: data.metadata || cartConfig.metadata
+            });
           }
         }
       } catch (error) {
@@ -1231,7 +1254,7 @@ export default function CartUpsellConfiguration() {
             borderRadius: '8px',
             overflow: 'hidden',
             border: '1px solid #e1e3e5',
-            fontFamily: cartConfig.general.inheritThemeFont ? themeBodyFont : cartConfig.appearance.fontFamily,
+            fontFamily: cartConfig.general?.inheritThemeFont ? themeBodyFont : cartConfig.appearance.fontFamily,
             fontSize: cartConfig.appearance.fontSize === 'small' ? '10px' : 
                      cartConfig.appearance.fontSize === 'large' ? '12px' : '11px',
             display: 'flex',
@@ -1374,7 +1397,7 @@ export default function CartUpsellConfiguration() {
                         alignItems: 'center',
                         gap: '6px'
                       }}>
-                        {cartConfig.general.showStrikethroughPrices && product.compareAtPrice && parseFloat(product.compareAtPrice) > parseFloat(product.price) && (
+                        {cartConfig.general?.showStrikethroughPrices && product.compareAtPrice && parseFloat(product.compareAtPrice) > parseFloat(product.price) && (
                           <span style={{ 
                             fontSize: '11px', 
                             textDecoration: 'line-through', 
@@ -1402,7 +1425,7 @@ export default function CartUpsellConfiguration() {
               borderTop: '1px solid #e1e3e5',
               backgroundColor: cartConfig.appearance.cartAccentColor
             }}>
-              {cartConfig.general.enableSubtotalLine && (
+              {cartConfig.general?.enableSubtotalLine !== false && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>Subtotal:</span>
                   <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>
