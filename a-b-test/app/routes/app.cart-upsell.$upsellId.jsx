@@ -47,19 +47,24 @@ export const loader = async ({ request, params }) => {
     }
   `);
 
-  // Fetch published theme settings for font
-  const themeResponse = await admin.graphql(`
-    query {
-      themes(first: 1, query: "role:main") {
-        edges {
-          node {
-            id
-            name
-            files(first: 1, filenames: ["config/settings_data.json"]) {
-              edges {
-                node {
-                  ... on OnlineStoreThemeFileBodyText {
-                    content
+  const data = await shopResponse.json();
+  
+  // Extract theme body font with error handling with error handling
+  let themeBodyFont = 'system-ui, -apple-system, sans-serif';
+  try {
+    const themeResponse = await admin.graphql(`
+      query {
+        themes(first: 1, query: "role:main") {
+          edges {
+            node {
+              id
+              name
+              files(first: 1, filenames: ["config/settings_data.json"]) {
+                edges {
+                  node {
+                    ... on OnlineStoreThemeFileBodyText {
+                      content
+                    }
                   }
                 }
               }
@@ -67,23 +72,10 @@ export const loader = async ({ request, params }) => {
           }
         }
       }
-    }
-  `);
-
-  const data = await shopResponse.json();
-  const themeData = await themeResponse.json();
-  
-  const products = data.data.products.edges.map(edge => ({
-    id: edge.node.id,
-    title: edge.node.title,
-    image: edge.node.featuredImage?.url,
-    price: edge.node.variants.edges[0]?.node.price,
-    compareAtPrice: edge.node.variants.edges[0]?.node.compareAtPrice
-  }));
-
-  // Extract theme body font
-  let themeBodyFont = 'system-ui, -apple-system, sans-serif';
-  try {
+    `);
+    
+    const themeData = await themeResponse.json();
+    
     if (themeData.data?.themes?.edges[0]?.node?.files?.edges[0]?.node?.content) {
       const settingsContent = JSON.parse(themeData.data.themes.edges[0].node.files.edges[0].node.content);
       const bodyFont = settingsContent.current?.type_body_font;
@@ -92,8 +84,17 @@ export const loader = async ({ request, params }) => {
       }
     }
   } catch (error) {
-    console.error('Error parsing theme font:', error);
+    console.error('Error fetching theme font:', error);
+    // Use default font if theme fetch fails
   }
+  
+  const products = data.data.products.edges.map(edge => ({
+    id: edge.node.id,
+    title: edge.node.title,
+    image: edge.node.featuredImage?.url,
+    price: edge.node.variants.edges[0]?.node.price,
+    compareAtPrice: edge.node.variants.edges[0]?.node.compareAtPrice
+  }));
 
   return {
     shop: data.data.shop.myshopifyDomain,
