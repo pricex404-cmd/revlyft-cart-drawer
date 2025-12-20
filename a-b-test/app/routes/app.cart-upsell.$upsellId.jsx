@@ -22,6 +22,7 @@ export const loader = async ({ request, params }) => {
           url
         }
         myshopifyDomain
+        currencyCode
       }
       products(first: 2) {
         edges {
@@ -55,12 +56,13 @@ export const loader = async ({ request, params }) => {
 
   return {
     shop: data.data.shop.myshopifyDomain,
-    products
+    products,
+    currencyCode: data.data.shop.currencyCode || 'USD'
   };
 };
 
 export default function CartUpsellConfiguration() {
-  const { shop, products } = useLoaderData();
+  const { shop, products, currencyCode } = useLoaderData();
   const { upsellId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -111,6 +113,7 @@ export default function CartUpsellConfiguration() {
       const sanitizedDomain = sanitizeShopDomain(shop);
       const configData = {
         ...cartConfig,
+        currency: currencyCode, // Save currency with config
         metadata: {
           lastUpdated: new Date().toISOString(),
           isActive: true,
@@ -1134,7 +1137,7 @@ export default function CartUpsellConfiguration() {
                         fontWeight: '700',
                         color: cartConfig.appearance.cartTextColor
                       }}>
-                        ${product.price}
+                        {new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(parseFloat(product.price))}
                       </div>
                     </div>
                   </div>
@@ -1154,13 +1157,20 @@ export default function CartUpsellConfiguration() {
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                 <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>Subtotal:</span>
-                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>$59.98</span>
+                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.cartTextColor }}>
+                  {products && products.length > 0 
+                    ? new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(
+                        products.reduce((sum, product) => sum + (parseFloat(product.price) || 0), 0)
+                      )
+                    : new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(0)
+                  }
+                </span>
               </div>
               <button style={{
                 width: '100%',
                 padding: '11px',
-                backgroundColor: cartConfig.appearance.cartTextColor,
-                color: cartConfig.appearance.cartBackgroundColor,
+                backgroundColor: '#000000',
+                color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
                 fontSize: '12px',

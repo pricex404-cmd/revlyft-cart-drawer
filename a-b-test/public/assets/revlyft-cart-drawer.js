@@ -14,6 +14,7 @@
   let cartConfig = null;
   let cartData = null;
   let isCartOpen = false;
+  let shopCurrency = 'USD'; // Default to USD
 
   /**
    * Sanitize shop domain for Firebase path
@@ -68,11 +69,22 @@
   }
 
   /**
-   * Format price based on Shopify's money format
+   * Format price based on shop's currency
    */
   function formatPrice(cents) {
-    const dollars = (cents / 100).toFixed(2);
-    return `$${dollars}`;
+    const amount = cents / 100;
+    try {
+      return new Intl.NumberFormat('en', {
+        style: 'currency',
+        currency: shopCurrency
+      }).format(amount);
+    } catch (error) {
+      // Fallback to USD if currency code is invalid
+      return new Intl.NumberFormat('en', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(amount);
+    }
   }
 
   /**
@@ -132,7 +144,7 @@
               border-radius: 8px;
               display: flex;
               align-items: center;
-              backgroundColor: #f9f9f9;
+              background-color: #ffffff;
             ">
               <button class="revlyft-qty-btn" data-action="decrease" data-key="${item.key}" style="
                 padding: 8px 14px;
@@ -141,8 +153,9 @@
                 cursor: pointer;
                 font-size: 16px;
                 font-weight: 600;
+                color: #000000;
               ">−</button>
-              <span style="padding: 0 16px; font-weight: 600; font-size: 14px; color: inherit;">${item.quantity}</span>
+              <span style="padding: 0 16px; font-weight: 600; font-size: 14px; color: #000000;">${item.quantity}</span>
               <button class="revlyft-qty-btn" data-action="increase" data-key="${item.key}" style="
                 padding: 8px 14px;
                 background: none;
@@ -150,6 +163,7 @@
                 cursor: pointer;
                 font-size: 16px;
                 font-weight: 600;
+                color: #000000;
               ">+</button>
             </div>
             <span style="font-weight: 600; color: inherit;">${formatPrice(item.final_line_price)}</span>
@@ -287,9 +301,6 @@
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
               <span style="font-size: 16px; font-weight: 600; color: inherit;">Subtotal:</span>
               <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: inherit;">${formatPrice(subtotal)}</span>
-            </div>
-            <div style="margin-bottom: 12px; font-size: 12px; color: inherit; opacity: 0.7; text-align: center;">
-              Taxes and shipping calculated at checkout
             </div>
             <button id="revlyft-checkout-btn" style="
               width: 100%;
@@ -553,6 +564,10 @@
       console.log('⚠️ No cart config found, skipping initialization');
       return;
     }
+    
+    // Set shop currency from config (saved during setup)
+    shopCurrency = cartConfig.currency || 'USD';
+    console.log('💰 Using currency:', shopCurrency);
     
     if (!cartConfig.metadata?.isActive) {
       console.log('⚠️ Cart drawer not active (isActive: false), skipping initialization');
