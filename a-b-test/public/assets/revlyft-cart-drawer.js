@@ -166,7 +166,12 @@
                 color: #000000;
               ">+</button>
             </div>
-            <span style="font-weight: 600; color: inherit;">${formatPrice(item.final_line_price)}</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              ${config.general?.showStrikethroughPrices !== false && item.original_line_price > item.final_line_price ? `
+                <span style="font-weight: 500; color: #999; text-decoration: line-through; font-size: 13px;">${formatPrice(item.original_line_price)}</span>
+              ` : ''}
+              <span style="font-weight: 600; color: inherit;">${formatPrice(item.final_line_price)}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -205,7 +210,7 @@
         transition: right 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
-        font-family: ${appearance.fontFamily || 'system-ui, -apple-system, sans-serif'};
+        font-family: ${config.general?.inheritThemeFont !== false ? 'inherit' : (appearance.fontFamily || 'system-ui, -apple-system, sans-serif')};
         font-size: ${appearance.fontSize || '14px'};
         color: ${appearance.cartTextColor};
       ">
@@ -298,10 +303,12 @@
             border-top: 1px solid rgba(0,0,0,0.1);
             background-color: ${appearance.cartAccentColor};
           ">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-              <span style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">Subtotal:</span>
-              <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">${formatPrice(subtotal)}</span>
-            </div>
+            ${config.general?.enableSubtotalLine !== false ? `
+              <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+                <span style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">Subtotal:</span>
+                <span id="revlyft-subtotal" style="font-size: 16px; font-weight: 600; color: ${appearance.subtotalTextColor || '#000000'};">${formatPrice(subtotal)}</span>
+              </div>
+            ` : ''}
             <button id="revlyft-checkout-btn" style="
               width: 100%;
               padding: 16px;

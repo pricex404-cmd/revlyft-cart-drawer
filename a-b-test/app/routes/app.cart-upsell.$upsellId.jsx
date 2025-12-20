@@ -37,6 +37,30 @@ export const loader = async ({ request, params }) => {
               edges {
                 node {
                   price
+                  compareAtPrice
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+
+  // Fetch published theme settings for font
+  const themeResponse = await admin.graphql(`
+    query {
+      themes(first: 1, query: "role:main") {
+        edges {
+          node {
+            id
+            name
+            files(first: 1, filenames: ["config/settings_data.json"]) {
+              edges {
+                node {
+                  ... on OnlineStoreThemeFileBodyText {
+                    content
+                  }
                 }
               }
             }
@@ -47,22 +71,40 @@ export const loader = async ({ request, params }) => {
   `);
 
   const data = await shopResponse.json();
+  const themeData = await themeResponse.json();
+  
   const products = data.data.products.edges.map(edge => ({
     id: edge.node.id,
     title: edge.node.title,
     image: edge.node.featuredImage?.url,
-    price: edge.node.variants.edges[0]?.node.price
+    price: edge.node.variants.edges[0]?.node.price,
+    compareAtPrice: edge.node.variants.edges[0]?.node.compareAtPrice
   }));
+
+  // Extract theme body font
+  let themeBodyFont = 'system-ui, -apple-system, sans-serif';
+  try {
+    if (themeData.data?.themes?.edges[0]?.node?.files?.edges[0]?.node?.content) {
+      const settingsContent = JSON.parse(themeData.data.themes.edges[0].node.files.edges[0].node.content);
+      const bodyFont = settingsContent.current?.type_body_font;
+      if (bodyFont) {
+        themeBodyFont = bodyFont.replace(/_/g, ' ');
+      }
+    }
+  } catch (error) {
+    console.error('Error parsing theme font:', error);
+  }
 
   return {
     shop: data.data.shop.myshopifyDomain,
     products,
-    currencyCode: data.data.shop.currencyCode || 'USD'
+    currencyCode: data.data.shop.currencyCode || 'USD',
+    themeBodyFont
   };
 };
 
 export default function CartUpsellConfiguration() {
-  const { shop, products, currencyCode } = useLoaderData();
+  const { shop, products, currencyCode, themeBodyFont } = useLoaderData();
   const { upsellId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -73,6 +115,11 @@ export default function CartUpsellConfiguration() {
   const [activeSection, setActiveSection] = useState('design');
 
   const [cartConfig, setCartConfig] = useState({
+    general: {
+      inheritThemeFont: true,
+      showStrikethroughPrices: true,
+      enableSubtotalLine: true
+    },
     appearance: {
       cartBackgroundColor: '#ffffff',
       cartTextColor: '#000000',
@@ -183,6 +230,147 @@ export default function CartUpsellConfiguration() {
               Design
             </h2>
             
+            {/* General Section */}
+            <div style={{ 
+              marginBottom: '32px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '12px',
+              padding: '24px',
+              backgroundColor: '#f9fafb',
+              width: '100%',
+              maxWidth: '100%'
+            }}>
+              <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>General</h3>
+              
+              {/* Inherit Font from Theme */}
+              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <label style={{ fontSize: '13px', color: '#6b7280' }}>
+                    Inherit font from theme
+                  </label>
+                </div>
+                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
+                  <input
+                    type="checkbox"
+                    checked={cartConfig.general.inheritThemeFont}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, inheritThemeFont: e.target.checked }
+                    })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: cartConfig.general.inheritThemeFont ? '#4CAF50' : '#ccc',
+                    transition: '0.4s',
+                    borderRadius: '24px'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      content: '',
+                      height: '18px',
+                      width: '18px',
+                      left: cartConfig.general.inheritThemeFont ? '23px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: 'white',
+                      transition: '0.4s',
+                      borderRadius: '50%'
+                    }} />
+                  </span>
+                </label>
+              </div>
+
+              {/* Show Strikethrough Prices */}
+              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <label style={{ fontSize: '13px', color: '#6b7280' }}>
+                    Show strikethrough prices
+                  </label>
+                  <span title="Only displays for products with compare at price configured" style={{ cursor: 'help', fontSize: '14px', color: '#9ca3af' }}>ⓘ</span>
+                </div>
+                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
+                  <input
+                    type="checkbox"
+                    checked={cartConfig.general.showStrikethroughPrices}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, showStrikethroughPrices: e.target.checked }
+                    })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: cartConfig.general.showStrikethroughPrices ? '#4CAF50' : '#ccc',
+                    transition: '0.4s',
+                    borderRadius: '24px'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      content: '',
+                      height: '18px',
+                      width: '18px',
+                      left: cartConfig.general.showStrikethroughPrices ? '23px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: 'white',
+                      transition: '0.4s',
+                      borderRadius: '50%'
+                    }} />
+                  </span>
+                </label>
+              </div>
+
+              {/* Enable Subtotal Line */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label style={{ fontSize: '13px', color: '#6b7280' }}>
+                  Enable subtotal line
+                </label>
+                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
+                  <input
+                    type="checkbox"
+                    checked={cartConfig.general.enableSubtotalLine}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, enableSubtotalLine: e.target.checked }
+                    })}
+                    style={{ opacity: 0, width: 0, height: 0 }}
+                  />
+                  <span style={{
+                    position: 'absolute',
+                    cursor: 'pointer',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: cartConfig.general.enableSubtotalLine ? '#4CAF50' : '#ccc',
+                    transition: '0.4s',
+                    borderRadius: '24px'
+                  }}>
+                    <span style={{
+                      position: 'absolute',
+                      content: '',
+                      height: '18px',
+                      width: '18px',
+                      left: cartConfig.general.enableSubtotalLine ? '23px' : '3px',
+                      bottom: '3px',
+                      backgroundColor: 'white',
+                      transition: '0.4s',
+                      borderRadius: '50%'
+                    }} />
+                  </span>
+                </label>
+              </div>
+            </div>
+
             {/* Colors Section */}
             <div style={{ 
               marginBottom: '32px',
@@ -1042,7 +1230,7 @@ export default function CartUpsellConfiguration() {
             borderRadius: '8px',
             overflow: 'hidden',
             border: '1px solid #e1e3e5',
-            fontFamily: cartConfig.appearance.fontFamily,
+            fontFamily: cartConfig.general.inheritThemeFont ? themeBodyFont : cartConfig.appearance.fontFamily,
             fontSize: cartConfig.appearance.fontSize === 'small' ? '10px' : 
                      cartConfig.appearance.fontSize === 'large' ? '12px' : '11px',
             display: 'flex',
@@ -1180,8 +1368,21 @@ export default function CartUpsellConfiguration() {
                       <div style={{ 
                         fontSize: '12px', 
                         fontWeight: '700',
-                        color: cartConfig.appearance.cartTextColor
+                        color: cartConfig.appearance.cartTextColor,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                       }}>
+                        {cartConfig.general.showStrikethroughPrices && product.compareAtPrice && parseFloat(product.compareAtPrice) > parseFloat(product.price) && (
+                          <span style={{ 
+                            fontSize: '11px', 
+                            textDecoration: 'line-through', 
+                            color: '#999',
+                            fontWeight: '500'
+                          }}>
+                            {new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(parseFloat(product.compareAtPrice))}
+                          </span>
+                        )}
                         {new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(parseFloat(product.price))}
                       </div>
                     </div>
@@ -1200,17 +1401,19 @@ export default function CartUpsellConfiguration() {
               borderTop: '1px solid #e1e3e5',
               backgroundColor: cartConfig.appearance.cartAccentColor
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>Subtotal:</span>
-                <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>
-                  {products && products.length > 0 
-                    ? new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(
-                        products.reduce((sum, product) => sum + (parseFloat(product.price) || 0), 0)
-                      )
-                    : new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(0)
-                  }
-                </span>
-              </div>
+              {cartConfig.general.enableSubtotalLine && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>Subtotal:</span>
+                  <span style={{ fontSize: '13px', fontWeight: '600', color: cartConfig.appearance.subtotalTextColor }}>
+                    {products && products.length > 0 
+                      ? new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(
+                          products.reduce((sum, product) => sum + (parseFloat(product.price) || 0), 0)
+                        )
+                      : new Intl.NumberFormat('en', { style: 'currency', currency: currencyCode }).format(0)
+                    }
+                  </span>
+                </div>
+              )}
               <button style={{
                 width: '100%',
                 padding: '11px',
