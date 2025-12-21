@@ -210,7 +210,7 @@
         transition: right 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
-        font-family: ${config.general?.inheritThemeFont ? 'inherit' : (appearance.fontFamily || 'system-ui, -apple-system, sans-serif')};
+          font-family: ${config.general?.inheritThemeFont ? 'inherit' : (config.general?.customFontFamily || 'Arial, sans-serif')};
         font-size: ${appearance.fontSize || '14px'};
         color: ${appearance.cartTextColor};
       ">
@@ -576,6 +576,7 @@
     if (!cartConfig.general) {
       cartConfig.general = {
         inheritThemeFont: true,
+        customFontFamily: 'Arial, sans-serif',
         showStrikethroughPrices: true,
         enableSubtotalLine: true
       };

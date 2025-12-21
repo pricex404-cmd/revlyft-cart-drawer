@@ -118,6 +118,7 @@ export default function CartUpsellConfiguration() {
   const [cartConfig, setCartConfig] = useState({
     general: {
       inheritThemeFont: true,
+      customFontFamily: 'Arial, sans-serif',
       showStrikethroughPrices: true,
       enableSubtotalLine: true
     },
@@ -205,6 +206,7 @@ export default function CartUpsellConfiguration() {
             setCartConfig({
               general: {
                 inheritThemeFont: data.general?.inheritThemeFont ?? true,
+                customFontFamily: data.general?.customFontFamily || 'Arial, sans-serif',
                 showStrikethroughPrices: data.general?.showStrikethroughPrices ?? true,
                 enableSubtotalLine: data.general?.enableSubtotalLine ?? true
               },
@@ -308,6 +310,40 @@ export default function CartUpsellConfiguration() {
                   </span>
                 </label>
               </div>
+
+              {/* Custom Font Family - Only show when inheritThemeFont is false */}
+              {!cartConfig.general.inheritThemeFont && (
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                    Custom font family
+                  </label>
+                  <select
+                    value={cartConfig.general.customFontFamily}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, customFontFamily: e.target.value }
+                    })}
+                    style={{
+                      width: '100%',
+                      padding: '10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <option value="Arial, sans-serif">Arial</option>
+                    <option value="Helvetica, sans-serif">Helvetica</option>
+                    <option value="'Times New Roman', serif">Times New Roman</option>
+                    <option value="Georgia, serif">Georgia</option>
+                    <option value="'Courier New', monospace">Courier New</option>
+                    <option value="Verdana, sans-serif">Verdana</option>
+                    <option value="'Trebuchet MS', sans-serif">Trebuchet MS</option>
+                    <option value="system-ui, -apple-system, sans-serif">System Font</option>
+                  </select>
+                </div>
+              )}
 
               {/* Show Strikethrough Prices */}
               <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -1254,7 +1290,7 @@ export default function CartUpsellConfiguration() {
             borderRadius: '8px',
             overflow: 'hidden',
             border: '1px solid #e1e3e5',
-            fontFamily: cartConfig.general?.inheritThemeFont ? themeBodyFont : cartConfig.appearance.fontFamily,
+            fontFamily: cartConfig.general?.inheritThemeFont ? themeBodyFont : (cartConfig.general?.customFontFamily || 'Arial, sans-serif'),
             fontSize: cartConfig.appearance.fontSize === 'small' ? '10px' : 
                      cartConfig.appearance.fontSize === 'large' ? '12px' : '11px',
             display: 'flex',
