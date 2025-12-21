@@ -210,7 +210,7 @@
         transition: right 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
-        font-family: ${config.general?.inheritThemeFont !== false ? 'inherit' : (appearance.fontFamily || 'system-ui, -apple-system, sans-serif')};
+        font-family: ${config.general?.inheritThemeFont ? 'inherit' : (appearance.fontFamily || 'system-ui, -apple-system, sans-serif')};
         font-size: ${appearance.fontSize || '14px'};
         color: ${appearance.cartTextColor};
       ">
@@ -580,6 +580,10 @@
         enableSubtotalLine: true
       };
     }
+    
+    console.log('💡 General Settings:', cartConfig.general);
+    console.log('🔤 Inherit Theme Font:', cartConfig.general.inheritThemeFont);
+    console.log('📝 Font Family Setting:', cartConfig.appearance?.fontFamily);
     
     // Set shop currency from config (saved during setup)
     shopCurrency = cartConfig.currency || 'USD';
