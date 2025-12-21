@@ -873,7 +873,7 @@ export default function CartUpsellConfiguration() {
   };
 
   return (
-    <Page>
+    <Page fullWidth>
       <div style={{ display: 'flex', height: '100vh' }}>
         {/* Left Section: Sidebar + Middle Panel with Header */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
