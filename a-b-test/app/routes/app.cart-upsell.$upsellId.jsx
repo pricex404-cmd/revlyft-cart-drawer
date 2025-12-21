@@ -343,7 +343,7 @@ export default function CartUpsellConfiguration() {
               </div>
 
               {/* Enable Subtotal Line */}
-              <div style={{ marginBottom: '24px' }}>
+              <div>
                 <Checkbox
                   label="Enable subtotal line"
                   checked={cartConfig.general.enableSubtotalLine}
@@ -353,29 +353,41 @@ export default function CartUpsellConfiguration() {
                   })}
                 />
               </div>
+            </div>
 
-              {/* Button Settings */}
-              <h4 style={{ fontSize: '13px', fontWeight: '600', marginBottom: '12px', color: '#374151' }}>Button Settings</h4>
+            {/* Button Settings Section */}
+            <div style={{ 
+              marginBottom: '32px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '12px',
+              padding: '24px',
+              backgroundColor: '#f9fafb',
+              width: '100%',
+              maxWidth: '100%'
+            }}>
+              <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>Button Settings</h3>
               
-              {/* Corner Radius */}
+              {/* Corner Radius Slider */}
               <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                  Corner radius
+                  Corner radius: {cartConfig.general.checkoutButtonRadius}
                 </label>
                 <input
-                  type="text"
-                  value={cartConfig.general.checkoutButtonRadius}
+                  type="range"
+                  min="0"
+                  max="50"
+                  value={parseInt(cartConfig.general.checkoutButtonRadius) || 8}
                   onChange={(e) => setCartConfig({
                     ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonRadius: e.target.value }
+                    general: { ...cartConfig.general, checkoutButtonRadius: e.target.value + 'px' }
                   })}
-                  placeholder="e.g., 8px"
                   style={{
                     width: '100%',
-                    padding: '10px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px'
+                    height: '6px',
+                    borderRadius: '3px',
+                    background: '#d1d5db',
+                    outline: 'none',
+                    cursor: 'pointer'
                   }}
                 />
               </div>
@@ -385,21 +397,43 @@ export default function CartUpsellConfiguration() {
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Button color
                 </label>
-                <input
-                  type="color"
-                  value={cartConfig.general.checkoutButtonColor}
-                  onChange={(e) => setCartConfig({
-                    ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonColor: e.target.value }
-                  })}
-                  style={{
-                    width: '100%',
-                    height: '40px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.general.checkoutButtonColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonColor: e.target.value }
+                    })}
+                    style={{ 
+                      width: '100%',
+                      padding: '10px 50px 10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.general.checkoutButtonColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonColor: e.target.value }
+                    })}
+                    style={{ 
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Button Text Color */}
@@ -407,21 +441,43 @@ export default function CartUpsellConfiguration() {
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Button text color
                 </label>
-                <input
-                  type="color"
-                  value={cartConfig.general.checkoutButtonTextColor}
-                  onChange={(e) => setCartConfig({
-                    ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonTextColor: e.target.value }
-                  })}
-                  style={{
-                    width: '100%',
-                    height: '40px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.general.checkoutButtonTextColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonTextColor: e.target.value }
+                    })}
+                    style={{ 
+                      width: '100%',
+                      padding: '10px 50px 10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.general.checkoutButtonTextColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonTextColor: e.target.value }
+                    })}
+                    style={{ 
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Button Hover Color */}
@@ -429,21 +485,43 @@ export default function CartUpsellConfiguration() {
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Button hover color
                 </label>
-                <input
-                  type="color"
-                  value={cartConfig.general.checkoutButtonHoverColor}
-                  onChange={(e) => setCartConfig({
-                    ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonHoverColor: e.target.value }
-                  })}
-                  style={{
-                    width: '100%',
-                    height: '40px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.general.checkoutButtonHoverColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonHoverColor: e.target.value }
+                    })}
+                    style={{ 
+                      width: '100%',
+                      padding: '10px 50px 10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.general.checkoutButtonHoverColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonHoverColor: e.target.value }
+                    })}
+                    style={{ 
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Button Text Hover Color */}
@@ -451,21 +529,43 @@ export default function CartUpsellConfiguration() {
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                   Button text hover color
                 </label>
-                <input
-                  type="color"
-                  value={cartConfig.general.checkoutButtonTextHoverColor}
-                  onChange={(e) => setCartConfig({
-                    ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonTextHoverColor: e.target.value }
-                  })}
-                  style={{
-                    width: '100%',
-                    height: '40px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    cursor: 'pointer'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.general.checkoutButtonTextHoverColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonTextHoverColor: e.target.value }
+                    })}
+                    style={{ 
+                      width: '100%',
+                      padding: '10px 50px 10px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      backgroundColor: '#fff'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.general.checkoutButtonTextHoverColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      general: { ...cartConfig.general, checkoutButtonTextHoverColor: e.target.value }
+                    })}
+                    style={{ 
+                      position: 'absolute',
+                      right: '6px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '36px',
+                      height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
               </div>
             </div>
 
