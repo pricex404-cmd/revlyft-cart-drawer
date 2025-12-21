@@ -121,7 +121,12 @@ export default function CartUpsellConfiguration() {
       inheritThemeFont: true,
       customFontFamily: 'Arial, sans-serif',
       showStrikethroughPrices: true,
-      enableSubtotalLine: true
+      enableSubtotalLine: true,
+      checkoutButtonRadius: '8px',
+      checkoutButtonColor: '#000000',
+      checkoutButtonTextColor: '#ffffff',
+      checkoutButtonHoverColor: '#333333',
+      checkoutButtonTextHoverColor: '#ffffff'
     },
     appearance: {
       cartBackgroundColor: '#ffffff',
@@ -209,7 +214,12 @@ export default function CartUpsellConfiguration() {
                 inheritThemeFont: data.general?.inheritThemeFont ?? true,
                 customFontFamily: data.general?.customFontFamily || 'Arial, sans-serif',
                 showStrikethroughPrices: data.general?.showStrikethroughPrices ?? true,
-                enableSubtotalLine: data.general?.enableSubtotalLine ?? true
+                enableSubtotalLine: data.general?.enableSubtotalLine ?? true,
+                checkoutButtonRadius: data.general?.checkoutButtonRadius || '8px',
+                checkoutButtonColor: data.general?.checkoutButtonColor || '#000000',
+                checkoutButtonTextColor: data.general?.checkoutButtonTextColor || '#ffffff',
+                checkoutButtonHoverColor: data.general?.checkoutButtonHoverColor || '#333333',
+                checkoutButtonTextHoverColor: data.general?.checkoutButtonTextHoverColor || '#ffffff'
               },
               appearance: {
                 ...cartConfig.appearance,
@@ -321,7 +331,7 @@ export default function CartUpsellConfiguration() {
                   label={
                     <span>
                       Show strikethrough prices
-                      <span title="Only displays for products with compare at price configured" style={{ cursor: 'help', fontSize: '14px', color: '#9ca3af', marginLeft: '8px' }}>ⓘ</span>
+                      <span title="Only displays for products with compare at price configured" style={{ cursor: 'help', fontSize: '14px', color: '#6b7280', marginLeft: '8px' }}>ⓘ</span>
                     </span>
                   }
                   checked={cartConfig.general.showStrikethroughPrices}
@@ -333,7 +343,7 @@ export default function CartUpsellConfiguration() {
               </div>
 
               {/* Enable Subtotal Line */}
-              <div>
+              <div style={{ marginBottom: '24px' }}>
                 <Checkbox
                   label="Enable subtotal line"
                   checked={cartConfig.general.enableSubtotalLine}
@@ -341,6 +351,120 @@ export default function CartUpsellConfiguration() {
                     ...cartConfig,
                     general: { ...cartConfig.general, enableSubtotalLine: checked }
                   })}
+                />
+              </div>
+
+              {/* Button Settings */}
+              <h4 style={{ fontSize: '13px', fontWeight: '600', marginBottom: '12px', color: '#374151' }}>Button Settings</h4>
+              
+              {/* Corner Radius */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Corner radius
+                </label>
+                <input
+                  type="text"
+                  value={cartConfig.general.checkoutButtonRadius}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, checkoutButtonRadius: e.target.value }
+                  })}
+                  placeholder="e.g., 8px"
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '14px'
+                  }}
+                />
+              </div>
+
+              {/* Button Color */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Button color
+                </label>
+                <input
+                  type="color"
+                  value={cartConfig.general.checkoutButtonColor}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, checkoutButtonColor: e.target.value }
+                  })}
+                  style={{
+                    width: '100%',
+                    height: '40px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
+                />
+              </div>
+
+              {/* Button Text Color */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Button text color
+                </label>
+                <input
+                  type="color"
+                  value={cartConfig.general.checkoutButtonTextColor}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, checkoutButtonTextColor: e.target.value }
+                  })}
+                  style={{
+                    width: '100%',
+                    height: '40px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
+                />
+              </div>
+
+              {/* Button Hover Color */}
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Button hover color
+                </label>
+                <input
+                  type="color"
+                  value={cartConfig.general.checkoutButtonHoverColor}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, checkoutButtonHoverColor: e.target.value }
+                  })}
+                  style={{
+                    width: '100%',
+                    height: '40px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
+                />
+              </div>
+
+              {/* Button Text Hover Color */}
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Button text hover color
+                </label>
+                <input
+                  type="color"
+                  value={cartConfig.general.checkoutButtonTextHoverColor}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, checkoutButtonTextHoverColor: e.target.value }
+                  })}
+                  style={{
+                    width: '100%',
+                    height: '40px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    cursor: 'pointer'
+                  }}
                 />
               </div>
             </div>
@@ -1388,17 +1512,28 @@ export default function CartUpsellConfiguration() {
                   </span>
                 </div>
               )}
-              <button style={{
-                width: '100%',
-                padding: '11px',
-                backgroundColor: '#000000',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}>
+              <button 
+                style={{
+                  width: '100%',
+                  padding: '11px',
+                  backgroundColor: cartConfig.general?.checkoutButtonColor || '#000000',
+                  color: cartConfig.general?.checkoutButtonTextColor || '#ffffff',
+                  border: 'none',
+                  borderRadius: cartConfig.general?.checkoutButtonRadius || '8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = cartConfig.general?.checkoutButtonHoverColor || '#333333';
+                  e.target.style.color = cartConfig.general?.checkoutButtonTextHoverColor || '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = cartConfig.general?.checkoutButtonColor || '#000000';
+                  e.target.style.color = cartConfig.general?.checkoutButtonTextColor || '#ffffff';
+                }}
+              >
                 Proceed to Checkout
               </button>
             </div>

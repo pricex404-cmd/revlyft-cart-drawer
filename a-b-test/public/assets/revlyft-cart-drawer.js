@@ -312,15 +312,18 @@
             <button id="revlyft-checkout-btn" style="
               width: 100%;
               padding: 16px;
-              background-color: #000000;
-              color: #ffffff;
+              background-color: ${config.general?.checkoutButtonColor || '#000000'};
+              color: ${config.general?.checkoutButtonTextColor || '#ffffff'};
               border: none;
-              border-radius: 8px;
+              border-radius: ${config.general?.checkoutButtonRadius || '8px'};
               font-size: 16px;
               font-weight: 600;
               cursor: pointer;
               transition: all 0.2s;
-            " onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+            " 
+            onmouseover="this.style.backgroundColor='${config.general?.checkoutButtonHoverColor || '#333333'}'; this.style.color='${config.general?.checkoutButtonTextHoverColor || '#ffffff'}'"
+            onmouseout="this.style.backgroundColor='${config.general?.checkoutButtonColor || '#000000'}'; this.style.color='${config.general?.checkoutButtonTextColor || '#ffffff'}'"
+            >
               Proceed to Checkout
             </button>
           </div>
@@ -578,7 +581,12 @@
         inheritThemeFont: true,
         customFontFamily: 'Arial, sans-serif',
         showStrikethroughPrices: true,
-        enableSubtotalLine: true
+        enableSubtotalLine: true,
+        checkoutButtonRadius: '8px',
+        checkoutButtonColor: '#000000',
+        checkoutButtonTextColor: '#ffffff',
+        checkoutButtonHoverColor: '#333333',
+        checkoutButtonTextHoverColor: '#ffffff'
       };
     }
     
