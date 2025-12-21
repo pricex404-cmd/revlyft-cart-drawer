@@ -90,7 +90,7 @@
   /**
    * Create HTML for cart items only
    */
-  function createCartItemsHTML(items) {
+  function createCartItemsHTML(items, config) {
     if (items.length === 0) {
       return `
         <div style="text-align: center; padding: 40px 20px; color: #999;">
@@ -281,7 +281,7 @@
           overflow-y: auto;
           padding: 20px;
         ">
-          ${createCartItemsHTML(cart.items)}
+          ${createCartItemsHTML(cart.items, config)}
         </div>
 
         ${upsell.enabled && cart.items.length > 0 ? `
@@ -450,7 +450,7 @@
       // Update cart items section
       const itemsContainer = document.getElementById('revlyft-cart-items');
       if (itemsContainer) {
-        itemsContainer.innerHTML = createCartItemsHTML(cartData.items);
+        itemsContainer.innerHTML = createCartItemsHTML(cartData.items, cartConfig);
         attachItemEventListeners(); // Only re-attach item-specific listeners
       }
 
@@ -570,6 +570,15 @@
     if (!cartConfig) {
       console.log('⚠️ No cart config found, skipping initialization');
       return;
+    }
+    
+    // Ensure general settings exist with defaults
+    if (!cartConfig.general) {
+      cartConfig.general = {
+        inheritThemeFont: true,
+        showStrikethroughPrices: true,
+        enableSubtotalLine: true
+      };
     }
     
     // Set shop currency from config (saved during setup)
