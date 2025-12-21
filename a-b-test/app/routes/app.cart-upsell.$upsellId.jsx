@@ -3,7 +3,8 @@ import { useLoaderData, useParams, useSearchParams, useNavigate } from "@remix-r
 import {
   Page,
   Banner,
-  Button
+  Button,
+  Checkbox
 } from "@shopify/polaris";
 import { ArrowLeftIcon } from '@shopify/polaris-icons';
 import { authenticate } from "../shopify.server";
@@ -269,46 +270,15 @@ export default function CartUpsellConfiguration() {
               <h3 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>General</h3>
               
               {/* Inherit Font from Theme */}
-              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label style={{ fontSize: '13px', color: '#6b7280' }}>
-                    Inherit font from theme
-                  </label>
-                </div>
-                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
-                  <input
-                    type="checkbox"
-                    checked={cartConfig.general.inheritThemeFont}
-                    onChange={(e) => setCartConfig({
-                      ...cartConfig,
-                      general: { ...cartConfig.general, inheritThemeFont: e.target.checked }
-                    })}
-                    style={{ opacity: 0, width: 0, height: 0 }}
-                  />
-                  <span style={{
-                    position: 'absolute',
-                    cursor: 'pointer',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: cartConfig.general.inheritThemeFont ? '#4CAF50' : '#ccc',
-                    transition: '0.4s',
-                    borderRadius: '24px'
-                  }}>
-                    <span style={{
-                      position: 'absolute',
-                      content: '',
-                      height: '18px',
-                      width: '18px',
-                      left: cartConfig.general.inheritThemeFont ? '23px' : '3px',
-                      bottom: '3px',
-                      backgroundColor: 'white',
-                      transition: '0.4s',
-                      borderRadius: '50%'
-                    }} />
-                  </span>
-                </label>
+              <div style={{ marginBottom: '16px' }}>
+                <Checkbox
+                  label="Inherit font from theme"
+                  checked={cartConfig.general.inheritThemeFont}
+                  onChange={(checked) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, inheritThemeFont: checked }
+                  })}
+                />
               </div>
 
               {/* Custom Font Family - Only show when inheritThemeFont is false */}
@@ -346,88 +316,32 @@ export default function CartUpsellConfiguration() {
               )}
 
               {/* Show Strikethrough Prices */}
-              <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <label style={{ fontSize: '13px', color: '#6b7280' }}>
-                    Show strikethrough prices
-                  </label>
-                  <span title="Only displays for products with compare at price configured" style={{ cursor: 'help', fontSize: '14px', color: '#9ca3af' }}>ⓘ</span>
-                </div>
-                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
-                  <input
-                    type="checkbox"
-                    checked={cartConfig.general.showStrikethroughPrices}
-                    onChange={(e) => setCartConfig({
-                      ...cartConfig,
-                      general: { ...cartConfig.general, showStrikethroughPrices: e.target.checked }
-                    })}
-                    style={{ opacity: 0, width: 0, height: 0 }}
-                  />
-                  <span style={{
-                    position: 'absolute',
-                    cursor: 'pointer',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: cartConfig.general.showStrikethroughPrices ? '#4CAF50' : '#ccc',
-                    transition: '0.4s',
-                    borderRadius: '24px'
-                  }}>
-                    <span style={{
-                      position: 'absolute',
-                      content: '',
-                      height: '18px',
-                      width: '18px',
-                      left: cartConfig.general.showStrikethroughPrices ? '23px' : '3px',
-                      bottom: '3px',
-                      backgroundColor: 'white',
-                      transition: '0.4s',
-                      borderRadius: '50%'
-                    }} />
-                  </span>
-                </label>
+              <div style={{ marginBottom: '16px' }}>
+                <Checkbox
+                  label={
+                    <span>
+                      Show strikethrough prices
+                      <span title="Only displays for products with compare at price configured" style={{ cursor: 'help', fontSize: '14px', color: '#9ca3af', marginLeft: '8px' }}>ⓘ</span>
+                    </span>
+                  }
+                  checked={cartConfig.general.showStrikethroughPrices}
+                  onChange={(checked) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, showStrikethroughPrices: checked }
+                  })}
+                />
               </div>
 
               {/* Enable Subtotal Line */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label style={{ fontSize: '13px', color: '#6b7280' }}>
-                  Enable subtotal line
-                </label>
-                <label style={{ position: 'relative', display: 'inline-block', width: '44px', height: '24px' }}>
-                  <input
-                    type="checkbox"
-                    checked={cartConfig.general.enableSubtotalLine}
-                    onChange={(e) => setCartConfig({
-                      ...cartConfig,
-                      general: { ...cartConfig.general, enableSubtotalLine: e.target.checked }
-                    })}
-                    style={{ opacity: 0, width: 0, height: 0 }}
-                  />
-                  <span style={{
-                    position: 'absolute',
-                    cursor: 'pointer',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: cartConfig.general.enableSubtotalLine ? '#4CAF50' : '#ccc',
-                    transition: '0.4s',
-                    borderRadius: '24px'
-                  }}>
-                    <span style={{
-                      position: 'absolute',
-                      content: '',
-                      height: '18px',
-                      width: '18px',
-                      left: cartConfig.general.enableSubtotalLine ? '23px' : '3px',
-                      bottom: '3px',
-                      backgroundColor: 'white',
-                      transition: '0.4s',
-                      borderRadius: '50%'
-                    }} />
-                  </span>
-                </label>
+              <div>
+                <Checkbox
+                  label="Enable subtotal line"
+                  checked={cartConfig.general.enableSubtotalLine}
+                  onChange={(checked) => setCartConfig({
+                    ...cartConfig,
+                    general: { ...cartConfig.general, enableSubtotalLine: checked }
+                  })}
+                />
               </div>
             </div>
 
@@ -1235,7 +1149,7 @@ export default function CartUpsellConfiguration() {
 
         {/* Middle Configuration Panel */}
         <div style={{ 
-          flex: 1,
+          flex: 1.5,
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: '#fff',
