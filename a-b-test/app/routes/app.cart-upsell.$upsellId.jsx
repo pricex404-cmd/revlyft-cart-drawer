@@ -1068,17 +1068,6 @@ export default function CartUpsellConfiguration() {
                 </div>
 
                 <div style={{ marginBottom: '20px' }}>
-                  <Checkbox
-                    label="Dynamic Banner"
-                    checked={cartConfig.announcementBar.dynamicBanner}
-                    onChange={(checked) => setCartConfig({
-                      ...cartConfig,
-                      announcementBar: { ...cartConfig.announcementBar, dynamicBanner: checked }
-                    })}
-                  />
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                     Background Color
                   </label>
@@ -1160,6 +1149,17 @@ export default function CartUpsellConfiguration() {
                       }}
                     />
                   </div>
+                </div>
+
+                <div>
+                  <Checkbox
+                    label="Dynamic Banner"
+                    checked={cartConfig.announcementBar.dynamicBanner}
+                    onChange={(checked) => setCartConfig({
+                      ...cartConfig,
+                      announcementBar: { ...cartConfig.announcementBar, dynamicBanner: checked }
+                    })}
+                  />
                 </div>
               </>
             )}
@@ -1682,20 +1682,22 @@ export default function CartUpsellConfiguration() {
 
             {/* Announcement Bar - Before Products */}
             {cartConfig.announcementBar.enabled && cartConfig.announcementBar.position === 'before' && (
-              <div style={{
-                backgroundColor: cartConfig.announcementBar.backgroundColor,
-                color: cartConfig.announcementBar.textColor,
-                borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
-                padding: '10px 14px',
-                textAlign: 'center',
-                fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
-                fontWeight: '500',
-                height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }} dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}>
-              </div>
+              <div 
+                style={{
+                  backgroundColor: cartConfig.announcementBar.backgroundColor,
+                  color: cartConfig.announcementBar.textColor,
+                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  padding: '10px 14px',
+                  textAlign: 'center',
+                  fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
+                  fontWeight: '500',
+                  height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }} 
+                dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
+              />
             )}
 
             {/* Progress Bar */}
@@ -1828,6 +1830,27 @@ export default function CartUpsellConfiguration() {
               )}
             </div>
 
+            {/* Announcement Bar - After Products (before footer) */}
+            {cartConfig.announcementBar.enabled && cartConfig.announcementBar.position === 'after' && (
+              <div 
+                style={{
+                  backgroundColor: cartConfig.announcementBar.backgroundColor,
+                  color: cartConfig.announcementBar.textColor,
+                  borderTop: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  padding: '10px 14px',
+                  textAlign: 'center',
+                  fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
+                  fontWeight: '500',
+                  height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }} 
+                dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
+              />
+            )}
+
             {/* Footer */}
             <div style={{
               padding: '14px',
@@ -1871,25 +1894,6 @@ export default function CartUpsellConfiguration() {
               >
                 Proceed to Checkout
               </button>
-              
-              {/* Announcement Bar - After Products */}
-              {cartConfig.announcementBar.enabled && cartConfig.announcementBar.position === 'after' && (
-                <div style={{
-                  backgroundColor: cartConfig.announcementBar.backgroundColor,
-                  color: cartConfig.announcementBar.textColor,
-                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
-                  padding: '10px 14px',
-                  textAlign: 'center',
-                  fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
-                  fontWeight: '500',
-                  height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  marginTop: '12px'
-                }} dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}>
-                </div>
-              )}
             </div>
           </div>
         </div>
