@@ -1626,6 +1626,18 @@ export default function CartUpsellConfiguration() {
 
   return (
     <Page fullWidth>
+      <style>{`
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `}</style>
       <div style={{ display: 'flex', height: '100vh' }}>
         {/* Left Section: Sidebar + Middle Panel with Header */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -1993,14 +2005,23 @@ export default function CartUpsellConfiguration() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   whiteSpace: 'pre-wrap',
-                  transition: 'opacity 0.5s ease-in-out'
+                  overflow: 'hidden',
+                  position: 'relative'
                 }} 
-                dangerouslySetInnerHTML={{ 
-                  __html: cartConfig.announcementBar.dynamicBanner 
-                    ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
-                    : cartConfig.announcementBar.text 
-                }}
-              />
+              >
+                <div
+                  key={currentBannerIndex}
+                  style={{
+                    width: '100%',
+                    animation: 'slideIn 0.5s ease-in-out'
+                  }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: cartConfig.announcementBar.dynamicBanner 
+                      ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
+                      : cartConfig.announcementBar.text 
+                  }}
+                />
+              </div>
             )}
 
             {/* Progress Bar */}
@@ -2149,14 +2170,23 @@ export default function CartUpsellConfiguration() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   whiteSpace: 'pre-wrap',
-                  transition: 'opacity 0.5s ease-in-out'
+                  overflow: 'hidden',
+                  position: 'relative'
                 }} 
-                dangerouslySetInnerHTML={{ 
-                  __html: cartConfig.announcementBar.dynamicBanner 
-                    ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
-                    : cartConfig.announcementBar.text 
-                }}
-              />
+              >
+                <div
+                  key={currentBannerIndex}
+                  style={{
+                    width: '100%',
+                    animation: 'slideIn 0.5s ease-in-out'
+                  }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: cartConfig.announcementBar.dynamicBanner 
+                      ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
+                      : cartConfig.announcementBar.text 
+                  }}
+                />
+              </div>
             )}
 
             {/* Footer */}

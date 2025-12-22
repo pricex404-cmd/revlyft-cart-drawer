@@ -253,7 +253,8 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
-            transition: opacity 0.5s ease-in-out;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            transform: translateX(0);
           ">
             ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
           </div>
@@ -319,7 +320,8 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
-            transition: opacity 0.5s ease-in-out;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            transform: translateX(0);
           ">
             ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
           </div>
@@ -414,13 +416,19 @@
     bannerRotationInterval = setInterval(() => {
       currentBannerIndex = (currentBannerIndex + 1) % announcementBar.banners.length;
       
-      // Update with fade effect
+      // Update with slide effect
+      announcementEl.style.transform = 'translateX(-100%)';
       announcementEl.style.opacity = '0';
       
       setTimeout(() => {
         announcementEl.innerHTML = announcementBar.banners[currentBannerIndex].text;
-        announcementEl.style.opacity = '1';
-      }, 250);
+        announcementEl.style.transform = 'translateX(100%)';
+        
+        setTimeout(() => {
+          announcementEl.style.transform = 'translateX(0)';
+          announcementEl.style.opacity = '1';
+        }, 50);
+      }, 300);
     }, autoChangeTime * 1000);
   }
 
