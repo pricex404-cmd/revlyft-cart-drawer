@@ -253,10 +253,16 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            transform: translateX(0);
+            overflow: hidden;
+            position: relative;
           ">
-            ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
+            <div id="revlyft-announcement-before-content" style="
+              transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+              transform: translateX(0);
+              width: 100%;
+            ">
+              ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
+            </div>
           </div>
         ` : ''}
 
@@ -320,10 +326,16 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
-            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            transform: translateX(0);
+            overflow: hidden;
+            position: relative;
           ">
-            ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
+            <div id="revlyft-announcement-after-content" style="
+              transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+              transform: translateX(0);
+              width: 100%;
+            ">
+              ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
+            </div>
           </div>
         ` : ''}
 
@@ -399,13 +411,13 @@
       return;
     }
 
-    // Get the announcement element
-    const announcementId = announcementBar.position === 'after' 
-      ? 'revlyft-announcement-after' 
-      : 'revlyft-announcement-before';
-    const announcementEl = document.getElementById(announcementId);
+    // Get the announcement content element
+    const announcementContentId = announcementBar.position === 'after' 
+      ? 'revlyft-announcement-after-content' 
+      : 'revlyft-announcement-before-content';
+    const announcementContentEl = document.getElementById(announcementContentId);
     
-    if (!announcementEl) {
+    if (!announcementContentEl) {
       return;
     }
 
@@ -417,16 +429,16 @@
       currentBannerIndex = (currentBannerIndex + 1) % announcementBar.banners.length;
       
       // Update with slide effect
-      announcementEl.style.transform = 'translateX(-100%)';
-      announcementEl.style.opacity = '0';
+      announcementContentEl.style.transform = 'translateX(-100%)';
+      announcementContentEl.style.opacity = '0';
       
       setTimeout(() => {
-        announcementEl.innerHTML = announcementBar.banners[currentBannerIndex].text;
-        announcementEl.style.transform = 'translateX(100%)';
+        announcementContentEl.innerHTML = announcementBar.banners[currentBannerIndex].text;
+        announcementContentEl.style.transform = 'translateX(100%)';
         
         setTimeout(() => {
-          announcementEl.style.transform = 'translateX(0)';
-          announcementEl.style.opacity = '1';
+          announcementContentEl.style.transform = 'translateX(0)';
+          announcementContentEl.style.opacity = '1';
         }, 50);
       }, 300);
     }, autoChangeTime * 1000);
