@@ -15,6 +15,8 @@
   let cartData = null;
   let isCartOpen = false;
   let shopCurrency = 'USD'; // Default to USD
+  let bannerRotationInterval = null;
+  let currentBannerIndex = 0;
 
   /**
    * Sanitize shop domain for Firebase path
@@ -239,7 +241,7 @@
         </div>
 
         ${announcementBar.enabled && announcementBar.position !== 'after' ? `
-          <div style="
+          <div id="revlyft-announcement-before" style="
             padding: 12px 20px;
             background-color: ${announcementBar.backgroundColor};
             color: ${announcementBar.textColor};
@@ -251,8 +253,9 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
+            transition: opacity 0.5s ease-in-out;
           ">
-            ${announcementBar.text}
+            ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
           </div>
         ` : ''}
 
@@ -304,7 +307,7 @@
 
         <!-- Announcement Bar - After Products -->
         ${announcementBar.enabled && announcementBar.position === 'after' ? `
-          <div style="
+          <div id="revlyft-announcement-after" style="
             padding: 12px 20px;
             background-color: ${announcementBar.backgroundColor};
             color: ${announcementBar.textColor};
@@ -316,8 +319,9 @@
             align-items: center;
             justify-content: center;
             white-space: pre-wrap;
+            transition: opacity 0.5s ease-in-out;
           ">
-            ${announcementBar.text}
+            ${announcementBar.dynamicBanner && announcementBar.banners && announcementBar.banners.length >= 2 ? announcementBar.banners[0].text : announcementBar.text}
           </div>
         ` : ''}
 
@@ -372,6 +376,66 @@
   }
 
   /**
+   * Start banner rotation for dynamic banners
+   */
+  function startBannerRotation() {
+    // Clear any existing interval
+    if (bannerRotationInterval) {
+      clearInterval(bannerRotationInterval);
+      bannerRotationInterval = null;
+    }
+
+    // Check if dynamic banner is enabled
+    if (!cartConfig?.announcementBar?.dynamicBanner) {
+      return;
+    }
+
+    const { announcementBar } = cartConfig;
+    
+    // Validate banners exist and have at least 2
+    if (!announcementBar.banners || announcementBar.banners.length < 2) {
+      return;
+    }
+
+    // Get the announcement element
+    const announcementId = announcementBar.position === 'after' 
+      ? 'revlyft-announcement-after' 
+      : 'revlyft-announcement-before';
+    const announcementEl = document.getElementById(announcementId);
+    
+    if (!announcementEl) {
+      return;
+    }
+
+    // Start rotation
+    currentBannerIndex = 0;
+    const autoChangeTime = announcementBar.autoChangeTime || 3;
+    
+    bannerRotationInterval = setInterval(() => {
+      currentBannerIndex = (currentBannerIndex + 1) % announcementBar.banners.length;
+      
+      // Update with fade effect
+      announcementEl.style.opacity = '0';
+      
+      setTimeout(() => {
+        announcementEl.innerHTML = announcementBar.banners[currentBannerIndex].text;
+        announcementEl.style.opacity = '1';
+      }, 250);
+    }, autoChangeTime * 1000);
+  }
+
+  /**
+   * Stop banner rotation
+   */
+  function stopBannerRotation() {
+    if (bannerRotationInterval) {
+      clearInterval(bannerRotationInterval);
+      bannerRotationInterval = null;
+    }
+    currentBannerIndex = 0;
+  }
+
+  /**
    * Open cart drawer
    */
   function openCart() {
@@ -386,6 +450,9 @@
       backdrop.style.opacity = '1';
       backdrop.style.visibility = 'visible';
       document.body.style.overflow = 'hidden';
+      
+      // Start banner rotation if dynamic banner is enabled
+      startBannerRotation();
     }
   }
 
@@ -404,6 +471,9 @@
       backdrop.style.opacity = '0';
       backdrop.style.visibility = 'hidden';
       document.body.style.overflow = '';
+      
+      // Stop banner rotation when cart closes
+      stopBannerRotation();
     }
   }
 
@@ -492,6 +562,12 @@
       const footer = document.querySelector('#revlyft-cart-footer');
       if (footer) {
         footer.style.display = itemCount > 0 ? 'block' : 'none';
+      }
+      
+      // Restart banner rotation if dynamic banner is enabled
+      if (isCartOpen) {
+        stopBannerRotation();
+        startBannerRotation();
       }
     }
   }
@@ -613,6 +689,17 @@
         checkoutButtonHoverColor: '#333333',
         checkoutButtonTextHoverColor: '#ffffff'
       };
+    }
+    
+    // Ensure announcement bar defaults
+    if (cartConfig.announcementBar && !cartConfig.announcementBar.autoChangeTime) {
+      cartConfig.announcementBar.autoChangeTime = 3;
+    }
+    if (cartConfig.announcementBar && !cartConfig.announcementBar.banners) {
+      cartConfig.announcementBar.banners = [
+        { id: 1, text: 'Free shipping on orders over $50!' },
+        { id: 2, text: 'New arrivals - Shop now!' }
+      ];
     }
     
     console.log('💡 General Settings:', cartConfig.general);

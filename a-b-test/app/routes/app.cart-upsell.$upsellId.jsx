@@ -146,7 +146,12 @@ export default function CartUpsellConfiguration() {
       height: '50px',
       fontSize: '14px',
       position: 'before',
-      dynamicBanner: false
+      dynamicBanner: false,
+      autoChangeTime: 3,
+      banners: [
+        { id: 1, text: 'Free shipping on orders over $50!' },
+        { id: 2, text: 'New arrivals - Shop now!' }
+      ]
     },
     progressBar: {
       enabled: false,
@@ -167,6 +172,23 @@ export default function CartUpsellConfiguration() {
       testId: upsellId
     }
   });
+
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  // Rotate banners for preview
+  useEffect(() => {
+    if (cartConfig.announcementBar.dynamicBanner && cartConfig.announcementBar.banners.length >= 2) {
+      const interval = setInterval(() => {
+        setCurrentBannerIndex((prevIndex) => 
+          (prevIndex + 1) % cartConfig.announcementBar.banners.length
+        );
+      }, cartConfig.announcementBar.autoChangeTime * 1000);
+
+      return () => clearInterval(interval);
+    } else {
+      setCurrentBannerIndex(0);
+    }
+  }, [cartConfig.announcementBar.dynamicBanner, cartConfig.announcementBar.autoChangeTime, cartConfig.announcementBar.banners.length]);
 
   const saveConfiguration = async () => {
     setIsSaving(true);
@@ -239,7 +261,12 @@ export default function CartUpsellConfiguration() {
                 height: data.announcementBar?.height || '50px',
                 fontSize: data.announcementBar?.fontSize || '14px',
                 position: data.announcementBar?.position || 'before',
-                dynamicBanner: data.announcementBar?.dynamicBanner || false
+                dynamicBanner: data.announcementBar?.dynamicBanner || false,
+                autoChangeTime: data.announcementBar?.autoChangeTime || 3,
+                banners: data.announcementBar?.banners || [
+                  { id: 1, text: 'Free shipping on orders over $50!' },
+                  { id: 2, text: 'New arrivals - Shop now!' }
+                ]
               },
               progressBar: {
                 ...cartConfig.progressBar,
@@ -840,19 +867,21 @@ export default function CartUpsellConfiguration() {
 
             {cartConfig.announcementBar.enabled && (
               <>
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                    Announcement Text
-                  </label>
-                  {/* Unified text editor box */}
-                  <div style={{ 
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    overflow: 'hidden',
-                    backgroundColor: '#fff'
-                  }}>
-                    {/* Text Formatting Buttons */}
+                {/* Static Banner Text - Only show when dynamic banner is disabled */}
+                {!cartConfig.announcementBar.dynamicBanner && (
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Announcement Text
+                    </label>
+                    {/* Unified text editor box */}
                     <div style={{ 
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      overflow: 'hidden',
+                      backgroundColor: '#fff'
+                    }}>
+                      {/* Text Formatting Buttons */}
+                      <div style={{ 
                       display: 'flex', 
                       gap: '8px', 
                       padding: '8px',
@@ -953,6 +982,7 @@ export default function CartUpsellConfiguration() {
                     />
                   </div>
                 </div>
+                )}
 
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
@@ -1168,9 +1198,14 @@ export default function CartUpsellConfiguration() {
                   </div>
                 </div>
 
-                <div>
+                <div style={{ marginBottom: '20px' }}>
                   <Checkbox
-                    label="Dynamic Banner"
+                    label={
+                      <span>
+                        Dynamic Banner
+                        <span title="Display multiple banners that rotate automatically" style={{ cursor: 'help', fontSize: '14px', color: '#6b7280', marginLeft: '8px' }}>ⓘ</span>
+                      </span>
+                    }
                     checked={cartConfig.announcementBar.dynamicBanner}
                     onChange={(checked) => setCartConfig({
                       ...cartConfig,
@@ -1178,6 +1213,251 @@ export default function CartUpsellConfiguration() {
                     })}
                   />
                 </div>
+
+                {/* Dynamic Banner Settings */}
+                {cartConfig.announcementBar.dynamicBanner && (
+                  <>
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                        Auto change time (seconds)
+                      </label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="60"
+                        value={cartConfig.announcementBar.autoChangeTime}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, autoChangeTime: parseInt(e.target.value) || 3 }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 12px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px'
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                        <label style={{ fontSize: '13px', fontWeight: '600', color: '#374151' }}>
+                          Banners ({cartConfig.announcementBar.banners.length}/5)
+                        </label>
+                        <button
+                          onClick={() => {
+                            if (cartConfig.announcementBar.banners.length < 5) {
+                              const newId = Math.max(...cartConfig.announcementBar.banners.map(b => b.id)) + 1;
+                              setCartConfig({
+                                ...cartConfig,
+                                announcementBar: {
+                                  ...cartConfig.announcementBar,
+                                  banners: [...cartConfig.announcementBar.banners, { id: newId, text: 'New banner text' }]
+                                }
+                              });
+                            }
+                          }}
+                          disabled={cartConfig.announcementBar.banners.length >= 5}
+                          style={{
+                            padding: '6px 12px',
+                            backgroundColor: cartConfig.announcementBar.banners.length >= 5 ? '#e5e7eb' : '#4CAF50',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: cartConfig.announcementBar.banners.length >= 5 ? 'not-allowed' : 'pointer',
+                            fontSize: '13px',
+                            fontWeight: '500'
+                          }}
+                        >
+                          + Add Banner
+                        </button>
+                      </div>
+
+                      {cartConfig.announcementBar.banners.map((banner, index) => (
+                        <div key={banner.id} style={{ marginBottom: '12px' }}>
+                          <div style={{ 
+                            border: '1px solid #d1d5db',
+                            borderRadius: '6px',
+                            overflow: 'hidden',
+                            backgroundColor: '#fff'
+                          }}>
+                            {/* Banner Header */}
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '8px 12px',
+                              backgroundColor: '#f9fafb',
+                              borderBottom: '1px solid #e5e7eb'
+                            }}>
+                              <span style={{ fontSize: '13px', fontWeight: '500', color: '#6b7280' }}>Banner {index + 1}</span>
+                              {cartConfig.announcementBar.banners.length > 2 && (
+                                <button
+                                  onClick={() => {
+                                    setCartConfig({
+                                      ...cartConfig,
+                                      announcementBar: {
+                                        ...cartConfig.announcementBar,
+                                        banners: cartConfig.announcementBar.banners.filter(b => b.id !== banner.id)
+                                      }
+                                    });
+                                  }}
+                                  style={{
+                                    padding: '4px 8px',
+                                    backgroundColor: '#ef4444',
+                                    color: '#fff',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
+                                    fontWeight: '500'
+                                  }}
+                                >
+                                  Remove
+                                </button>
+                              )}
+                            </div>
+                            {/* Formatting buttons */}
+                            <div style={{ 
+                              display: 'flex', 
+                              gap: '8px', 
+                              padding: '8px',
+                              borderBottom: '1px solid #e5e7eb',
+                              backgroundColor: '#f9fafb'
+                            }}>
+                              <button
+                                onClick={() => {
+                                  const textArea = document.getElementById(`banner-text-${banner.id}`);
+                                  const start = textArea.selectionStart;
+                                  const end = textArea.selectionEnd;
+                                  if (start === end) return;
+                                  const selectedText = banner.text.substring(start, end);
+                                  const newText = banner.text.substring(0, start) + '<b>' + selectedText + '</b>' + banner.text.substring(end);
+                                  setCartConfig({
+                                    ...cartConfig,
+                                    announcementBar: {
+                                      ...cartConfig.announcementBar,
+                                      banners: cartConfig.announcementBar.banners.map(b => 
+                                        b.id === banner.id ? { ...b, text: newText } : b
+                                      )
+                                    }
+                                  });
+                                }}
+                                style={{
+                                  padding: '4px 8px',
+                                  border: '1px solid #d1d5db',
+                                  borderRadius: '4px',
+                                  backgroundColor: '#fff',
+                                  cursor: 'pointer',
+                                  fontWeight: 'bold',
+                                  fontSize: '12px'
+                                }}
+                              >
+                                B
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const textArea = document.getElementById(`banner-text-${banner.id}`);
+                                  const start = textArea.selectionStart;
+                                  const end = textArea.selectionEnd;
+                                  if (start === end) return;
+                                  const selectedText = banner.text.substring(start, end);
+                                  const newText = banner.text.substring(0, start) + '<i>' + selectedText + '</i>' + banner.text.substring(end);
+                                  setCartConfig({
+                                    ...cartConfig,
+                                    announcementBar: {
+                                      ...cartConfig.announcementBar,
+                                      banners: cartConfig.announcementBar.banners.map(b => 
+                                        b.id === banner.id ? { ...b, text: newText } : b
+                                      )
+                                    }
+                                  });
+                                }}
+                                style={{
+                                  padding: '4px 8px',
+                                  border: '1px solid #d1d5db',
+                                  borderRadius: '4px',
+                                  backgroundColor: '#fff',
+                                  cursor: 'pointer',
+                                  fontStyle: 'italic',
+                                  fontSize: '12px'
+                                }}
+                              >
+                                I
+                              </button>
+                              <button
+                                onClick={() => {
+                                  const textArea = document.getElementById(`banner-text-${banner.id}`);
+                                  const start = textArea.selectionStart;
+                                  const end = textArea.selectionEnd;
+                                  if (start === end) return;
+                                  const selectedText = banner.text.substring(start, end);
+                                  const newText = banner.text.substring(0, start) + '<u>' + selectedText + '</u>' + banner.text.substring(end);
+                                  setCartConfig({
+                                    ...cartConfig,
+                                    announcementBar: {
+                                      ...cartConfig.announcementBar,
+                                      banners: cartConfig.announcementBar.banners.map(b => 
+                                        b.id === banner.id ? { ...b, text: newText } : b
+                                      )
+                                    }
+                                  });
+                                }}
+                                style={{
+                                  padding: '4px 8px',
+                                  border: '1px solid #d1d5db',
+                                  borderRadius: '4px',
+                                  backgroundColor: '#fff',
+                                  cursor: 'pointer',
+                                  textDecoration: 'underline',
+                                  fontSize: '12px'
+                                }}
+                              >
+                                U
+                              </button>
+                            </div>
+                            {/* Text input */}
+                            <input
+                              id={`banner-text-${banner.id}`}
+                              type="text"
+                              value={banner.text}
+                              onChange={(e) => setCartConfig({
+                                ...cartConfig,
+                                announcementBar: {
+                                  ...cartConfig.announcementBar,
+                                  banners: cartConfig.announcementBar.banners.map(b => 
+                                    b.id === banner.id ? { ...b, text: e.target.value } : b
+                                  )
+                                }
+                              })}
+                              style={{ 
+                                width: '100%',
+                                padding: '10px 12px',
+                                border: 'none',
+                                fontSize: '14px',
+                                outline: 'none'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                      
+                      {cartConfig.announcementBar.banners.length < 2 && (
+                        <div style={{ 
+                          padding: '8px 12px', 
+                          backgroundColor: '#fef2f2', 
+                          border: '1px solid #fecaca', 
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          color: '#991b1b'
+                        }}>
+                          ⚠️ Minimum 2 banners required for dynamic banner
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>
@@ -1712,9 +1992,14 @@ export default function CartUpsellConfiguration() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  whiteSpace: 'pre-wrap'
+                  whiteSpace: 'pre-wrap',
+                  transition: 'opacity 0.5s ease-in-out'
                 }} 
-                dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
+                dangerouslySetInnerHTML={{ 
+                  __html: cartConfig.announcementBar.dynamicBanner 
+                    ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
+                    : cartConfig.announcementBar.text 
+                }}
               />
             )}
 
@@ -1863,9 +2148,14 @@ export default function CartUpsellConfiguration() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  whiteSpace: 'pre-wrap'
+                  whiteSpace: 'pre-wrap',
+                  transition: 'opacity 0.5s ease-in-out'
                 }} 
-                dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
+                dangerouslySetInnerHTML={{ 
+                  __html: cartConfig.announcementBar.dynamicBanner 
+                    ? cartConfig.announcementBar.banners[currentBannerIndex]?.text || '' 
+                    : cartConfig.announcementBar.text 
+                }}
               />
             )}
 
