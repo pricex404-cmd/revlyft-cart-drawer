@@ -238,13 +238,18 @@
           </div>
         </div>
 
-        ${announcementBar.enabled ? `
+        ${announcementBar.enabled && announcementBar.position !== 'after' ? `
           <div style="
             padding: 12px 20px;
             background-color: ${announcementBar.backgroundColor};
             color: ${announcementBar.textColor};
+            border: 1px solid ${announcementBar.borderColor || announcementBar.backgroundColor};
             text-align: center;
-            font-size: 14px;
+            font-size: ${announcementBar.fontSize || '14px'};
+            height: ${announcementBar.height || 'auto'};
+            display: flex;
+            align-items: center;
+            justify-content: center;
           ">
             ${announcementBar.text}
           </div>
@@ -293,6 +298,24 @@
           ">
             <h3 style="margin: 0 0 12px 0; font-size: 16px;">${upsell.title}</h3>
             <!-- Upsell products would go here -->
+          </div>
+        ` : ''}
+
+        <!-- Announcement Bar - After Products -->
+        ${announcementBar.enabled && announcementBar.position === 'after' ? `
+          <div style="
+            padding: 12px 20px;
+            background-color: ${announcementBar.backgroundColor};
+            color: ${announcementBar.textColor};
+            border: 1px solid ${announcementBar.borderColor || announcementBar.backgroundColor};
+            text-align: center;
+            font-size: ${announcementBar.fontSize || '14px'};
+            height: ${announcementBar.height || 'auto'};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+            ${announcementBar.text}
           </div>
         ` : ''}
 

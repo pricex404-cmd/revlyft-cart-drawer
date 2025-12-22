@@ -851,6 +851,7 @@ export default function CartUpsellConfiguration() {
                         const textArea = document.getElementById('announcement-text-input');
                         const start = textArea.selectionStart;
                         const end = textArea.selectionEnd;
+                        if (start === end) return;
                         const selectedText = cartConfig.announcementBar.text.substring(start, end);
                         const newText = cartConfig.announcementBar.text.substring(0, start) + '<b>' + selectedText + '</b>' + cartConfig.announcementBar.text.substring(end);
                         setCartConfig({
@@ -875,6 +876,7 @@ export default function CartUpsellConfiguration() {
                         const textArea = document.getElementById('announcement-text-input');
                         const start = textArea.selectionStart;
                         const end = textArea.selectionEnd;
+                        if (start === end) return;
                         const selectedText = cartConfig.announcementBar.text.substring(start, end);
                         const newText = cartConfig.announcementBar.text.substring(0, start) + '<i>' + selectedText + '</i>' + cartConfig.announcementBar.text.substring(end);
                         setCartConfig({
@@ -899,6 +901,7 @@ export default function CartUpsellConfiguration() {
                         const textArea = document.getElementById('announcement-text-input');
                         const start = textArea.selectionStart;
                         const end = textArea.selectionEnd;
+                        if (start === end) return;
                         const selectedText = cartConfig.announcementBar.text.substring(start, end);
                         const newText = cartConfig.announcementBar.text.substring(0, start) + '<u>' + selectedText + '</u>' + cartConfig.announcementBar.text.substring(end);
                         setCartConfig({
@@ -1109,7 +1112,7 @@ export default function CartUpsellConfiguration() {
                   </div>
                 </div>
 
-                <div>
+                <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                     Text Color
                   </label>
@@ -1686,7 +1689,7 @@ export default function CartUpsellConfiguration() {
                 style={{
                   backgroundColor: cartConfig.announcementBar.backgroundColor,
                   color: cartConfig.announcementBar.textColor,
-                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  border: `1px solid ${cartConfig.announcementBar.borderColor}`,
                   padding: '10px 14px',
                   textAlign: 'center',
                   fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
@@ -1836,8 +1839,7 @@ export default function CartUpsellConfiguration() {
                 style={{
                   backgroundColor: cartConfig.announcementBar.backgroundColor,
                   color: cartConfig.announcementBar.textColor,
-                  borderTop: `1px solid ${cartConfig.announcementBar.borderColor}`,
-                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  border: `1px solid ${cartConfig.announcementBar.borderColor}`,
                   padding: '10px 14px',
                   textAlign: 'center',
                   fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
