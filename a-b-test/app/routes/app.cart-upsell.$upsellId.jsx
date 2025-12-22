@@ -1697,7 +1697,8 @@ export default function CartUpsellConfiguration() {
                   height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  whiteSpace: 'pre-wrap'
                 }} 
                 dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
               />
@@ -1847,7 +1848,8 @@ export default function CartUpsellConfiguration() {
                   height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  whiteSpace: 'pre-wrap'
                 }} 
                 dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}
               />

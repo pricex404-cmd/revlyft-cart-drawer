@@ -250,6 +250,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            white-space: pre-wrap;
           ">
             ${announcementBar.text}
           </div>
@@ -314,6 +315,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            white-space: pre-wrap;
           ">
             ${announcementBar.text}
           </div>
