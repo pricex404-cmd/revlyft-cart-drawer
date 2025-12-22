@@ -141,7 +141,12 @@ export default function CartUpsellConfiguration() {
       enabled: false,
       text: 'Free shipping on orders over $50!',
       backgroundColor: '#4CAF50',
-      textColor: '#ffffff'
+      textColor: '#ffffff',
+      borderColor: '#3d8b40',
+      height: '50px',
+      fontSize: '14px',
+      position: 'before',
+      dynamicBanner: false
     },
     progressBar: {
       enabled: false,
@@ -226,8 +231,15 @@ export default function CartUpsellConfiguration() {
                 ...data.appearance
               },
               announcementBar: {
-                ...cartConfig.announcementBar,
-                ...data.announcementBar
+                enabled: data.announcementBar?.enabled || false,
+                text: data.announcementBar?.text || 'Free shipping on orders over $50!',
+                backgroundColor: data.announcementBar?.backgroundColor || '#4CAF50',
+                textColor: data.announcementBar?.textColor || '#ffffff',
+                borderColor: data.announcementBar?.borderColor || '#3d8b40',
+                height: data.announcementBar?.height || '50px',
+                fontSize: data.announcementBar?.fontSize || '14px',
+                position: data.announcementBar?.position || 'before',
+                dynamicBanner: data.announcementBar?.dynamicBanner || false
               },
               progressBar: {
                 ...cartConfig.progressBar,
@@ -370,24 +382,26 @@ export default function CartUpsellConfiguration() {
               {/* Corner Radius Slider */}
               <div style={{ marginBottom: '16px' }}>
                 <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                  Corner radius: {cartConfig.general.checkoutButtonRadius}
+                  Corner radius: {cartConfig.general?.checkoutButtonRadius || '8px'}
                 </label>
                 <input
                   type="range"
                   min="0"
                   max="50"
-                  value={parseInt(cartConfig.general.checkoutButtonRadius) || 8}
+                  value={parseInt(cartConfig.general?.checkoutButtonRadius) || 8}
                   onChange={(e) => setCartConfig({
                     ...cartConfig,
-                    general: { ...cartConfig.general, checkoutButtonRadius: e.target.value + 'px' }
+                    general: { ...cartConfig.general, checkoutButtonRadius: `${e.target.value}px` }
                   })}
                   style={{
                     width: '100%',
                     height: '6px',
                     borderRadius: '3px',
-                    background: '#d1d5db',
+                    background: 'linear-gradient(to right, #4CAF50 0%, #4CAF50 ' + ((parseInt(cartConfig.general?.checkoutButtonRadius) || 8) * 2) + '%, #d1d5db ' + ((parseInt(cartConfig.general?.checkoutButtonRadius) || 8) * 2) + '%, #d1d5db 100%)',
                     outline: 'none',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    appearance: 'none',
+                    WebkitAppearance: 'none'
                   }}
                 />
               </div>
@@ -830,7 +844,83 @@ export default function CartUpsellConfiguration() {
                   <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                     Announcement Text
                   </label>
+                  {/* Text Formatting Buttons */}
+                  <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                    <button
+                      onClick={() => {
+                        const textArea = document.getElementById('announcement-text-input');
+                        const start = textArea.selectionStart;
+                        const end = textArea.selectionEnd;
+                        const selectedText = cartConfig.announcementBar.text.substring(start, end);
+                        const newText = cartConfig.announcementBar.text.substring(0, start) + '<b>' + selectedText + '</b>' + cartConfig.announcementBar.text.substring(end);
+                        setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, text: newText }
+                        });
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '4px',
+                        backgroundColor: '#fff',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        fontSize: '14px'
+                      }}
+                    >
+                      B
+                    </button>
+                    <button
+                      onClick={() => {
+                        const textArea = document.getElementById('announcement-text-input');
+                        const start = textArea.selectionStart;
+                        const end = textArea.selectionEnd;
+                        const selectedText = cartConfig.announcementBar.text.substring(start, end);
+                        const newText = cartConfig.announcementBar.text.substring(0, start) + '<i>' + selectedText + '</i>' + cartConfig.announcementBar.text.substring(end);
+                        setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, text: newText }
+                        });
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '4px',
+                        backgroundColor: '#fff',
+                        cursor: 'pointer',
+                        fontStyle: 'italic',
+                        fontSize: '14px'
+                      }}
+                    >
+                      I
+                    </button>
+                    <button
+                      onClick={() => {
+                        const textArea = document.getElementById('announcement-text-input');
+                        const start = textArea.selectionStart;
+                        const end = textArea.selectionEnd;
+                        const selectedText = cartConfig.announcementBar.text.substring(start, end);
+                        const newText = cartConfig.announcementBar.text.substring(0, start) + '<u>' + selectedText + '</u>' + cartConfig.announcementBar.text.substring(end);
+                        setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, text: newText }
+                        });
+                      }}
+                      style={{
+                        padding: '6px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '4px',
+                        backgroundColor: '#fff',
+                        cursor: 'pointer',
+                        textDecoration: 'underline',
+                        fontSize: '14px'
+                      }}
+                    >
+                      U
+                    </button>
+                  </div>
                   <input
+                    id="announcement-text-input"
                     type="text"
                     value={cartConfig.announcementBar.text}
                     onChange={(e) => setCartConfig({
@@ -844,6 +934,147 @@ export default function CartUpsellConfiguration() {
                       borderRadius: '6px',
                       fontSize: '14px'
                     }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                    Border Color
+                  </label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="text"
+                      value={cartConfig.announcementBar.borderColor}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        announcementBar: { ...cartConfig.announcementBar, borderColor: e.target.value }
+                      })}
+                      style={{ 
+                        width: '100%',
+                        padding: '10px 50px 10px 12px',
+                        border: '1px solid #d1d5db',
+                        borderRadius: '6px',
+                        fontSize: '14px'
+                      }}
+                    />
+                    <input
+                      type="color"
+                      value={cartConfig.announcementBar.borderColor}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        announcementBar: { ...cartConfig.announcementBar, borderColor: e.target.value }
+                      })}
+                      style={{ 
+                        position: 'absolute',
+                        right: '6px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '36px',
+                        height: '36px',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                    Height: {cartConfig.announcementBar.height}
+                  </label>
+                  <input
+                    type="range"
+                    min="30"
+                    max="100"
+                    value={parseInt(cartConfig.announcementBar.height) || 50}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      announcementBar: { ...cartConfig.announcementBar, height: `${e.target.value}px` }
+                    })}
+                    style={{
+                      width: '100%',
+                      height: '6px',
+                      borderRadius: '3px',
+                      background: 'linear-gradient(to right, #4CAF50 0%, #4CAF50 ' + (((parseInt(cartConfig.announcementBar.height) || 50) - 30) * 100 / 70) + '%, #d1d5db ' + (((parseInt(cartConfig.announcementBar.height) || 50) - 30) * 100 / 70) + '%, #d1d5db 100%)',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      appearance: 'none',
+                      WebkitAppearance: 'none'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                    Font Size: {cartConfig.announcementBar.fontSize}
+                  </label>
+                  <input
+                    type="range"
+                    min="10"
+                    max="24"
+                    value={parseInt(cartConfig.announcementBar.fontSize) || 14}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      announcementBar: { ...cartConfig.announcementBar, fontSize: `${e.target.value}px` }
+                    })}
+                    style={{
+                      width: '100%',
+                      height: '6px',
+                      borderRadius: '3px',
+                      background: 'linear-gradient(to right, #4CAF50 0%, #4CAF50 ' + (((parseInt(cartConfig.announcementBar.fontSize) || 14) - 10) * 100 / 14) + '%, #d1d5db ' + (((parseInt(cartConfig.announcementBar.fontSize) || 14) - 10) * 100 / 14) + '%, #d1d5db 100%)',
+                      outline: 'none',
+                      cursor: 'pointer',
+                      appearance: 'none',
+                      WebkitAppearance: 'none'
+                    }}
+                  />
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                    Position
+                  </label>
+                  <div style={{ display: 'flex', gap: '16px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="announcement-position"
+                        value="before"
+                        checked={cartConfig.announcementBar.position === 'before'}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, position: e.target.value }
+                        })}
+                        style={{ marginRight: '6px' }}
+                      />
+                      <span style={{ fontSize: '14px' }}>Before Products</span>
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="announcement-position"
+                        value="after"
+                        checked={cartConfig.announcementBar.position === 'after'}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          announcementBar: { ...cartConfig.announcementBar, position: e.target.value }
+                        })}
+                        style={{ marginRight: '6px' }}
+                      />
+                      <span style={{ fontSize: '14px' }}>After Products</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <Checkbox
+                    label="Dynamic Banner"
+                    checked={cartConfig.announcementBar.dynamicBanner}
+                    onChange={(checked) => setCartConfig({
+                      ...cartConfig,
+                      announcementBar: { ...cartConfig.announcementBar, dynamicBanner: checked }
+                    })}
                   />
                 </div>
 
@@ -1449,17 +1680,21 @@ export default function CartUpsellConfiguration() {
               </div>
             </div>
 
-            {/* Announcement Bar */}
-            {cartConfig.announcementBar.enabled && (
+            {/* Announcement Bar - Before Products */}
+            {cartConfig.announcementBar.enabled && cartConfig.announcementBar.position === 'before' && (
               <div style={{
                 backgroundColor: cartConfig.announcementBar.backgroundColor,
                 color: cartConfig.announcementBar.textColor,
+                borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
                 padding: '10px 14px',
                 textAlign: 'center',
-                fontSize: '10px',
-                fontWeight: '500'
-              }}>
-                {cartConfig.announcementBar.text}
+                fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
+                fontWeight: '500',
+                height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }} dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}>
               </div>
             )}
 
@@ -1636,6 +1871,25 @@ export default function CartUpsellConfiguration() {
               >
                 Proceed to Checkout
               </button>
+              
+              {/* Announcement Bar - After Products */}
+              {cartConfig.announcementBar.enabled && cartConfig.announcementBar.position === 'after' && (
+                <div style={{
+                  backgroundColor: cartConfig.announcementBar.backgroundColor,
+                  color: cartConfig.announcementBar.textColor,
+                  borderBottom: `1px solid ${cartConfig.announcementBar.borderColor}`,
+                  padding: '10px 14px',
+                  textAlign: 'center',
+                  fontSize: `calc(${cartConfig.announcementBar.fontSize} * 0.7)`,
+                  fontWeight: '500',
+                  height: `calc(${cartConfig.announcementBar.height} * 0.7)`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: '12px'
+                }} dangerouslySetInnerHTML={{ __html: cartConfig.announcementBar.text }}>
+                </div>
+              )}
             </div>
           </div>
         </div>
