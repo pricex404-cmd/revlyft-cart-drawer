@@ -184,7 +184,7 @@
    * Create cart drawer HTML
    */
   function createCartDrawerHTML(config, cart) {
-    const { appearance, announcementBar, progressBar, upsell } = config;
+    const { appearance, header, announcementBar, progressBar, upsell } = config;
     
     // Calculate totals
     const subtotal = cart.total_price;
@@ -219,10 +219,13 @@
         <!-- Cart Header -->
         <div style="
           padding: 20px;
-          border-bottom: 1px solid rgba(0,0,0,0.1);
-          background-color: ${appearance.cartBackgroundColor};
+          border-bottom: ${header?.bottomBorder === 'none' ? 'none' : '1px solid rgba(0,0,0,0.1)'};
+          background-color: ${header?.backgroundColor || appearance.cartBackgroundColor};
+          height: ${header?.height || '60px'};
+          display: flex;
+          align-items: center;
         ">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: inherit;">Your Cart (${itemCount})</h2>
             <button id="revlyft-close-cart" style="
               background: none;
@@ -708,6 +711,15 @@
         checkoutButtonTextColor: '#ffffff',
         checkoutButtonHoverColor: '#333333',
         checkoutButtonTextHoverColor: '#ffffff'
+      };
+    }
+    
+    // Ensure header defaults
+    if (!cartConfig.header) {
+      cartConfig.header = {
+        height: '60px',
+        bottomBorder: 'thin',
+        backgroundColor: '#ffffff'
       };
     }
     

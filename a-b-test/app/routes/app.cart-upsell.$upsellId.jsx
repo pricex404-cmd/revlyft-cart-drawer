@@ -137,6 +137,11 @@ export default function CartUpsellConfiguration() {
       fontFamily: 'Arial, sans-serif',
       fontSize: 'medium'
     },
+    header: {
+      height: '60px',
+      bottomBorder: 'thin',
+      backgroundColor: '#ffffff'
+    },
     announcementBar: {
       enabled: false,
       text: 'Free shipping on orders over $50!',
@@ -251,6 +256,11 @@ export default function CartUpsellConfiguration() {
               appearance: {
                 ...cartConfig.appearance,
                 ...data.appearance
+              },
+              header: {
+                height: data.header?.height || '60px',
+                bottomBorder: data.header?.bottomBorder || 'thin',
+                backgroundColor: data.header?.backgroundColor || '#ffffff'
               },
               announcementBar: {
                 enabled: data.announcementBar?.enabled || false,
@@ -834,6 +844,116 @@ export default function CartUpsellConfiguration() {
                       transform: 'translateY(-50%)',
                       width: '36px',
                       height: '36px',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'header':
+        return (
+          <div style={{ padding: '24px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px' }}>Header</h2>
+            
+            {/* General Settings */}
+            <div style={{ marginBottom: '32px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>General</h3>
+              
+              {/* Height Slider */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Header Height: {cartConfig.header.height}
+                </label>
+                <input
+                  type="range"
+                  min="40"
+                  max="100"
+                  value={parseInt(cartConfig.header.height)}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    header: { ...cartConfig.header, height: `${e.target.value}px` }
+                  })}
+                  style={{ width: '100%' }}
+                />
+              </div>
+
+              {/* Bottom Border Radio */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Bottom Border
+                </label>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="bottomBorder"
+                      value="none"
+                      checked={cartConfig.header.bottomBorder === 'none'}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        header: { ...cartConfig.header, bottomBorder: e.target.value }
+                      })}
+                      style={{ marginRight: '6px' }}
+                    />
+                    <span style={{ fontSize: '14px' }}>None</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="bottomBorder"
+                      value="thin"
+                      checked={cartConfig.header.bottomBorder === 'thin'}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        header: { ...cartConfig.header, bottomBorder: e.target.value }
+                      })}
+                      style={{ marginRight: '6px' }}
+                    />
+                    <span style={{ fontSize: '14px' }}>Thin</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Background Color */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Background Color
+                </label>
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={cartConfig.header.backgroundColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      header: { ...cartConfig.header, backgroundColor: e.target.value }
+                    })}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      border: '1px solid #d1d5db',
+                      borderRadius: '6px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={cartConfig.header.backgroundColor}
+                    onChange={(e) => setCartConfig({
+                      ...cartConfig,
+                      header: { ...cartConfig.header, backgroundColor: e.target.value }
+                    })}
+                    style={{
+                      position: 'absolute',
+                      right: '8px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      width: '32px',
+                      height: '32px',
                       border: 'none',
                       borderRadius: '4px',
                       cursor: 'pointer'
@@ -1789,6 +1909,25 @@ export default function CartUpsellConfiguration() {
                 Body
               </div>
               <button
+                onClick={() => setActiveSection('header')}
+                style={{
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '7px 8px',
+                  border: 'none',
+                  backgroundColor: activeSection === 'header' ? '#f3f4f6' : 'transparent',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span style={{ filter: 'grayscale(1)' }}>🔝</span>
+                <span>Header</span>
+              </button>
+              <button
                 onClick={() => setActiveSection('announcements')}
                 style={{
                   width: '100%',
@@ -1975,8 +2114,15 @@ export default function CartUpsellConfiguration() {
             flexDirection: 'column'
           }}>
             {/* Cart Header */}
-            <div style={{ padding: '16px 16px 12px 16px', borderBottom: '1px solid #e1e3e5' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ 
+              padding: '16px 16px 12px 16px', 
+              borderBottom: cartConfig.header.bottomBorder === 'thin' ? '1px solid rgba(0,0,0,0.1)' : 'none',
+              backgroundColor: cartConfig.header.backgroundColor,
+              height: `calc(${cartConfig.header.height} * 0.7)`,
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <div style={{ fontSize: '16px', fontWeight: '700' }}>Your Cart (2 items)</div>
                 <button style={{ 
                   background: 'none', 
