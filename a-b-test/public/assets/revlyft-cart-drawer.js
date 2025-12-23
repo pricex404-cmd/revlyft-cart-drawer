@@ -224,23 +224,31 @@
           height: ${header?.height || '60px'};
           display: flex;
           align-items: center;
+          justify-content: ${header?.title?.alignment === 'center' ? 'center' : 'space-between'};
+          position: relative;
         ">
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <h2 style="margin: 0; font-size: 24px; font-weight: 600; color: inherit;">Your Cart (${itemCount})</h2>
-            <button id="revlyft-close-cart" style="
-              background: none;
-              border: none;
-              font-size: 28px;
-              cursor: pointer;
-              padding: 0;
-              width: 32px;
-              height: 32px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              color: ${appearance.cartTextColor};
-            ">×</button>
-          </div>
+          <h2 style="
+            margin: 0; 
+            font-size: ${header?.title?.fontSize || '24px'}; 
+            font-weight: ${header?.title?.fontWeight || 600}; 
+            color: inherit;
+          ">
+            ${(header?.title?.text || 'Your Cart ({{cart_quantity}} items)').replace('{{cart_quantity}}', itemCount)}
+          </h2>
+          <button id="revlyft-close-cart" style="
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: ${appearance.cartTextColor};
+            ${header?.title?.alignment === 'center' ? 'position: absolute; right: 20px;' : ''}
+          ">×</button>
         </div>
 
         ${announcementBar.enabled && announcementBar.position !== 'after' ? `
@@ -719,7 +727,21 @@
       cartConfig.header = {
         height: '60px',
         bottomBorder: 'thin',
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        title: {
+          text: 'Your Cart ({{cart_quantity}} items)',
+          alignment: 'left',
+          fontWeight: 600,
+          fontSize: '24px'
+        }
+      };
+    }
+    if (cartConfig.header && !cartConfig.header.title) {
+      cartConfig.header.title = {
+        text: 'Your Cart ({{cart_quantity}} items)',
+        alignment: 'left',
+        fontWeight: 600,
+        fontSize: '24px'
       };
     }
     

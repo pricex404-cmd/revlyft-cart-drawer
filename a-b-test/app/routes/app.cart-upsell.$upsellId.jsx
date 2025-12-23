@@ -140,7 +140,13 @@ export default function CartUpsellConfiguration() {
     header: {
       height: '60px',
       bottomBorder: 'thin',
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      title: {
+        text: 'Your Cart ({{cart_quantity}} items)',
+        alignment: 'left',
+        fontWeight: 600,
+        fontSize: '24px'
+      }
     },
     announcementBar: {
       enabled: false,
@@ -260,7 +266,13 @@ export default function CartUpsellConfiguration() {
               header: {
                 height: data.header?.height || '60px',
                 bottomBorder: data.header?.bottomBorder || 'thin',
-                backgroundColor: data.header?.backgroundColor || '#ffffff'
+                backgroundColor: data.header?.backgroundColor || '#ffffff',
+                title: {
+                  text: data.header?.title?.text || 'Your Cart ({{cart_quantity}} items)',
+                  alignment: data.header?.title?.alignment || 'left',
+                  fontWeight: data.header?.title?.fontWeight || 600,
+                  fontSize: data.header?.title?.fontSize || '24px'
+                }
               },
               announcementBar: {
                 enabled: data.announcementBar?.enabled || false,
@@ -966,6 +978,131 @@ export default function CartUpsellConfiguration() {
                     }}
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Title Settings Subdivision */}
+            <div style={{ 
+              marginBottom: '32px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '8px',
+              padding: '20px',
+              backgroundColor: '#fafafa'
+            }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '20px', color: '#374151' }}>Title</h3>
+              
+              {/* Text Input */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Text
+                </label>
+                <input
+                  type="text"
+                  value={cartConfig.header.title.text}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    header: { 
+                      ...cartConfig.header, 
+                      title: { ...cartConfig.header.title, text: e.target.value }
+                    }
+                  })}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '14px'
+                  }}
+                />
+                <div style={{ fontSize: '12px', color: '#6b7280', marginTop: '6px' }}>
+                  Use <code style={{ backgroundColor: '#e5e7eb', padding: '2px 4px', borderRadius: '3px' }}>{'{{cart_quantity}}'}</code> for the # of items in cart
+                </div>
+              </div>
+
+              {/* Alignment Radio */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Alignment
+                </label>
+                <div style={{ display: 'flex', gap: '16px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="titleAlignment"
+                      value="left"
+                      checked={cartConfig.header.title.alignment === 'left'}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        header: { 
+                          ...cartConfig.header, 
+                          title: { ...cartConfig.header.title, alignment: e.target.value }
+                        }
+                      })}
+                      style={{ marginRight: '6px' }}
+                    />
+                    <span style={{ fontSize: '14px' }}>Side</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="titleAlignment"
+                      value="center"
+                      checked={cartConfig.header.title.alignment === 'center'}
+                      onChange={(e) => setCartConfig({
+                        ...cartConfig,
+                        header: { 
+                          ...cartConfig.header, 
+                          title: { ...cartConfig.header.title, alignment: e.target.value }
+                        }
+                      })}
+                      style={{ marginRight: '6px' }}
+                    />
+                    <span style={{ fontSize: '14px' }}>Center</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Font Weight Slider */}
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Font Weight: {cartConfig.header.title.fontWeight}
+                </label>
+                <input
+                  type="range"
+                  min="300"
+                  max="700"
+                  step="100"
+                  value={cartConfig.header.title.fontWeight}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    header: { 
+                      ...cartConfig.header, 
+                      title: { ...cartConfig.header.title, fontWeight: parseInt(e.target.value) }
+                    }
+                  })}
+                  style={{ width: '100%' }}
+                />
+              </div>
+
+              {/* Font Size Slider */}
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                  Font Size: {cartConfig.header.title.fontSize}
+                </label>
+                <input
+                  type="range"
+                  min="12"
+                  max="32"
+                  value={parseInt(cartConfig.header.title.fontSize)}
+                  onChange={(e) => setCartConfig({
+                    ...cartConfig,
+                    header: { 
+                      ...cartConfig.header, 
+                      title: { ...cartConfig.header.title, fontSize: `${e.target.value}px` }
+                    }
+                  })}
+                  style={{ width: '100%' }}
+                />
               </div>
             </div>
           </div>
@@ -2118,19 +2255,47 @@ export default function CartUpsellConfiguration() {
               backgroundColor: cartConfig.header.backgroundColor,
               height: `calc(${cartConfig.header.height} * 0.7)`,
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: cartConfig.header.title.alignment === 'center' ? 'center' : 'space-between'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <div style={{ fontSize: '16px', fontWeight: '700' }}>Your Cart (2 items)</div>
-                <button style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                  color: cartConfig.appearance.cartTextColor,
-                  lineHeight: '1'
-                }}>✕</button>
-              </div>
+              {cartConfig.header.title.alignment === 'left' && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <div style={{ 
+                    fontSize: `calc(${cartConfig.header.title.fontSize} * 0.7)`,
+                    fontWeight: cartConfig.header.title.fontWeight
+                  }}>
+                    {cartConfig.header.title.text.replace('{{cart_quantity}}', '2')}
+                  </div>
+                  <button style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                    color: cartConfig.appearance.cartTextColor,
+                    lineHeight: '1'
+                  }}>✕</button>
+                </div>
+              )}
+              {cartConfig.header.title.alignment === 'center' && (
+                <>
+                  <div style={{ 
+                    fontSize: `calc(${cartConfig.header.title.fontSize} * 0.7)`,
+                    fontWeight: cartConfig.header.title.fontWeight
+                  }}>
+                    {cartConfig.header.title.text.replace('{{cart_quantity}}', '2')}
+                  </div>
+                  <button style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                    color: cartConfig.appearance.cartTextColor,
+                    lineHeight: '1',
+                    position: 'absolute',
+                    right: '16px'
+                  }}>✕</button>
+                </>
+              )}
             </div>
 
             {/* Announcement Bar - Before Products */}
