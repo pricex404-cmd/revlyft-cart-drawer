@@ -896,7 +896,15 @@ export default function CartUpsellConfiguration() {
                     ...cartConfig,
                     header: { ...cartConfig.header, height: `${e.target.value}px` }
                   })}
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    height: '6px',
+                    borderRadius: '3px',
+                    background: `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${((parseInt(cartConfig.header.height) - 40) / 60) * 100}%, #d1d5db ${((parseInt(cartConfig.header.height) - 40) / 60) * 100}%, #d1d5db 100%)`,
+                    outline: 'none',
+                    WebkitAppearance: 'none',
+                    appearance: 'none'
+                  }}
                 />
               </div>
 
@@ -1080,7 +1088,15 @@ export default function CartUpsellConfiguration() {
                       title: { ...cartConfig.header.title, fontWeight: parseInt(e.target.value) }
                     }
                   })}
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    height: '6px',
+                    borderRadius: '3px',
+                    background: `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${((cartConfig.header.title.fontWeight - 300) / 400) * 100}%, #d1d5db ${((cartConfig.header.title.fontWeight - 300) / 400) * 100}%, #d1d5db 100%)`,
+                    outline: 'none',
+                    WebkitAppearance: 'none',
+                    appearance: 'none'
+                  }}
                 />
               </div>
 
@@ -1101,7 +1117,15 @@ export default function CartUpsellConfiguration() {
                       title: { ...cartConfig.header.title, fontSize: `${e.target.value}px` }
                     }
                   })}
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    height: '6px',
+                    borderRadius: '3px',
+                    background: `linear-gradient(to right, #4CAF50 0%, #4CAF50 ${((parseInt(cartConfig.header.title.fontSize) - 12) / 20) * 100}%, #d1d5db ${((parseInt(cartConfig.header.title.fontSize) - 12) / 20) * 100}%, #d1d5db 100%)`,
+                    outline: 'none',
+                    WebkitAppearance: 'none',
+                    appearance: 'none'
+                  }}
                 />
               </div>
             </div>
@@ -2256,46 +2280,27 @@ export default function CartUpsellConfiguration() {
               height: `calc(${cartConfig.header.height} * 0.7)`,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: cartConfig.header.title.alignment === 'center' ? 'center' : 'space-between'
+              justifyContent: 'space-between',
+              position: 'relative'
             }}>
-              {cartConfig.header.title.alignment === 'left' && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                  <div style={{ 
-                    fontSize: `calc(${cartConfig.header.title.fontSize} * 0.7)`,
-                    fontWeight: cartConfig.header.title.fontWeight
-                  }}>
-                    {cartConfig.header.title.text.replace('{{cart_quantity}}', '2')}
-                  </div>
-                  <button style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    fontSize: '20px',
-                    cursor: 'pointer',
-                    color: cartConfig.appearance.cartTextColor,
-                    lineHeight: '1'
-                  }}>✕</button>
-                </div>
-              )}
-              {cartConfig.header.title.alignment === 'center' && (
-                <>
-                  <div style={{ 
-                    fontSize: `calc(${cartConfig.header.title.fontSize} * 0.7)`,
-                    fontWeight: cartConfig.header.title.fontWeight
-                  }}>
-                    {cartConfig.header.title.text.replace('{{cart_quantity}}', '2')}
-                  </div>
-                  <button style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    fontSize: '20px',
-                    cursor: 'pointer',
-                    color: cartConfig.appearance.cartTextColor,
-                    lineHeight: '1',
-                    position: 'absolute',
-                    right: '16px'
-                  }}>✕</button>
-                </>
-              )}
+              <div style={{ 
+                flex: 1,
+                display: 'flex',
+                justifyContent: cartConfig.header.title.alignment === 'center' ? 'center' : 'flex-start',
+                fontSize: `calc(${cartConfig.header.title.fontSize} * 0.7)`,
+                fontWeight: cartConfig.header.title.fontWeight
+              }}>
+                {cartConfig.header.title.text.replace('{{cart_quantity}}', '2')}
+              </div>
+              <button style={{ 
+                background: 'none', 
+                border: 'none', 
+                fontSize: '20px',
+                cursor: 'pointer',
+                color: cartConfig.appearance.cartTextColor,
+                lineHeight: '1',
+                flexShrink: 0
+              }}>✕</button>
             </div>
 
             {/* Announcement Bar - Before Products */}
