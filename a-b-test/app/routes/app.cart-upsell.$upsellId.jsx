@@ -1763,6 +1763,12 @@ export default function CartUpsellConfiguration() {
             opacity: 1;
           }
         }
+        .sidebar-button {
+          transition: transform 0.2s ease;
+        }
+        .sidebar-button:hover {
+          transform: scale(1.05);
+        }
       `}</style>
       <div style={{ display: 'flex', height: '100vh' }}>
         {/* Left Section: Sidebar + Middle Panel with Header */}
@@ -1866,6 +1872,7 @@ export default function CartUpsellConfiguration() {
               </div>
               <button
                 onClick={() => setActiveSection('design')}
+                className="sidebar-button"
                 style={{
                   width: '100%',
                   textAlign: 'left',
@@ -1885,37 +1892,7 @@ export default function CartUpsellConfiguration() {
               </button>
               <button
                 onClick={() => setActiveSection('header')}
-                style={{
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '7px 8px',
-                  border: 'none',
-                  backgroundColor: activeSection === 'header' ? '#f3f4f6' : 'transparent',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-              >
-                <span style={{ filter: 'grayscale(1)' }}>📋</span>
-                <span>Header</span>
-              </button>
-            </div>
-
-            <div style={{ marginBottom: '4px', marginTop: '12px' }}>
-              <div style={{ 
-                fontSize: '11px', 
-                fontWeight: '600', 
-                color: '#6b7280', 
-                textTransform: 'uppercase',
-                padding: '6px 8px'
-              }}>
-                Body
-              </div>
-              <button
-                onClick={() => setActiveSection('header')}
+                className="sidebar-button"
                 style={{
                   width: '100%',
                   textAlign: 'left',
@@ -1933,8 +1910,21 @@ export default function CartUpsellConfiguration() {
                 <span style={{ filter: 'grayscale(1)' }}>🔝</span>
                 <span>Header</span>
               </button>
+            </div>
+
+            <div style={{ marginBottom: '4px', marginTop: '12px' }}>
+              <div style={{ 
+                fontSize: '11px', 
+                fontWeight: '600', 
+                color: '#6b7280', 
+                textTransform: 'uppercase',
+                padding: '6px 8px'
+              }}>
+                Body
+              </div>
               <button
                 onClick={() => setActiveSection('announcements')}
+                className="sidebar-button"
                 style={{
                   width: '100%',
                   textAlign: 'left',
@@ -1954,6 +1944,7 @@ export default function CartUpsellConfiguration() {
               </button>
               <button
                 onClick={() => setActiveSection('progress-bar')}
+                className="sidebar-button"
                 style={{
                   width: '100%',
                   textAlign: 'left',
@@ -1973,6 +1964,7 @@ export default function CartUpsellConfiguration() {
               </button>
               <button
                 onClick={() => setActiveSection('upsells')}
+                className="sidebar-button"
                 style={{
                   width: '100%',
                   textAlign: 'left',
