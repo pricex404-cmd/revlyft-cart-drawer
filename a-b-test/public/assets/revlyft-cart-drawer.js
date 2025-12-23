@@ -219,7 +219,7 @@
         <!-- Cart Header -->
         <div style="
           padding: 20px;
-          border-bottom: ${header?.bottomBorder === 'none' ? 'none' : '1px solid rgba(0,0,0,0.1)'};
+          border-bottom: ${header?.bottomBorder === 'none' ? 'none' : '1px solid #e1e3e5'};
           background-color: ${header?.backgroundColor || appearance.cartBackgroundColor};
           height: ${header?.height || '60px'};
           display: flex;
