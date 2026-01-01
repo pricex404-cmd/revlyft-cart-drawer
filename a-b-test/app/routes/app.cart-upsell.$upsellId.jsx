@@ -1785,11 +1785,13 @@ export default function CartUpsellConfiguration() {
               <>
                 {/* General Settings Section */}
                 <div style={{ 
-                  marginBottom: '24px', 
-                  paddingBottom: '24px', 
-                  borderBottom: '1px solid #e5e7eb'
+                  marginBottom: '32px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  backgroundColor: '#fafafa'
                 }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '20px', color: '#374151' }}>
                     General Settings
                   </h3>
 
@@ -2090,11 +2092,13 @@ export default function CartUpsellConfiguration() {
 
                 {/* Rewards Calculation Section */}
                 <div style={{ 
-                  marginBottom: '24px',
-                  paddingBottom: '24px',
-                  borderBottom: '1px solid #e5e7eb'
+                  marginBottom: '32px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  backgroundColor: '#fafafa'
                 }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '20px', color: '#374151' }}>
                     Rewards Calculation
                   </h3>
 
