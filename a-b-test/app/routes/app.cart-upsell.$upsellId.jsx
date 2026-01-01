@@ -166,10 +166,14 @@ export default function CartUpsellConfiguration() {
     },
     progressBar: {
       enabled: false,
+      showRewardsOnEmptyCart: true,
       goal: 50,
       goalText: 'Free Shipping Unlocked!',
       backgroundColor: '#e0e0e0',
-      barColor: '#4CAF50'
+      barColor: '#4CAF50',
+      completeIconColor: '#4CAF50',
+      incompleteIconColor: '#9e9e9e',
+      completionText: '🎉 You\'ve unlocked all rewards!'
     },
     upsell: {
       enabled: false,
@@ -291,8 +295,15 @@ export default function CartUpsellConfiguration() {
                 ]
               },
               progressBar: {
-                ...cartConfig.progressBar,
-                ...data.progressBar
+                enabled: data.progressBar?.enabled || false,
+                showRewardsOnEmptyCart: data.progressBar?.showRewardsOnEmptyCart ?? true,
+                goal: data.progressBar?.goal || 50,
+                goalText: data.progressBar?.goalText || 'Free Shipping Unlocked!',
+                backgroundColor: data.progressBar?.backgroundColor || '#e0e0e0',
+                barColor: data.progressBar?.barColor || '#4CAF50',
+                completeIconColor: data.progressBar?.completeIconColor || '#4CAF50',
+                incompleteIconColor: data.progressBar?.incompleteIconColor || '#9e9e9e',
+                completionText: data.progressBar?.completionText || '🎉 You\'ve unlocked all rewards!'
               },
               upsell: {
                 ...cartConfig.upsell,
@@ -1772,6 +1783,312 @@ export default function CartUpsellConfiguration() {
 
             {cartConfig.progressBar.enabled && (
               <>
+                {/* General Settings Section */}
+                <div style={{ 
+                  marginBottom: '24px', 
+                  paddingBottom: '24px', 
+                  borderBottom: '1px solid #e5e7eb'
+                }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
+                    General Settings
+                  </h3>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={cartConfig.progressBar.showRewardsOnEmptyCart}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, showRewardsOnEmptyCart: e.target.checked }
+                        })}
+                        style={{ marginRight: '8px' }}
+                      />
+                      <span style={{ fontSize: '14px' }}>Show rewards on empty cart</span>
+                    </label>
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Bar Background Color
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="text"
+                        value={cartConfig.progressBar.backgroundColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, backgroundColor: e.target.value }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 50px 10px 12px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px'
+                        }}
+                      />
+                      <input
+                        type="color"
+                        value={cartConfig.progressBar.backgroundColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, backgroundColor: e.target.value }
+                        })}
+                        style={{ 
+                          position: 'absolute',
+                          right: '6px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '36px',
+                          height: '36px',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Bar Foreground Color
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="text"
+                        value={cartConfig.progressBar.barColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, barColor: e.target.value }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 50px 10px 12px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px'
+                        }}
+                      />
+                      <input
+                        type="color"
+                        value={cartConfig.progressBar.barColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, barColor: e.target.value }
+                        })}
+                        style={{ 
+                          position: 'absolute',
+                          right: '6px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '36px',
+                          height: '36px',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Complete Reward Tier Icon Color
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="text"
+                        value={cartConfig.progressBar.completeIconColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, completeIconColor: e.target.value }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 50px 10px 12px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px'
+                        }}
+                      />
+                      <input
+                        type="color"
+                        value={cartConfig.progressBar.completeIconColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, completeIconColor: e.target.value }
+                        })}
+                        style={{ 
+                          position: 'absolute',
+                          right: '6px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '36px',
+                          height: '36px',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Incomplete Reward Tier Icon Color
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="text"
+                        value={cartConfig.progressBar.incompleteIconColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, incompleteIconColor: e.target.value }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 50px 10px 12px',
+                          border: '1px solid #d1d5db',
+                          borderRadius: '6px',
+                          fontSize: '14px'
+                        }}
+                      />
+                      <input
+                        type="color"
+                        value={cartConfig.progressBar.incompleteIconColor}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, incompleteIconColor: e.target.value }
+                        })}
+                        style={{ 
+                          position: 'absolute',
+                          right: '6px',
+                          top: '50%',
+                          transform: 'translateY(-50%)',
+                          width: '36px',
+                          height: '36px',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
+                      Text after completing full rewards bar
+                    </label>
+                    <div style={{ 
+                      border: '1px solid #d1d5db', 
+                      borderRadius: '6px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ 
+                        padding: '8px', 
+                        borderBottom: '1px solid #e5e7eb', 
+                        backgroundColor: '#f9fafb',
+                        display: 'flex',
+                        gap: '4px'
+                      }}>
+                        <button
+                          onClick={() => {
+                            const textArea = document.getElementById('completion-text-input');
+                            const start = textArea.selectionStart;
+                            const end = textArea.selectionEnd;
+                            if (start === end) return;
+                            const selectedText = cartConfig.progressBar.completionText.substring(start, end);
+                            const newText = cartConfig.progressBar.completionText.substring(0, start) + '<b>' + selectedText + '</b>' + cartConfig.progressBar.completionText.substring(end);
+                            setCartConfig({
+                              ...cartConfig,
+                              progressBar: { ...cartConfig.progressBar, completionText: newText }
+                            });
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '4px',
+                            backgroundColor: '#fff',
+                            cursor: 'pointer',
+                            fontWeight: 'bold',
+                            fontSize: '14px'
+                          }}
+                        >
+                          B
+                        </button>
+                        <button
+                          onClick={() => {
+                            const textArea = document.getElementById('completion-text-input');
+                            const start = textArea.selectionStart;
+                            const end = textArea.selectionEnd;
+                            if (start === end) return;
+                            const selectedText = cartConfig.progressBar.completionText.substring(start, end);
+                            const newText = cartConfig.progressBar.completionText.substring(0, start) + '<i>' + selectedText + '</i>' + cartConfig.progressBar.completionText.substring(end);
+                            setCartConfig({
+                              ...cartConfig,
+                              progressBar: { ...cartConfig.progressBar, completionText: newText }
+                            });
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '4px',
+                            backgroundColor: '#fff',
+                            cursor: 'pointer',
+                            fontStyle: 'italic',
+                            fontSize: '14px'
+                          }}
+                        >
+                          I
+                        </button>
+                        <button
+                          onClick={() => {
+                            const textArea = document.getElementById('completion-text-input');
+                            const start = textArea.selectionStart;
+                            const end = textArea.selectionEnd;
+                            if (start === end) return;
+                            const selectedText = cartConfig.progressBar.completionText.substring(start, end);
+                            const newText = cartConfig.progressBar.completionText.substring(0, start) + '<u>' + selectedText + '</u>' + cartConfig.progressBar.completionText.substring(end);
+                            setCartConfig({
+                              ...cartConfig,
+                              progressBar: { ...cartConfig.progressBar, completionText: newText }
+                            });
+                          }}
+                          style={{
+                            padding: '6px 12px',
+                            border: '1px solid #d1d5db',
+                            borderRadius: '4px',
+                            backgroundColor: '#fff',
+                            cursor: 'pointer',
+                            textDecoration: 'underline',
+                            fontSize: '14px'
+                          }}
+                        >
+                          U
+                        </button>
+                      </div>
+                      <input
+                        id="completion-text-input"
+                        type="text"
+                        value={cartConfig.progressBar.completionText}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, completionText: e.target.value }
+                        })}
+                        style={{ 
+                          width: '100%',
+                          padding: '10px 12px',
+                          border: 'none',
+                          fontSize: '14px',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reward Tiers Section (placeholder for future) */}
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
                     Goal Amount ($)
@@ -1812,90 +2129,6 @@ export default function CartUpsellConfiguration() {
                       fontSize: '14px'
                     }}
                   />
-                </div>
-
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                    Background Color
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <input
-                      type="text"
-                      value={cartConfig.progressBar.backgroundColor}
-                      onChange={(e) => setCartConfig({
-                        ...cartConfig,
-                        progressBar: { ...cartConfig.progressBar, backgroundColor: e.target.value }
-                      })}
-                      style={{ 
-                        width: '100%',
-                        padding: '10px 50px 10px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}
-                    />
-                    <input
-                      type="color"
-                      value={cartConfig.progressBar.backgroundColor}
-                      onChange={(e) => setCartConfig({
-                        ...cartConfig,
-                        progressBar: { ...cartConfig.progressBar, backgroundColor: e.target.value }
-                      })}
-                      style={{ 
-                        position: 'absolute',
-                        right: '6px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '36px',
-                        height: '36px',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                    Bar Color
-                  </label>
-                  <div style={{ position: 'relative' }}>
-                    <input
-                      type="text"
-                      value={cartConfig.progressBar.barColor}
-                      onChange={(e) => setCartConfig({
-                        ...cartConfig,
-                        progressBar: { ...cartConfig.progressBar, barColor: e.target.value }
-                      })}
-                      style={{ 
-                        width: '100%',
-                        padding: '10px 50px 10px 12px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px'
-                      }}
-                    />
-                    <input
-                      type="color"
-                      value={cartConfig.progressBar.barColor}
-                      onChange={(e) => setCartConfig({
-                        ...cartConfig,
-                        progressBar: { ...cartConfig.progressBar, barColor: e.target.value }
-                      })}
-                      style={{ 
-                        position: 'absolute',
-                        right: '6px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '36px',
-                        height: '36px',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </div>
                 </div>
               </>
             )}
