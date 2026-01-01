@@ -167,13 +167,13 @@ export default function CartUpsellConfiguration() {
     progressBar: {
       enabled: false,
       showRewardsOnEmptyCart: true,
-      goal: 50,
-      goalText: 'Free Shipping Unlocked!',
       backgroundColor: '#e0e0e0',
       barColor: '#4CAF50',
       completeIconColor: '#4CAF50',
       incompleteIconColor: '#9e9e9e',
-      completionText: '🎉 You\'ve unlocked all rewards!'
+      completionText: '🎉 You\'ve unlocked all rewards!',
+      calculationType: 'cartTotal',
+      usePreDiscountedPrices: true
     },
     upsell: {
       enabled: false,
@@ -297,13 +297,13 @@ export default function CartUpsellConfiguration() {
               progressBar: {
                 enabled: data.progressBar?.enabled || false,
                 showRewardsOnEmptyCart: data.progressBar?.showRewardsOnEmptyCart ?? true,
-                goal: data.progressBar?.goal || 50,
-                goalText: data.progressBar?.goalText || 'Free Shipping Unlocked!',
                 backgroundColor: data.progressBar?.backgroundColor || '#e0e0e0',
                 barColor: data.progressBar?.barColor || '#4CAF50',
                 completeIconColor: data.progressBar?.completeIconColor || '#4CAF50',
                 incompleteIconColor: data.progressBar?.incompleteIconColor || '#9e9e9e',
-                completionText: data.progressBar?.completionText || '🎉 You\'ve unlocked all rewards!'
+                completionText: data.progressBar?.completionText || '🎉 You\'ve unlocked all rewards!',
+                calculationType: data.progressBar?.calculationType || 'cartTotal',
+                usePreDiscountedPrices: data.progressBar?.usePreDiscountedPrices ?? true
               },
               upsell: {
                 ...cartConfig.upsell,
@@ -2088,47 +2088,89 @@ export default function CartUpsellConfiguration() {
                   </div>
                 </div>
 
-                {/* Reward Tiers Section (placeholder for future) */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                    Goal Amount ($)
-                  </label>
-                  <input
-                    type="number"
-                    value={cartConfig.progressBar.goal}
-                    onChange={(e) => setCartConfig({
-                      ...cartConfig,
-                      progressBar: { ...cartConfig.progressBar, goal: parseFloat(e.target.value) }
-                    })}
-                    style={{ 
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid #d1d5db',
-                      borderRadius: '6px',
-                      fontSize: '14px'
-                    }}
-                  />
-                </div>
+                {/* Rewards Calculation Section */}
+                <div style={{ 
+                  marginBottom: '24px',
+                  paddingBottom: '24px',
+                  borderBottom: '1px solid #e5e7eb'
+                }}>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
+                    Rewards Calculation
+                  </h3>
 
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{ display: 'block', fontSize: '13px', marginBottom: '8px', color: '#6b7280' }}>
-                    Goal Text
-                  </label>
-                  <input
-                    type="text"
-                    value={cartConfig.progressBar.goalText}
-                    onChange={(e) => setCartConfig({
-                      ...cartConfig,
-                      progressBar: { ...cartConfig.progressBar, goalText: e.target.value }
-                    })}
-                    style={{ 
-                      width: '100%',
-                      padding: '10px 12px',
-                      border: '1px solid #d1d5db',
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', marginBottom: '12px' }}>
+                      <input
+                        type="radio"
+                        name="calculation-type"
+                        value="cartTotal"
+                        checked={cartConfig.progressBar.calculationType === 'cartTotal'}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, calculationType: e.target.value }
+                        })}
+                        style={{ marginRight: '8px', marginTop: '2px' }}
+                      />
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>Cart Total</div>
+                        <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
+                          Your rewards will be calculated based on the total amount of the cart.
+                        </div>
+                      </div>
+                    </label>
+
+                    <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="calculation-type"
+                        value="itemCount"
+                        checked={cartConfig.progressBar.calculationType === 'itemCount'}
+                        onChange={(e) => setCartConfig({
+                          ...cartConfig,
+                          progressBar: { ...cartConfig.progressBar, calculationType: e.target.value }
+                        })}
+                        style={{ marginRight: '8px', marginTop: '2px' }}
+                      />
+                      <div>
+                        <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>Item Count</div>
+                        <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
+                          Your rewards will be calculated based on the number of items in the cart.
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+
+                  {cartConfig.progressBar.calculationType === 'cartTotal' && (
+                    <div style={{ 
+                      marginTop: '16px',
+                      padding: '16px',
+                      backgroundColor: '#f9fafb',
                       borderRadius: '6px',
-                      fontSize: '14px'
-                    }}
-                  />
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer' }}>
+                        <input
+                          type="checkbox"
+                          checked={cartConfig.progressBar.usePreDiscountedPrices}
+                          onChange={(e) => setCartConfig({
+                            ...cartConfig,
+                            progressBar: { ...cartConfig.progressBar, usePreDiscountedPrices: e.target.checked }
+                          })}
+                          style={{ marginRight: '8px', marginTop: '2px' }}
+                        />
+                        <div>
+                          <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
+                            Use pre-discounted prices for cart total
+                          </div>
+                          <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
+                            Enable calculating reward bar tiers based on the cart total before any discounts are applied. 
+                            This ensures that rewards are based on the original prices of items, allowing you to maintain 
+                            consistent reward thresholds regardless of any discounts given.
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+                  )}
                 </div>
               </>
             )}
