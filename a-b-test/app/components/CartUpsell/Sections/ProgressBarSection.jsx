@@ -1,4 +1,9 @@
-export default function ProgressBarSection({ config, onUpdate }) {
+import InfoButton from '../Shared/InfoButton';
+import { getCurrencySymbol, getRewardTypeIcon } from '../../../utils/currencyHelpers';
+
+export default function ProgressBarSection({ config, onUpdate, currencyCode = 'USD' }) {
+  const currencySymbol = getCurrencySymbol(currencyCode);
+
   return (
     <div style={{ padding: '24px' }}>
       <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px' }}>Progress Bar</h2>
@@ -377,32 +382,40 @@ export default function ProgressBarSection({ config, onUpdate }) {
               <button
                 onClick={() => {
                   const rewards = config.rewards || [];
+                  if (rewards.length >= 4) {
+                    alert('Maximum 4 reward tiers allowed');
+                    return;
+                  }
                   const newId = Math.max(0, ...rewards.map(r => r.id)) + 1;
                   const updatedRewards = [...rewards, {
                     id: newId,
-                    threshold: 200,
-                    description: 'New Reward',
-                    icon: '🎉'
+                    threshold: config.calculationType === 'cartTotal' ? 100 : 5,
+                    rewardType: 'free_gift',
+                    rewardText: 'New Reward',
+                    progressText: 'Add {{amount_left}} more to unlock {{goal}}!',
+                    icon: '🎁'
                   }].sort((a, b) => a.threshold - b.threshold);
                   onUpdate({ ...config, rewards: updatedRewards });
                 }}
                 style={{
                   padding: '8px 16px',
-                  backgroundColor: '#000',
+                  backgroundColor: (config.rewards || []).length >= 4 ? '#9ca3af' : '#000',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '6px',
                   fontSize: '13px',
                   fontWeight: '500',
-                  cursor: 'pointer'
+                  cursor: (config.rewards || []).length >= 4 ? 'not-allowed' : 'pointer',
+                  opacity: (config.rewards || []).length >= 4 ? 0.6 : 1
                 }}
+                disabled={(config.rewards || []).length >= 4}
               >
                 + Add Tier
               </button>
             </div>
 
             <div style={{ fontSize: '13px', color: '#6b7280', marginBottom: '16px' }}>
-              Define milestone rewards that customers can unlock as they add items to their cart.
+              Define milestone rewards that customers can unlock as they add items to their cart. Maximum 4 tiers allowed.
             </div>
 
             {(!config.rewards || config.rewards.length === 0) ? (
@@ -417,32 +430,124 @@ export default function ProgressBarSection({ config, onUpdate }) {
                 No reward tiers added yet. Click "Add Tier" to create one.
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {config.rewards.map((reward) => (
-                  <div key={reward.id} style={{ 
-                    display: 'flex',
-                    gap: '12px',
-                    padding: '16px',
-                    backgroundColor: '#fff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '8px',
-                    alignItems: 'flex-start'
-                  }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-                        <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {config.rewards.map((reward) => {
+                  const rewardIcon = reward.rewardType === 'custom' 
+                    ? reward.icon 
+                    : getRewardTypeIcon(reward.rewardType);
+
+                  return (
+                    <div key={reward.id} style={{ 
+                      display: 'flex',
+                      gap: '12px',
+                      padding: '20px',
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      alignItems: 'flex-start'
+                    }}>
+                      <div style={{ flex: 1 }}>
+                        {/* Threshold and Reward Type Row */}
+                        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+                          <div style={{ flex: 1 }}>
+                            <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
+                              {config.calculationType === 'cartTotal' 
+                                ? `Threshold (${currencySymbol})` 
+                                : 'Threshold (Items)'}
+                            </label>
+                            <input
+                              type="number"
+                              value={reward.threshold}
+                              onChange={(e) => {
+                                const updatedRewards = config.rewards.map(r => 
+                                  r.id === reward.id ? { ...r, threshold: parseFloat(e.target.value) || 0 } : r
+                                ).sort((a, b) => a.threshold - b.threshold);
+                                onUpdate({ ...config, rewards: updatedRewards });
+                              }}
+                              style={{ 
+                                width: '100%',
+                                padding: '8px 12px',
+                                border: '1px solid #d1d5db',
+                                borderRadius: '6px',
+                                fontSize: '14px'
+                              }}
+                            />
+                          </div>
+
+                          <div style={{ flex: 1 }}>
+                            <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
+                              Reward Type
+                            </label>
+                            <select
+                              value={reward.rewardType || 'free_gift'}
+                              onChange={(e) => {
+                                const newType = e.target.value;
+                                const updatedRewards = config.rewards.map(r => 
+                                  r.id === reward.id 
+                                    ? { ...r, rewardType: newType, icon: getRewardTypeIcon(newType) } 
+                                    : r
+                                );
+                                onUpdate({ ...config, rewards: updatedRewards });
+                              }}
+                              style={{ 
+                                width: '100%',
+                                padding: '8px 12px',
+                                border: '1px solid #d1d5db',
+                                borderRadius: '6px',
+                                fontSize: '14px',
+                                backgroundColor: '#fff'
+                              }}
+                            >
+                              <option value="shipping">🚚 Shipping</option>
+                              <option value="free_gift">🎁 Free Gift</option>
+                              <option value="discount">💰 Discount</option>
+                              <option value="custom">✏️ Custom</option>
+                            </select>
+                          </div>
+
+                          {reward.rewardType === 'custom' && (
+                            <div style={{ flex: '0 0 80px' }}>
+                              <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
+                                Icon
+                              </label>
+                              <input
+                                type="text"
+                                value={reward.icon}
+                                onChange={(e) => {
+                                  const updatedRewards = config.rewards.map(r => 
+                                    r.id === reward.id ? { ...r, icon: e.target.value } : r
+                                  );
+                                  onUpdate({ ...config, rewards: updatedRewards });
+                                }}
+                                placeholder="🎉"
+                                style={{ 
+                                  width: '100%',
+                                  padding: '8px 12px',
+                                  border: '1px solid #d1d5db',
+                                  borderRadius: '6px',
+                                  fontSize: '20px',
+                                  textAlign: 'center'
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Reward Text */}
+                        <div style={{ marginBottom: '16px' }}>
                           <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
-                            {config.calculationType === 'cartTotal' ? 'Threshold ($)' : 'Item Count'}
+                            Reward Text
                           </label>
                           <input
-                            type="number"
-                            value={reward.threshold}
+                            type="text"
+                            value={reward.rewardText || reward.description || ''}
                             onChange={(e) => {
                               const updatedRewards = config.rewards.map(r => 
-                                r.id === reward.id ? { ...r, threshold: parseFloat(e.target.value) || 0 } : r
-                              ).sort((a, b) => a.threshold - b.threshold);
+                                r.id === reward.id ? { ...r, rewardText: e.target.value } : r
+                              );
                               onUpdate({ ...config, rewards: updatedRewards });
                             }}
+                            placeholder="e.g., Free Shipping on orders over $50"
                             style={{ 
                               width: '100%',
                               padding: '8px 12px',
@@ -452,81 +557,69 @@ export default function ProgressBarSection({ config, onUpdate }) {
                             }}
                           />
                         </div>
-                        <div style={{ flex: '0 0 80px' }}>
-                          <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
-                            Icon
+
+                        {/* Text Before Hitting Goal */}
+                        <div>
+                          <label style={{ 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            fontSize: '12px', 
+                            marginBottom: '6px', 
+                            color: '#6b7280', 
+                            fontWeight: '500' 
+                          }}>
+                            Text Before Hitting Goal
+                            <InfoButton text="You can use variables {{goal}} or {{amount_left}}" />
                           </label>
                           <input
                             type="text"
-                            value={reward.icon}
+                            value={reward.progressText || ''}
                             onChange={(e) => {
                               const updatedRewards = config.rewards.map(r => 
-                                r.id === reward.id ? { ...r, icon: e.target.value } : r
+                                r.id === reward.id ? { ...r, progressText: e.target.value } : r
                               );
                               onUpdate({ ...config, rewards: updatedRewards });
                             }}
-                            placeholder="🎁"
+                            placeholder="Add {{amount_left}} more to unlock {{goal}}!"
                             style={{ 
                               width: '100%',
                               padding: '8px 12px',
                               border: '1px solid #d1d5db',
                               borderRadius: '6px',
-                              fontSize: '20px',
-                              textAlign: 'center'
+                              fontSize: '14px'
                             }}
                           />
                         </div>
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
-                          Description
-                        </label>
-                        <input
-                          type="text"
-                          value={reward.description}
-                          onChange={(e) => {
-                            const updatedRewards = config.rewards.map(r => 
-                              r.id === reward.id ? { ...r, description: e.target.value } : r
-                            );
-                            onUpdate({ ...config, rewards: updatedRewards });
-                          }}
-                          placeholder="e.g., Free Shipping"
-                          style={{ 
-                            width: '100%',
-                            padding: '8px 12px',
-                            border: '1px solid #d1d5db',
-                            borderRadius: '6px',
-                            fontSize: '14px'
-                          }}
-                        />
-                      </div>
+
+                      <button
+                        onClick={() => {
+                          const updatedRewards = config.rewards.filter(r => r.id !== reward.id);
+                          onUpdate({ ...config, rewards: updatedRewards });
+                        }}
+                        style={{
+                          padding: '8px',
+                          backgroundColor: '#fee',
+                          color: '#c00',
+                          border: '1px solid #fcc',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '18px',
+                          lineHeight: '1',
+                          width: '36px',
+                          height: '36px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}
+                        title="Delete tier"
+                      >
+                        ×
+                      </button>
                     </div>
-                    <button
-                      onClick={() => {
-                        const updatedRewards = config.rewards.filter(r => r.id !== reward.id);
-                        onUpdate({ ...config, rewards: updatedRewards });
-                      }}
-                      style={{
-                        padding: '8px',
-                        backgroundColor: '#fee',
-                        color: '#c00',
-                        border: '1px solid #fcc',
-                        borderRadius: '6px',
-                        cursor: 'pointer',
-                        fontSize: '18px',
-                        lineHeight: '1',
-                        width: '36px',
-                        height: '36px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                      title="Delete tier"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

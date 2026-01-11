@@ -200,6 +200,7 @@ export default function CartUpsellConfiguration() {
         return (
           <ProgressBarSection 
             config={cartConfig.progressBar}
+            currencyCode={currencyCode}
             onUpdate={(updatedConfig) => setCartConfig({
               ...cartConfig,
               progressBar: updatedConfig
