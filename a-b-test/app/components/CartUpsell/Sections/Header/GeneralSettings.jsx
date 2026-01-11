@@ -1,5 +1,5 @@
-import ColorPicker from "../../../Shared/ColorPicker";
-import SliderInput from "../../../Shared/SliderInput";
+import ColorPicker from "../../Shared/ColorPicker";
+import SliderInput from "../../Shared/SliderInput";
 
 export default function GeneralSettings({ config, onUpdate }) {
   const borderOptions = [

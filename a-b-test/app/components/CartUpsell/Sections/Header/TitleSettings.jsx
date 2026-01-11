@@ -1,4 +1,4 @@
-import SliderInput from "../../../Shared/SliderInput";
+import SliderInput from "../../Shared/SliderInput";
 
 export default function TitleSettings({ config, onUpdate }) {
   const alignmentOptions = [
