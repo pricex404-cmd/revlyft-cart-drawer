@@ -410,9 +410,6 @@ const CreateTestModal = ({
 
   // Show simplified modal when type is pre-selected
   const isSimplified = !!preSelectedType;
-
-  // Show simplified modal when type is pre-selected
-  const isSimplified = !!preSelectedType;
   
   const getModalTitle = () => {
     if (!isSimplified) return "Choose a Feature";
