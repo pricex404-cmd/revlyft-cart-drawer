@@ -269,7 +269,7 @@ export default function CartUpsellConfiguration() {
                   <path d="M12 4L6 10L12 16" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
-              <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0, color: '#111827' }}>Cart Appearance</h1>
+              <h1 style={{ fontSize: '18px', fontWeight: '600', margin: 0, color: '#111827' }}>Cart Appearance Configuration</h1>
               <span style={{
                 padding: '3px 10px',
                 backgroundColor: '#d1fae5',

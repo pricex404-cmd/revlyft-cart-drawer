@@ -22,7 +22,7 @@ export default function App() {
       <Frame>
         <NavMenu>
           <Link to="/app" rel="home">
-            Home
+            Dashboard
           </Link>
           <Link to="/app/setup-guide">
             Setup Guide

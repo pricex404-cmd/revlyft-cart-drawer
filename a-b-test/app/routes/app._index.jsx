@@ -171,9 +171,9 @@ const SearchAndFilters = ({
           labelHidden
           options={[
             { label: 'All Types', value: 'all' },
-            { label: 'Price Test', value: 'pricing' },
+            { label: 'Dynamic Pricing', value: 'pricing' },
             // { label: 'Shipping Test', value: 'shipping' },
-            { label: 'Discount Test', value: 'discount' },
+            { label: 'Smart Cart Discounts', value: 'discount' },
             // { label: 'Product Details Test', value: 'productDetails' },
             // { label: 'Offers Test', value: 'offers' }
           ]}
@@ -283,8 +283,8 @@ const CreateTestModal = ({
     {
       type: 'pricing',
       icon: CurrencyConvertIcon,
-      title: 'Price Test',
-      description: 'Test the price of one or multiple products in your Shopify store.'
+      title: 'Dynamic Pricing',
+      description: 'Test different product prices to find optimal pricing that maximizes revenue.'
     },
     // {
     //   type: 'shipping',
@@ -295,14 +295,14 @@ const CreateTestModal = ({
     {
       type: 'discount',
       icon: DiscountFilledIcon,
-      title: 'Discount Test',
-      description: 'Test different discount percentages on cart value across customer groups.'
+      title: 'Smart Cart Discounts',
+      description: 'Test cart value and quantity-based discount strategies to boost conversions.'
     },
     {
       type: 'cartUpsell',
       icon: SandboxIcon,
-      title: 'Cart Upsell',
-      description: 'Configure upsell products to display in the cart drawer and increase average order value.'
+      title: 'Cart Appearance',
+      description: 'Customize your cart drawer design, layout, upsells, and promotional elements.'
     },
     // {
     //   type: 'productDetails',
@@ -322,7 +322,7 @@ const CreateTestModal = ({
     <Modal
       open={open}
       onClose={() => !isCreating && onClose()}
-      title="Create A New Test"
+      title="Choose a Feature"
     >
       {validationMessage && (
         <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: 'white', borderBottom: '1px solid #e1e3e5' }}>
@@ -356,7 +356,7 @@ const CreateTestModal = ({
           />
 
           <BlockStack gap="400">
-            <Text variant="bodyMd" as="p" fontWeight="bold">Select Test Type:</Text>
+            <Text variant="bodyMd" as="p" fontWeight="bold">Select Feature:</Text>
             <LegacyStack distribution="fillEvenly">
               {testTypes.map((test) => (
                 <TestTypeButton
@@ -381,7 +381,7 @@ const CreateTestModal = ({
             onClick={onCreateTest}
             loading={isCreating}
           >
-            Create Test
+            Create
           </Button>
         </InlineStack>
       </Modal.Section>
@@ -721,13 +721,13 @@ export default function Index() {
     const missingFields = [];
 
     if (!testName.trim()) {
-      missingFields.push("Test Name");
+      missingFields.push("Name");
     }
     if (!testDescription.trim()) {
-      missingFields.push("Test Description");
+      missingFields.push("Description");
     }
     if (!selectedTestType) {
-      missingFields.push("Test Type");
+      missingFields.push("Feature Type");
     }
 
     if (missingFields.length > 0) {
@@ -1163,34 +1163,234 @@ export default function Index() {
     }
   };
 
+  // Get cart appearance test
+  const cartAppearanceTest = searchAndFilterData.find(test => test.type === 'cartUpsell');
+  const priceTests = searchAndFilterData.filter(test => test.type === 'pricing');
+  const discountTests = searchAndFilterData.filter(test => test.type === 'discount');
+
+  // Count active tests
+  const activePriceTests = priceTests.filter(test => test.status === 'active').length;
+  const activeDiscountTests = discountTests.filter(test => test.status === 'active').length;
+
   return (
     <Page>
       <BlockStack gap="500">
         {/* Header Section */}
         <InlineStack align="space-between">
-          <Text variant="headingLg" as="h1">A/B Tests Overview:</Text>
+          <BlockStack gap="200">
+            <Text variant="headingLg" as="h1">Cart Drawer Manager</Text>
+            <Text variant="bodyMd" color="subdued">Customize your cart appearance and optimize with testing features</Text>
+          </BlockStack>
           <InlineStack gap="200">
-            {/* <Button>✨ TestPilot</Button> */}
             {showDisconnectCleanup && (
               <Button onClick={handleDisconnectClick}>Disconnect & Clean Up</Button>
             )}
-            <Button variant="primary" onClick={handleCreateNewTest}>Create New Test</Button>
           </InlineStack>
         </InlineStack>
 
-        {/* Search and Filters */}
-        <SearchAndFilters
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-          statusFilter={statusFilter}
-          onStatusFilterChange={handleStatusFilterChange}
-          testTypeFilter={testTypeFilter}
-          onTestTypeFilterChange={handleTestTypeFilterChange}
-          onClearFilters={handleClearFilters}
-        />
+        {/* Feature Cards Grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+          {/* Cart Appearance Card */}
+          <Card>
+            <BlockStack gap="400">
+              <InlineStack align="space-between" blockAlign="start">
+                <BlockStack gap="200">
+                  <InlineStack gap="200" blockAlign="center">
+                    <div style={{ color: '#5C6AC4' }}>
+                      <Icon source={SandboxIcon} />
+                    </div>
+                    <Text variant="headingMd" as="h2">Cart Appearance</Text>
+                  </InlineStack>
+                  <Text variant="bodyMd" color="subdued">
+                    Customize your cart drawer design, layout, and upsells
+                  </Text>
+                </BlockStack>
+              </InlineStack>
+              
+              <div style={{ 
+                padding: '12px 16px', 
+                backgroundColor: cartAppearanceTest?.status === 'active' ? '#E8F5E9' : '#F5F5F5',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <Badge status={cartAppearanceTest?.status === 'active' ? 'success' : 'info'}>
+                  {cartAppearanceTest?.status === 'active' ? 'Active' : cartAppearanceTest ? 'Configured' : 'Not Set Up'}
+                </Badge>
+                {cartAppearanceTest && (
+                  <Text variant="bodySm" color="subdued">
+                    {cartAppearanceTest.name}
+                  </Text>
+                )}
+              </div>
 
-        {/* Tests Table */}
-        <TestsTable rows={rows.length > 0 ? modifyRowsWithActions() : []} testSessionsData={testSessionsData} testIds={testIds} />
+              <Button 
+                fullWidth 
+                variant="primary"
+                onClick={() => {
+                  if (cartAppearanceTest) {
+                    navigate(`/app/cart-upsell/${cartAppearanceTest.id}`);
+                  } else {
+                    handleCreateNewTest();
+                    setSelectedTestType('cartUpsell');
+                  }
+                }}
+              >
+                {cartAppearanceTest ? 'Configure Cart' : 'Set Up Cart Appearance'}
+              </Button>
+            </BlockStack>
+          </Card>
+
+          {/* Dynamic Pricing Card */}
+          <Card>
+            <BlockStack gap="400">
+              <InlineStack align="space-between" blockAlign="start">
+                <BlockStack gap="200">
+                  <InlineStack gap="200" blockAlign="center">
+                    <div style={{ color: '#00A47C' }}>
+                      <Icon source={CurrencyConvertIcon} />
+                    </div>
+                    <Text variant="headingMd" as="h2">Dynamic Pricing</Text>
+                  </InlineStack>
+                  <Text variant="bodyMd" color="subdued">
+                    Test different product prices to optimize revenue
+                  </Text>
+                </BlockStack>
+              </InlineStack>
+              
+              <div style={{ 
+                padding: '12px 16px', 
+                backgroundColor: '#F5F5F5',
+                borderRadius: '8px'
+              }}>
+                <InlineStack gap="300" align="space-between">
+                  <Text variant="bodyMd" fontWeight="semibold">
+                    {activePriceTests} Active • {priceTests.length} Total
+                  </Text>
+                  {activePriceTests > 0 && (
+                    <Badge status="success">Running</Badge>
+                  )}
+                </InlineStack>
+              </div>
+
+              <InlineStack gap="200">
+                <Button 
+                  fullWidth
+                  onClick={() => {
+                    setTestTypeFilter('pricing');
+                    setStatusFilter('all');
+                  }}
+                >
+                  View Tests
+                </Button>
+                <Button 
+                  fullWidth
+                  variant="primary"
+                  onClick={() => {
+                    handleCreateNewTest();
+                    setSelectedTestType('pricing');
+                  }}
+                >
+                  Create Test
+                </Button>
+              </InlineStack>
+            </BlockStack>
+          </Card>
+
+          {/* Smart Cart Discounts Card */}
+          <Card>
+            <BlockStack gap="400">
+              <InlineStack align="space-between" blockAlign="start">
+                <BlockStack gap="200">
+                  <InlineStack gap="200" blockAlign="center">
+                    <div style={{ color: '#DC6803' }}>
+                      <Icon source={DiscountFilledIcon} />
+                    </div>
+                    <Text variant="headingMd" as="h2">Smart Cart Discounts</Text>
+                  </InlineStack>
+                  <Text variant="bodyMd" color="subdued">
+                    Test cart value and quantity-based discount strategies
+                  </Text>
+                </BlockStack>
+              </InlineStack>
+              
+              <div style={{ 
+                padding: '12px 16px', 
+                backgroundColor: '#F5F5F5',
+                borderRadius: '8px'
+              }}>
+                <InlineStack gap="300" align="space-between">
+                  <Text variant="bodyMd" fontWeight="semibold">
+                    {activeDiscountTests} Active • {discountTests.length} Total
+                  </Text>
+                  {activeDiscountTests > 0 && (
+                    <Badge status="success">Running</Badge>
+                  )}
+                </InlineStack>
+              </div>
+
+              <InlineStack gap="200">
+                <Button 
+                  fullWidth
+                  onClick={() => {
+                    setTestTypeFilter('discount');
+                    setStatusFilter('all');
+                  }}
+                >
+                  View Tests
+                </Button>
+                <Button 
+                  fullWidth
+                  variant="primary"
+                  onClick={() => {
+                    handleCreateNewTest();
+                    setSelectedTestType('discount');
+                  }}
+                >
+                  Create Test
+                </Button>
+              </InlineStack>
+            </BlockStack>
+          </Card>
+        </div>
+
+        {/* Conditional Tests List Section - Only show when filters are applied */}
+        {(testTypeFilter !== 'all' || statusFilter !== 'all' || searchTerm) && (
+          <BlockStack gap="400">
+            <InlineStack align="space-between">
+              <Text variant="headingMd" as="h2">
+                {testTypeFilter === 'pricing' ? 'Dynamic Pricing Tests' : 
+                 testTypeFilter === 'discount' ? 'Smart Cart Discount Tests' : 
+                 'All Tests'}
+              </Text>
+              <Button 
+                plain 
+                onClick={() => {
+                  setTestTypeFilter('all');
+                  setStatusFilter('all');
+                  setSearchTerm('');
+                }}
+              >
+                Clear Filters
+              </Button>
+            </InlineStack>
+
+            {/* Search and Filters */}
+            <SearchAndFilters
+              searchTerm={searchTerm}
+              onSearchChange={handleSearchChange}
+              statusFilter={statusFilter}
+              onStatusFilterChange={handleStatusFilterChange}
+              testTypeFilter={testTypeFilter}
+              onTestTypeFilterChange={handleTestTypeFilterChange}
+              onClearFilters={handleClearFilters}
+            />
+
+            {/* Tests Table */}
+            <TestsTable rows={rows.length > 0 ? modifyRowsWithActions() : []} testSessionsData={testSessionsData} testIds={testIds} />
+          </BlockStack>
+        )}
 
         {/* revlyft Script Installation Instructions */}
         {/* <Card>
