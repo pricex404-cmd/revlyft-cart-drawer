@@ -265,6 +265,95 @@ const TestsTable = ({ rows, testSessionsData, testIds }) => {
   );
 };
 
+// View Tests Modal Component
+const ViewTestsModal = ({
+  open,
+  onClose,
+  tests,
+  testType,
+  testIds,
+  testSessionsData,
+  onActionClick
+}) => {
+  const getTestTypeName = () => {
+    if (testType === 'pricing') return 'Dynamic Pricing';
+    if (testType === 'discount') return 'Smart Cart Discounts';
+    return 'Tests';
+  };
+
+  const renderStatus = (status) => {
+    const statusStyles = {
+      active: {
+        backgroundColor: 'rgb(205, 241, 227)',
+        color: 'rgb(0, 128, 96)',
+        padding: '4px 8px',
+        borderRadius: '8px',
+        fontWeight: '500'
+      },
+      pending: {
+        backgroundColor: 'rgb(255, 250, 230)',
+        color: 'rgb(183, 155, 0)',
+        padding: '4px 8px',
+        borderRadius: '8px',
+        fontWeight: '500'
+      },
+      deactive: {
+        backgroundColor: 'rgb(254, 234, 238)',
+        color: 'rgb(207, 45, 83)',
+        padding: '4px 8px',
+        borderRadius: '8px',
+        fontWeight: '500'
+      }
+    };
+
+    const style = statusStyles[status.toLowerCase()] || statusStyles.pending;
+
+    return (
+      <div style={style}>
+        {status.charAt(0).toUpperCase() + status.slice(1)}
+      </div>
+    );
+  };
+
+  const formattedRows = tests.map((test, index) => {
+    const testId = testIds[index];
+    const sessions = testSessionsData[testId] || [];
+    
+    return [
+      test.name,
+      <RuntimeDisplay sessions={sessions} status={test.status} />,
+      test.createdAt,
+      renderStatus(test.status),
+      <Button plain onClick={() => onActionClick(index)}>...</Button>
+    ];
+  });
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={`${getTestTypeName()} Tests`}
+      large
+    >
+      <Modal.Section>
+        {tests.length === 0 ? (
+          <BlockStack gap="400">
+            <Text variant="bodyMd" color="subdued">No tests found.</Text>
+          </BlockStack>
+        ) : (
+          <Card padding="0">
+            <DataTable
+              columnContentTypes={['text', 'text', 'text', 'text', 'text']}
+              headings={['EXPERIMENT NAME', 'RUNTIME', 'START', 'STATUS', 'ACTIONS']}
+              rows={formattedRows}
+            />
+          </Card>
+        )}
+      </Modal.Section>
+    </Modal>
+  );
+};
+
 const CreateTestModal = ({
   open,
   onClose,
@@ -277,7 +366,8 @@ const CreateTestModal = ({
   onCreateTest,
   isCreating,
   validationMessage,
-  setValidationMessage
+  setValidationMessage,
+  preSelectedType
 }) => {
   const testTypes = [
     {
@@ -318,11 +408,23 @@ const CreateTestModal = ({
     // }
   ];
 
+  // Show simplified modal when type is pre-selected
+  const isSimplified = !!preSelectedType;
+
+  // Show simplified modal when type is pre-selected
+  const isSimplified = !!preSelectedType;
+  
+  const getModalTitle = () => {
+    if (!isSimplified) return "Choose a Feature";
+    const typeInfo = testTypes.find(t => t.type === preSelectedType);
+    return `Create ${typeInfo?.title || 'Test'}`;
+  };
+
   return (
     <Modal
       open={open}
       onClose={() => !isCreating && onClose()}
-      title="Choose a Feature"
+      title={getModalTitle()}
     >
       {validationMessage && (
         <div style={{ position: 'sticky', top: 0, zIndex: 9999, backgroundColor: 'white', borderBottom: '1px solid #e1e3e5' }}>
@@ -343,7 +445,7 @@ const CreateTestModal = ({
             autoComplete="off"
             value={testName}
             onChange={setTestName}
-            placeholder="Enter test name"
+            placeholder="Enter name"
           />
 
           <TextField
@@ -352,25 +454,27 @@ const CreateTestModal = ({
             autoComplete="off"
             value={testDescription}
             onChange={setTestDescription}
-            placeholder="Enter test description"
+            placeholder="Enter description"
           />
 
-          <BlockStack gap="400">
-            <Text variant="bodyMd" as="p" fontWeight="bold">Select Feature:</Text>
-            <LegacyStack distribution="fillEvenly">
-              {testTypes.map((test) => (
-                <TestTypeButton
-                  key={test.type}
-                  type={test.type}
-                  icon={test.icon}
-                  title={test.title}
-                  description={test.description}
-                  isSelected={selectedTestType === test.type}
-                  onSelect={onTestTypeSelect}
-                />
-              ))}
-            </LegacyStack>
-          </BlockStack>
+          {!isSimplified && (
+            <BlockStack gap="400">
+              <Text variant="bodyMd" as="p" fontWeight="bold">Select Feature:</Text>
+              <LegacyStack distribution="fillEvenly">
+                {testTypes.map((test) => (
+                  <TestTypeButton
+                    key={test.type}
+                    type={test.type}
+                    icon={test.icon}
+                    title={test.title}
+                    description={test.description}
+                    isSelected={selectedTestType === test.type}
+                    onSelect={onTestTypeSelect}
+                  />
+                ))}
+              </LegacyStack>
+            </BlockStack>
+          )}
 
         </BlockStack>
       </Modal.Section>
@@ -393,9 +497,14 @@ const CreateTestModal = ({
 export default function Index() {
   const { shop } = useLoaderData();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [preSelectedType, setPreSelectedType] = useState(null);
   const [testName, setTestName] = useState('');
   const [testDescription, setTestDescription] = useState('');
   const [selectedTestType, setSelectedTestType] = useState('');
+  const [isViewTestsModalOpen, setIsViewTestsModalOpen] = useState(false);
+  const [viewTestsType, setViewTestsType] = useState(null);
+  const [viewTestsData, setViewTestsData] = useState([]);
+  const [viewTestsIds, setViewTestsIds] = useState([]);
   const [rows, setRows] = useState([]);
   const [allRows, setAllRows] = useState([]); // Store all rows for filtering
   const [testIds, setTestIds] = useState([]);
@@ -698,7 +807,11 @@ export default function Index() {
     }
   };
 
-  const handleCreateNewTest = () => {
+  const handleCreateNewTest = (preSelectedFeatureType = null) => {
+    setPreSelectedType(preSelectedFeatureType);
+    if (preSelectedFeatureType) {
+      setSelectedTestType(preSelectedFeatureType);
+    }
     setIsCreateModalOpen(true);
   };
 
@@ -707,8 +820,34 @@ export default function Index() {
     setTestName('');
     setTestDescription('');
     setSelectedTestType('');
+    setPreSelectedType(null);
     setValidationMessage('');
     // navigate('.');
+  };
+
+  const handleViewTests = (testType) => {
+    const filteredTests = searchAndFilterData.filter(test => test.type === testType);
+    const filteredIds = allTestIds.filter((id, index) => {
+      const test = searchAndFilterData.find(t => t.id === id);
+      return test && test.type === testType;
+    });
+    
+    setViewTestsType(testType);
+    setViewTestsData(filteredTests);
+    setViewTestsIds(filteredIds);
+    setIsViewTestsModalOpen(true);
+  };
+
+  const handleViewTestsActionClick = (index) => {
+    // Find the original index in the full list
+    const testId = viewTestsIds[index];
+    const originalIndex = testIds.indexOf(testId);
+    
+    if (originalIndex !== -1) {
+      setActiveRowIndex(originalIndex);
+      setIsViewTestsModalOpen(false);
+      setIsActionModalOpen(true);
+    }
   };
 
   const handleTestTypeSelect = (type) => {
@@ -1189,7 +1328,7 @@ export default function Index() {
         </InlineStack>
 
         {/* Feature Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '1200px' }}>
           {/* Cart Appearance Card */}
           <Card>
             <BlockStack gap="400">
@@ -1213,16 +1352,12 @@ export default function Index() {
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '8px'
               }}>
                 <Badge status={cartAppearanceTest?.status === 'active' ? 'success' : 'info'}>
                   {cartAppearanceTest?.status === 'active' ? 'Active' : cartAppearanceTest ? 'Configured' : 'Not Set Up'}
                 </Badge>
-                {cartAppearanceTest && (
-                  <Text variant="bodySm" color="subdued">
-                    {cartAppearanceTest.name}
-                  </Text>
-                )}
               </div>
 
               <Button 
@@ -1232,8 +1367,7 @@ export default function Index() {
                   if (cartAppearanceTest) {
                     navigate(`/app/cart-upsell/${cartAppearanceTest.id}`);
                   } else {
-                    handleCreateNewTest();
-                    setSelectedTestType('cartUpsell');
+                    handleCreateNewTest('cartUpsell');
                   }
                 }}
               >
@@ -1277,20 +1411,14 @@ export default function Index() {
               <InlineStack gap="200">
                 <Button 
                   fullWidth
-                  onClick={() => {
-                    setTestTypeFilter('pricing');
-                    setStatusFilter('all');
-                  }}
+                  onClick={() => handleViewTests('pricing')}
                 >
                   View Tests
                 </Button>
                 <Button 
                   fullWidth
                   variant="primary"
-                  onClick={() => {
-                    handleCreateNewTest();
-                    setSelectedTestType('pricing');
-                  }}
+                  onClick={() => handleCreateNewTest('pricing')}
                 >
                   Create Test
                 </Button>
@@ -1333,20 +1461,14 @@ export default function Index() {
               <InlineStack gap="200">
                 <Button 
                   fullWidth
-                  onClick={() => {
-                    setTestTypeFilter('discount');
-                    setStatusFilter('all');
-                  }}
+                  onClick={() => handleViewTests('discount')}
                 >
                   View Tests
                 </Button>
                 <Button 
                   fullWidth
                   variant="primary"
-                  onClick={() => {
-                    handleCreateNewTest();
-                    setSelectedTestType('discount');
-                  }}
+                  onClick={() => handleCreateNewTest('discount')}
                 >
                   Create Test
                 </Button>
@@ -1442,6 +1564,17 @@ export default function Index() {
           </BlockStack>
         </Card> */}
 
+        {/* View Tests Modal */}
+        <ViewTestsModal
+          open={isViewTestsModalOpen}
+          onClose={() => setIsViewTestsModalOpen(false)}
+          tests={viewTestsData}
+          testType={viewTestsType}
+          testIds={viewTestsIds}
+          testSessionsData={testSessionsData}
+          onActionClick={handleViewTestsActionClick}
+        />
+
         {/* Create New Test Modal */}
         <CreateTestModal
           open={isCreateModalOpen}
@@ -1465,6 +1598,7 @@ export default function Index() {
           isCreating={isCreating}
           validationMessage={validationMessage}
           setValidationMessage={setValidationMessage}
+          preSelectedType={preSelectedType}
         />
 
         {/* Action Modal */}
