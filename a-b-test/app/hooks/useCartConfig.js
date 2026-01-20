@@ -64,9 +64,7 @@ export function useCartConfig(shop, upsellId, currencyCode) {
       completionText: '🎉 You\'ve unlocked all rewards!',
       calculationType: 'cartTotal',
       usePreDiscountedPrices: true,
-      rewards: [
-        { id: 1, threshold: 50, rewardType: 'free_gift', rewardText: 'Free Shipping', icon: '🎁' }
-      ]
+      rewards: []
     },
     upsell: {
       enabled: false,

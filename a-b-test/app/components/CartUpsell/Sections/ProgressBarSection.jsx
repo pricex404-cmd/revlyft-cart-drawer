@@ -6,6 +6,29 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
 
   return (
     <div style={{ padding: '24px' }}>
+      <style>{`
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      `}</style>
+      <style>
+        {`
+          /* Remove spinner arrows from number inputs */
+          input[type="number"]::-webkit-inner-spin-button,
+          input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          input[type="number"] {
+            -moz-appearance: textfield;
+          }
+        `}
+      </style>
       <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px' }}>Progress Bar</h2>
       
       <div style={{ marginBottom: '20px' }}>
@@ -290,84 +313,6 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
             </div>
           </div>
 
-          {/* Rewards Calculation Section */}
-          <div style={{ 
-            marginBottom: '32px',
-            border: '1px solid #e5e7eb',
-            borderRadius: '8px',
-            padding: '20px',
-            backgroundColor: '#fafafa'
-          }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '20px', color: '#374151' }}>
-              Rewards Calculation
-            </h3>
-
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', marginBottom: '12px' }}>
-                <input
-                  type="radio"
-                  name="calculation-type"
-                  value="cartTotal"
-                  checked={config.calculationType === 'cartTotal'}
-                  onChange={(e) => onUpdate({ ...config, calculationType: e.target.value })}
-                  style={{ marginRight: '8px', marginTop: '2px' }}
-                />
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>Cart Total</div>
-                  <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
-                    Your rewards will be calculated based on the total amount of the cart.
-                  </div>
-                </div>
-              </label>
-
-              <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer' }}>
-                <input
-                  type="radio"
-                  name="calculation-type"
-                  value="itemCount"
-                  checked={config.calculationType === 'itemCount'}
-                  onChange={(e) => onUpdate({ ...config, calculationType: e.target.value })}
-                  style={{ marginRight: '8px', marginTop: '2px' }}
-                />
-                <div>
-                  <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>Item Count</div>
-                  <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
-                    Your rewards will be calculated based on the number of items in the cart.
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            {config.calculationType === 'cartTotal' && (
-              <div style={{ 
-                marginTop: '16px',
-                padding: '16px',
-                backgroundColor: '#f9fafb',
-                borderRadius: '6px',
-                border: '1px solid #e5e7eb'
-              }}>
-                <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer' }}>
-                  <input
-                    type="checkbox"
-                    checked={config.usePreDiscountedPrices}
-                    onChange={(e) => onUpdate({ ...config, usePreDiscountedPrices: e.target.checked })}
-                    style={{ marginRight: '8px', marginTop: '2px' }}
-                  />
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: '500', marginBottom: '4px' }}>
-                      Use pre-discounted prices for cart total
-                    </div>
-                    <div style={{ fontSize: '13px', color: '#6b7280', lineHeight: '1.5' }}>
-                      Enable calculating reward bar tiers based on the cart total before any discounts are applied. 
-                      This ensures that rewards are based on the original prices of items, allowing you to maintain 
-                      consistent reward thresholds regardless of any discounts given.
-                    </div>
-                  </div>
-                </label>
-              </div>
-            )}
-          </div>
-
           {/* Reward Tiers Management Section */}
           <div style={{ 
             border: '1px solid #e5e7eb',
@@ -389,11 +334,11 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                   const newId = Math.max(0, ...rewards.map(r => r.id)) + 1;
                   const updatedRewards = [...rewards, {
                     id: newId,
-                    threshold: config.calculationType === 'cartTotal' ? 100 : 5,
-                    rewardType: 'free_gift',
-                    rewardText: 'New Reward',
-                    progressText: 'Add {{amount_left}} more to unlock {{goal}}!',
-                    icon: '🎁'
+                    threshold: 0,
+                    rewardType: '',
+                    rewardText: '',
+                    progressText: '',
+                    icon: ''
                   }].sort((a, b) => a.threshold - b.threshold);
                   onUpdate({ ...config, rewards: updatedRewards });
                 }}
@@ -479,7 +424,7 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                               Reward Type
                             </label>
                             <select
-                              value={reward.rewardType || 'free_gift'}
+                              value={reward.rewardType || ''}
                               onChange={(e) => {
                                 const newType = e.target.value;
                                 const updatedRewards = config.rewards.map(r => 
@@ -498,6 +443,7 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                                 backgroundColor: '#fff'
                               }}
                             >
+                              <option value="">Select type...</option>
                               <option value="shipping">Shipping</option>
                               <option value="free_gift">Free Gift</option>
                               <option value="discount">Discount</option>
