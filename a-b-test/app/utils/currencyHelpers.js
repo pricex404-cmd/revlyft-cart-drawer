@@ -44,7 +44,7 @@ export function getRewardTypeIcon(rewardType) {
     'shipping': '�',
     'free_gift': '🎁',
     'discount': '💵',
-    'custom': null // User provides their own
+    'custom': '⭐' // Fixed emoji for custom
   };
 
   return icons[rewardType] || '🎉';

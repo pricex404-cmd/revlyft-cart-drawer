@@ -504,33 +504,6 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                               <option value="custom">Custom</option>
                             </select>
                           </div>
-
-                          {reward.rewardType === 'custom' && (
-                            <div style={{ flex: '0 0 80px' }}>
-                              <label style={{ display: 'block', fontSize: '12px', marginBottom: '6px', color: '#6b7280', fontWeight: '500' }}>
-                                Icon
-                              </label>
-                              <input
-                                type="text"
-                                value={reward.icon}
-                                onChange={(e) => {
-                                  const updatedRewards = config.rewards.map(r => 
-                                    r.id === reward.id ? { ...r, icon: e.target.value } : r
-                                  );
-                                  onUpdate({ ...config, rewards: updatedRewards });
-                                }}
-                                placeholder="🎉"
-                                style={{ 
-                                  width: '100%',
-                                  padding: '8px 12px',
-                                  border: '1px solid #d1d5db',
-                                  borderRadius: '6px',
-                                  fontSize: '20px',
-                                  textAlign: 'center'
-                                }}
-                              />
-                            </div>
-                          )}
                         </div>
 
                         {/* Reward Text */}
