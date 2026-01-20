@@ -149,11 +149,7 @@ export function useCartConfig(shop, upsellId, currencyCode) {
                 completionText: data.progressBar?.completionText || '🎉 You\'ve unlocked all rewards!',
                 calculationType: data.progressBar?.calculationType || 'cartTotal',
                 usePreDiscountedPrices: data.progressBar?.usePreDiscountedPrices ?? true,
-                rewards: data.progressBar?.rewards || [
-                  { id: 1, threshold: 50, description: 'Free Shipping', icon: '🚚' },
-                  { id: 2, threshold: 100, description: 'Free Gift', icon: '🎁' },
-                  { id: 3, threshold: 150, description: '10% Off', icon: '💰' }
-                ]
+                rewards: data.progressBar?.rewards || []
               },
               upsell: {
                 enabled: data.upsell?.enabled || false,
