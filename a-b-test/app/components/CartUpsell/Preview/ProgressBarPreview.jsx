@@ -1,5 +1,9 @@
+import { getCurrencySymbol } from '../../../utils/currencyHelpers';
+
 export default function ProgressBarPreview({ config, products, currencyCode, textColor }) {
   if (!config.enabled) return null;
+
+  const currencySymbol = getCurrencySymbol(currencyCode);
 
   // Calculate current cart value for preview
   const currentValue = products && products.length > 0 
@@ -27,7 +31,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
           ) : nextReward ? (
             <span>
               {config.calculationType === 'cartTotal' 
-                ? `Add $${(nextReward.threshold - currentValue).toFixed(2)} more to unlock ${nextReward.description}!`
+                ? `Add ${currencySymbol}${(nextReward.threshold - currentValue).toFixed(2)} more to unlock ${nextReward.description}!`
                 : `Add ${Math.ceil(nextReward.threshold - currentValue)} more item${Math.ceil(nextReward.threshold - currentValue) === 1 ? '' : 's'} to unlock ${nextReward.description}!`
               }
             </span>
@@ -80,9 +84,9 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 cursor: 'default',
                 zIndex: 2
               }}
-              title={`${reward.description} - ${config.calculationType === 'cartTotal' ? `$${reward.threshold}` : `${reward.threshold} items`}`}
+              title={`${reward.description} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
             >
-              {isUnlocked ? '✓' : reward.icon}
+              {isUnlocked ? '✓' : <span style={{ filter: 'grayscale(1)' }}>{reward.icon}</span>}
             </div>
           );
         })}
@@ -91,7 +95,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
       {/* Tier labels */}
       {sortedRewards.length > 0 && (
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#999' }}>
-          <span>$0</span>
+          <span>{currencySymbol}0</span>
           {sortedRewards.map(reward => {
             const isUnlocked = currentValue >= reward.threshold;
             return (
@@ -100,7 +104,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 color: isUnlocked ? config.completeIconColor : '#999'
               }}>
                 {config.calculationType === 'cartTotal' 
-                  ? `$${reward.threshold}`
+                  ? `${currencySymbol}${reward.threshold}`
                   : `${reward.threshold}`
                 }
               </span>

@@ -1,5 +1,5 @@
 import InfoButton from '../Shared/InfoButton';
-import { getCurrencySymbol, getRewardTypeIcon } from '../../../utils/currencyHelpers';
+import { getCurrencySymbol, getRewardTypeIcon, getRewardTypeLabel } from '../../../utils/currencyHelpers';
 
 export default function ProgressBarSection({ config, onUpdate, currencyCode = 'USD' }) {
   const currencySymbol = getCurrencySymbol(currencyCode);
@@ -498,10 +498,10 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                                 backgroundColor: '#fff'
                               }}
                             >
-                              <option value="shipping">🚚 Shipping</option>
-                              <option value="free_gift">🎁 Free Gift</option>
-                              <option value="discount">💰 Discount</option>
-                              <option value="custom">✏️ Custom</option>
+                              <option value="shipping">Shipping</option>
+                              <option value="free_gift">Free Gift</option>
+                              <option value="discount">Discount</option>
+                              <option value="custom">Custom</option>
                             </select>
                           </div>
 
