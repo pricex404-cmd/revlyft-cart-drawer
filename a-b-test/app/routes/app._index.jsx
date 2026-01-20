@@ -265,6 +265,60 @@ const TestsTable = ({ rows, testSessionsData, testIds }) => {
   );
 };
 
+// Feature Card Component
+const FeatureCard = ({ 
+  icon, 
+  iconColor, 
+  title, 
+  description, 
+  statusBadge, 
+  statusBgColor,
+  buttons 
+}) => (
+  <Card>
+    <BlockStack gap="400">
+      <InlineStack align="space-between" blockAlign="start">
+        <BlockStack gap="200">
+          <InlineStack gap="200" blockAlign="center">
+            <div style={{ color: iconColor }}>
+              <Icon source={icon} />
+            </div>
+            <Text variant="headingMd" as="h2">{title}</Text>
+          </InlineStack>
+          <Text variant="bodyMd" color="subdued">
+            {description}
+          </Text>
+        </BlockStack>
+      </InlineStack>
+      
+      <div style={{ 
+        padding: '12px 16px', 
+        backgroundColor: statusBgColor || '#F5F5F5',
+        borderRadius: '8px',
+        minHeight: '44px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: statusBadge.centered ? 'center' : 'flex-start'
+      }}>
+        {statusBadge.content}
+      </div>
+
+      <div style={{ display: 'flex', gap: '8px' }}>
+        {buttons.map((button, index) => (
+          <Button
+            key={index}
+            fullWidth
+            variant={button.variant || 'secondary'}
+            onClick={button.onClick}
+          >
+            {button.label}
+          </Button>
+        ))}
+      </div>
+    </BlockStack>
+  </Card>
+);
+
 // View Tests Modal Component
 const ViewTestsModal = ({
   open,
@@ -1327,74 +1381,44 @@ export default function Index() {
         {/* Feature Cards Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', maxWidth: '1200px' }}>
           {/* Cart Appearance Card */}
-          <Card>
-            <BlockStack gap="400">
-              <InlineStack align="space-between" blockAlign="start">
-                <BlockStack gap="200">
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ color: '#5C6AC4' }}>
-                      <Icon source={SandboxIcon} />
-                    </div>
-                    <Text variant="headingMd" as="h2">Cart Appearance</Text>
-                  </InlineStack>
-                  <Text variant="bodyMd" color="subdued">
-                    Customize your cart drawer design, layout, and upsells
-                  </Text>
-                </BlockStack>
-              </InlineStack>
-              
-              <div style={{ 
-                padding: '12px 16px', 
-                backgroundColor: cartAppearanceTest?.status === 'active' ? '#E8F5E9' : '#F5F5F5',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}>
+          <FeatureCard
+            icon={SandboxIcon}
+            iconColor="#5C6AC4"
+            title="Cart Appearance"
+            description="Customize your cart drawer design, layout, and upsells"
+            statusBgColor={cartAppearanceTest?.status === 'active' ? '#E8F5E9' : '#F5F5F5'}
+            statusBadge={{
+              centered: true,
+              content: (
                 <Badge status={cartAppearanceTest?.status === 'active' ? 'success' : 'info'}>
                   {cartAppearanceTest?.status === 'active' ? 'Active' : cartAppearanceTest ? 'Configured' : 'Not Set Up'}
                 </Badge>
-              </div>
-
-              <Button 
-                fullWidth 
-                variant="primary"
-                onClick={() => {
+              )
+            }}
+            buttons={[
+              {
+                label: cartAppearanceTest ? 'Configure Cart' : 'Set Up Cart Appearance',
+                variant: 'primary',
+                onClick: () => {
                   if (cartAppearanceTest) {
                     navigate(`/app/cart-upsell/${cartAppearanceTest.id}`);
                   } else {
                     handleCreateNewTest('cartUpsell');
                   }
-                }}
-              >
-                {cartAppearanceTest ? 'Configure Cart' : 'Set Up Cart Appearance'}
-              </Button>
-            </BlockStack>
-          </Card>
+                }
+              }
+            ]}
+          />
 
           {/* Dynamic Pricing Card */}
-          <Card>
-            <BlockStack gap="400">
-              <InlineStack align="space-between" blockAlign="start">
-                <BlockStack gap="200">
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ color: '#00A47C' }}>
-                      <Icon source={CurrencyConvertIcon} />
-                    </div>
-                    <Text variant="headingMd" as="h2">Dynamic Pricing</Text>
-                  </InlineStack>
-                  <Text variant="bodyMd" color="subdued">
-                    Test different product prices to optimize revenue
-                  </Text>
-                </BlockStack>
-              </InlineStack>
-              
-              <div style={{ 
-                padding: '12px 16px', 
-                backgroundColor: '#F5F5F5',
-                borderRadius: '8px'
-              }}>
+          <FeatureCard
+            icon={CurrencyConvertIcon}
+            iconColor="#00A47C"
+            title="Dynamic Pricing"
+            description="Test different product prices to optimize revenue"
+            statusBadge={{
+              centered: false,
+              content: (
                 <InlineStack gap="300" align="space-between">
                   <Text variant="bodyMd" fontWeight="semibold">
                     {activePriceTests} Active • {priceTests.length} Total
@@ -1403,48 +1427,30 @@ export default function Index() {
                     <Badge status="success">Running</Badge>
                   )}
                 </InlineStack>
-              </div>
-
-              <InlineStack gap="200">
-                <Button 
-                  fullWidth
-                  onClick={() => handleViewTests('pricing')}
-                >
-                  View Tests
-                </Button>
-                <Button 
-                  fullWidth
-                  variant="primary"
-                  onClick={() => handleCreateNewTest('pricing')}
-                >
-                  Create Test
-                </Button>
-              </InlineStack>
-            </BlockStack>
-          </Card>
+              )
+            }}
+            buttons={[
+              {
+                label: 'View Tests',
+                onClick: () => handleViewTests('pricing')
+              },
+              {
+                label: 'Create Test',
+                variant: 'primary',
+                onClick: () => handleCreateNewTest('pricing')
+              }
+            ]}
+          />
 
           {/* Smart Cart Discounts Card */}
-          <Card>
-            <BlockStack gap="400">
-              <InlineStack align="space-between" blockAlign="start">
-                <BlockStack gap="200">
-                  <InlineStack gap="200" blockAlign="center">
-                    <div style={{ color: '#DC6803' }}>
-                      <Icon source={DiscountFilledIcon} />
-                    </div>
-                    <Text variant="headingMd" as="h2">Smart Cart Discounts</Text>
-                  </InlineStack>
-                  <Text variant="bodyMd" color="subdued">
-                    Test cart value and quantity-based discount strategies
-                  </Text>
-                </BlockStack>
-              </InlineStack>
-              
-              <div style={{ 
-                padding: '12px 16px', 
-                backgroundColor: '#F5F5F5',
-                borderRadius: '8px'
-              }}>
+          <FeatureCard
+            icon={DiscountFilledIcon}
+            iconColor="#DC6803"
+            title="Smart Cart Discounts"
+            description="Test cart value and quantity-based discount strategies"
+            statusBadge={{
+              centered: false,
+              content: (
                 <InlineStack gap="300" align="space-between">
                   <Text variant="bodyMd" fontWeight="semibold">
                     {activeDiscountTests} Active • {discountTests.length} Total
@@ -1453,25 +1459,20 @@ export default function Index() {
                     <Badge status="success">Running</Badge>
                   )}
                 </InlineStack>
-              </div>
-
-              <InlineStack gap="200">
-                <Button 
-                  fullWidth
-                  onClick={() => handleViewTests('discount')}
-                >
-                  View Tests
-                </Button>
-                <Button 
-                  fullWidth
-                  variant="primary"
-                  onClick={() => handleCreateNewTest('discount')}
-                >
-                  Create Test
-                </Button>
-              </InlineStack>
-            </BlockStack>
-          </Card>
+              )
+            }}
+            buttons={[
+              {
+                label: 'View Tests',
+                onClick: () => handleViewTests('discount')
+              },
+              {
+                label: 'Create Test',
+                variant: 'primary',
+                onClick: () => handleCreateNewTest('discount')
+              }
+            ]}
+          />
         </div>
 
         {/* Conditional Tests List Section - Only show when filters are applied */}
