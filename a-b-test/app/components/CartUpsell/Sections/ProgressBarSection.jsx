@@ -488,7 +488,7 @@ export default function ProgressBarSection({ config, onUpdate, currencyCode = 'U
                             fontWeight: '500' 
                           }}>
                             Text Before Hitting Goal
-                            <InfoButton text="You can use variables {{goal}} or {{amount_left}}" />
+                            <InfoButton text="Use {{amount_left}} for remaining amount and {{goal}} for threshold amount" />
                           </label>
                           <input
                             type="text"

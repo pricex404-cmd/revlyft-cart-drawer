@@ -41,10 +41,10 @@ export function getCurrencySymbol(currencyCode) {
 // Get icon for reward type
 export function getRewardTypeIcon(rewardType) {
   const icons = {
-    'shipping': '�',
+    'shipping': '🚚',
     'free_gift': '🎁',
-    'discount': '💵',
-    'custom': '⭐' // Fixed emoji for custom
+    'discount': '💰',
+    'custom': null // User provides their own
   };
 
   return icons[rewardType] || '🎉';

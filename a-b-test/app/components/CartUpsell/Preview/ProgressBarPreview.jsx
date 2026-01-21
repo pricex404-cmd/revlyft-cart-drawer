@@ -25,15 +25,20 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
     <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5', backgroundColor: '#fff' }}>
       {/* Progress message */}
       {sortedRewards.length > 0 && (
-        <div style={{ marginBottom: '8px', fontSize: '11px', color: textColor, fontWeight: '500' }}>
+        <div style={{ marginBottom: '8px', fontSize: '11px', color: textColor, fontWeight: '500', textAlign: 'center' }}>
           {allUnlocked ? (
             <span dangerouslySetInnerHTML={{ __html: config.completionText }} />
           ) : nextReward ? (
             <span>
-              {config.calculationType === 'cartTotal' 
-                ? `Add ${currencySymbol}${(nextReward.threshold - currentValue).toFixed(2)} more to unlock ${nextReward.rewardText || nextReward.description || 'reward'}!`
-                : `Add ${Math.ceil(nextReward.threshold - currentValue)} more item${Math.ceil(nextReward.threshold - currentValue) === 1 ? '' : 's'} to unlock ${nextReward.rewardText || nextReward.description || 'reward'}!`
-              }
+              {nextReward.progressText ? (
+                nextReward.progressText
+                  .replace('{{goal}}', config.calculationType === 'cartTotal' ? `${currencySymbol}${nextReward.threshold}` : `${nextReward.threshold}`)
+                  .replace('{{amount_left}}', config.calculationType === 'cartTotal' ? `${currencySymbol}${(nextReward.threshold - currentValue).toFixed(2)}` : `${Math.ceil(nextReward.threshold - currentValue)}`)
+              ) : (
+                config.calculationType === 'cartTotal' 
+                  ? `Add ${currencySymbol}${(nextReward.threshold - currentValue).toFixed(2)} more to unlock rewards!`
+                  : `Add ${Math.ceil(nextReward.threshold - currentValue)} more item${Math.ceil(nextReward.threshold - currentValue) === 1 ? '' : 's'} to unlock rewards!`
+              )}
             </span>
           ) : null}
         </div>
@@ -84,9 +89,9 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 cursor: 'default',
                 zIndex: 2
               }}
-              title={`${reward.description || reward.rewardText || 'Reward'} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
+              title={`${reward.rewardText || reward.description || 'Reward'} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
             >
-              <span style={{ filter: 'grayscale(1)', fontSize: isUnlocked ? '12px' : '10px' }}>
+              <span style={{ filter: isUnlocked ? 'none' : 'grayscale(1) brightness(0.4)', fontSize: '12px' }}>
                 {isUnlocked ? '✓' : (reward.icon || '🎁')}
               </span>
             </div>
@@ -103,12 +108,13 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
             return (
               <span key={reward.id} style={{ 
                 fontWeight: isUnlocked ? '600' : '400',
-                color: isUnlocked ? config.completeIconColor : '#999'
+                color: isUnlocked ? config.completeIconColor : '#999',
+                maxWidth: '60px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
               }}>
-                {config.calculationType === 'cartTotal' 
-                  ? `${currencySymbol}${reward.threshold}`
-                  : `${reward.threshold}`
-                }
+                {reward.rewardText || reward.description || 'Reward'}
               </span>
             );
           })}
