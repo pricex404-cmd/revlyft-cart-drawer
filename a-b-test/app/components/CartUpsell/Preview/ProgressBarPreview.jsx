@@ -1,5 +1,16 @@
 import { getCurrencySymbol } from '../../../utils/currencyHelpers';
 
+// Helper function to get reward icon
+function getRewardIcon(rewardType) {
+  const icons = {
+    'shipping': '/assets/shipping-icon.svg',
+    'free_gift': '/assets/gift-icon.svg',
+    'discount': '/assets/discount-icon.svg',
+    'custom': '/assets/star-icon.svg'
+  };
+  return icons[rewardType] || '/assets/star-icon.svg';
+}
+
 export default function ProgressBarPreview({ config, products, currencyCode, textColor }) {
   if (!config.enabled) return null;
 
@@ -63,61 +74,89 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
         </div>
         
         {/* Tier markers */}
-        {sortedRewards.map((reward) => {
+        {sortedRewards.map((reward, index) => {
           const position = (reward.threshold / maxThreshold) * 100;
           const isUnlocked = currentValue >= reward.threshold;
+          const isLast = index === sortedRewards.length - 1;
           
           return (
             <div
               key={reward.id}
               style={{
                 position: 'absolute',
-                left: `${position}%`,
+                left: isLast ? `calc(${position}% - 15px)` : `${position}%`,
                 top: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: '20px',
-                height: '20px',
-                borderRadius: '50%',
-                backgroundColor: '#fff',
-                border: `2px solid ${isUnlocked ? config.completeIconColor : config.incompleteIconColor}`,
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '10px',
-                color: isUnlocked ? config.completeIconColor : config.incompleteIconColor,
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                cursor: 'default',
+                gap: '4px',
                 zIndex: 2
               }}
-              title={`${reward.rewardText || reward.description || 'Reward'} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
             >
-              <span style={{ filter: isUnlocked ? 'none' : 'grayscale(1) brightness(0.4)', fontSize: '12px' }}>
-                {isUnlocked ? '✓' : (reward.icon || '🎁')}
-              </span>
+              {/* Icon circle */}
+              <div
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fff',
+                  border: `2px solid ${isUnlocked ? config.completeIconColor : config.incompleteIconColor}`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  cursor: 'default'
+                }}
+                title={`${reward.rewardText || reward.description || 'Reward'} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
+              >
+                {isUnlocked ? (
+                  <span style={{ fontSize: '12px', color: config.completeIconColor }}>✓</span>
+                ) : reward.rewardType && reward.rewardType !== 'custom' ? (
+                  <img 
+                    src={getRewardIcon(reward.rewardType)} 
+                    alt={reward.rewardType}
+                    style={{ 
+                      width: '12px', 
+                      height: '12px',
+                      filter: 'grayscale(1) brightness(0.4)',
+                      color: config.incompleteIconColor
+                    }} 
+                  />
+                ) : (
+                  <span style={{ fontSize: '10px', color: config.incompleteIconColor }}>
+                    {reward.icon || '🎁'}
+                  </span>
+                )}
+              </div>
+              
+              {/* Reward text below icon */}
+              <div style={{
+                fontSize: '8px',
+                color: isUnlocked ? config.completeIconColor : '#999',
+                fontWeight: isUnlocked ? '600' : '400',
+                maxWidth: '60px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                textAlign: 'center'
+              }}>
+                {reward.rewardText || reward.description || 'Reward'}
+              </div>
             </div>
           );
         })}
       </div>
       
-      {/* Tier labels */}
+      {/* Tier labels - Just start and end threshold */}
       {sortedRewards.length > 0 && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#999' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#999', marginTop: '30px' }}>
           <span>{currencySymbol}0</span>
-          {sortedRewards.map(reward => {
-            const isUnlocked = currentValue >= reward.threshold;
-            return (
-              <span key={reward.id} style={{ 
-                fontWeight: isUnlocked ? '600' : '400',
-                color: isUnlocked ? config.completeIconColor : '#999',
-                maxWidth: '60px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}>
-                {reward.rewardText || reward.description || 'Reward'}
-              </span>
-            );
-          })}
+          <span>
+            {config.calculationType === 'cartTotal' 
+              ? `${currencySymbol}${maxThreshold}`
+              : `${maxThreshold} items`}
+          </span>
         </div>
       )}
     </div>
