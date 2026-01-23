@@ -36,7 +36,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
     <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5', backgroundColor: '#fff' }}>
       {/* Progress message */}
       {sortedRewards.length > 0 && (
-        <div style={{ marginBottom: '8px', fontSize: '11px', color: textColor, fontWeight: '500', textAlign: 'center' }}>
+        <div style={{ marginBottom: '16px', fontSize: '11px', color: textColor, fontWeight: '500', textAlign: 'center' }}>
           {allUnlocked ? (
             <span dangerouslySetInnerHTML={{ __html: config.completionText }} />
           ) : nextReward ? (
@@ -147,18 +147,6 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
           );
         })}
       </div>
-      
-      {/* Tier labels - Just start and end threshold */}
-      {sortedRewards.length > 0 && (
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', color: '#999', marginTop: '30px' }}>
-          <span>{currencySymbol}0</span>
-          <span>
-            {config.calculationType === 'cartTotal' 
-              ? `${currencySymbol}${maxThreshold}`
-              : `${maxThreshold} items`}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

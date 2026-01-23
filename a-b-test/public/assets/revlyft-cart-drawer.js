@@ -320,7 +320,7 @@
         ${progressBar.enabled && (sortedRewards.length > 0 || progressBar.goal) ? `
           <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background-color: #fff;">
             ${sortedRewards.length > 0 ? `
-              <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 11px; color: ${appearance.cartTextColor}; font-weight: 500; text-align: center;">
+              <div id="revlyft-progress-text" style="margin-bottom: 16px; font-size: 11px; color: ${appearance.cartTextColor}; font-weight: 500; text-align: center;">
                 ${allUnlocked 
                   ? (progressBar.completionText || 'All rewards unlocked!') 
                   : nextReward 
@@ -361,10 +361,6 @@
                     </div>
                   `;
                 }).join('')}
-              </div>
-              <div style="display: flex; justify-content: space-between; font-size: 9px; color: #999; margin-top: 30px;">
-                <span>${progressBar.calculationType === 'cartTotal' ? formatPrice(0) : '0'}</span>
-                <span>${progressBar.calculationType === 'cartTotal' ? formatPrice(maxThreshold * 100) : maxThreshold + ' items'}</span>
               </div>
             ` : `
               <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px; color: inherit;">
