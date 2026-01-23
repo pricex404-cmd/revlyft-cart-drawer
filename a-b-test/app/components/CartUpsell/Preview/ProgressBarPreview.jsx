@@ -57,19 +57,23 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
       
       {/* Progress bar with tiers */}
       <div style={{ position: 'relative', marginBottom: '30px' }}>
-        <div style={{
-          width: '100%',
-          height: '6px',
-          backgroundColor: config.backgroundColor,
-          borderRadius: '3px',
-          overflow: 'visible'
-        }}>
+        <div style={{ position: 'relative', width: '100%', height: '6px' }}>
+          <div style={{
+            width: '100%',
+            height: '6px',
+            backgroundColor: config.backgroundColor,
+            borderRadius: '3px',
+            position: 'absolute',
+            overflow: 'visible'
+          }} />
           <div style={{
             width: `${progressPercentage}%`,
-            height: '100%',
+            height: '6px',
             backgroundColor: config.barColor,
             transition: 'width 0.3s ease',
-            borderRadius: '3px'
+            borderRadius: '3px',
+            position: 'relative',
+            zIndex: 1
           }} />
           
           {/* Tier markers */}
