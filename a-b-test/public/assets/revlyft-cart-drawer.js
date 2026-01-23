@@ -335,32 +335,32 @@
                     : ''
                 }
               </div>
-              <div style="position: relative; margin-bottom: 10px;">
-                <div style="width: 100%; height: 6px; background-color: ${progressBar.backgroundColor}; border-radius: 3px; overflow: hidden;">
+              <div style="position: relative; margin-bottom: 30px;">
+                <div style="width: 100%; height: 6px; background-color: ${progressBar.backgroundColor}; border-radius: 3px; overflow: visible;">
                   <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar.barColor}; transition: width 0.3s ease; border-radius: 3px;"></div>
+                  ${sortedRewards.map((reward, index) => {
+                    const position = (reward.threshold / maxThreshold) * 100;
+                    const isUnlocked = progressBar.calculationType === 'cartTotal' 
+                      ? (subtotal / 100) >= reward.threshold
+                      : itemCount >= reward.threshold;
+                    const isLast = index === sortedRewards.length - 1;
+                    return `
+                      <div style="position: absolute; left: ${isLast ? 'calc(' + position + '% - 15px)' : position + '%'}; top: 50%; transform: translate(-50%, -50%); z-index: 2;">
+                        <div style="width: 20px; height: 20px; border-radius: 50%; background-color: #fff; border: 2px solid ${isUnlocked ? progressBar.completeIconColor : progressBar.incompleteIconColor}; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: default;" title="${reward.rewardText || reward.description || 'Reward'} - ${progressBar.calculationType === 'cartTotal' ? formatPrice(reward.threshold * 100) : reward.threshold + ' items'}">
+                          ${isUnlocked 
+                            ? '<span style="font-size: 12px; color: ' + progressBar.completeIconColor + ';">✓</span>'
+                            : (reward.rewardType && reward.rewardType !== 'custom'
+                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 12px; height: 12px; filter: grayscale(1) brightness(0.4);" />'
+                                : '<span style="font-size: 10px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
+                          }
+                        </div>
+                        <div style="position: absolute; top: 26px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          ${reward.rewardText || reward.description || 'Reward'}
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
                 </div>
-                ${sortedRewards.map((reward, index) => {
-                  const position = (reward.threshold / maxThreshold) * 100;
-                  const isUnlocked = progressBar.calculationType === 'cartTotal' 
-                    ? (subtotal / 100) >= reward.threshold
-                    : itemCount >= reward.threshold;
-                  const isLast = index === sortedRewards.length - 1;
-                  return `
-                    <div style="position: absolute; left: ${isLast ? 'calc(' + position + '% - 15px)' : position + '%'}; top: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 4px; z-index: 2;">
-                      <div style="width: 20px; height: 20px; border-radius: 50%; background-color: #fff; border: 2px solid ${isUnlocked ? progressBar.completeIconColor : progressBar.incompleteIconColor}; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); cursor: default;" title="${reward.rewardText || reward.description || 'Reward'} - ${progressBar.calculationType === 'cartTotal' ? formatPrice(reward.threshold * 100) : reward.threshold + ' items'}">
-                        ${isUnlocked 
-                          ? '<span style="font-size: 12px; color: ' + progressBar.completeIconColor + ';">✓</span>'
-                          : (reward.rewardType && reward.rewardType !== 'custom'
-                              ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 12px; height: 12px; filter: grayscale(1) brightness(0.4);" />'
-                              : '<span style="font-size: 10px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
-                        }
-                      </div>
-                      <div style="font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;">
-                        ${reward.rewardText || reward.description || 'Reward'}
-                      </div>
-                    </div>
-                  `;
-                }).join('')}
               </div>
             ` : `
               <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px; color: inherit;">
