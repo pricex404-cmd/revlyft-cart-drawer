@@ -337,9 +337,10 @@
               </div>
               <div style="position: relative; margin-bottom: 30px;">
                 <div style="position: relative; width: 100%; height: 6px;">
-                  <div style="width: 100%; height: 6px; background-color: ${progressBar.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; overflow: visible;"></div>
-                  <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: relative; z-index: 1;"></div>
-                  ${sortedRewards.map((reward, index) => {
+                  <div style="width: 100%; height: 6px; background-color: ${progressBar.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
+                  <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                </div>
+                ${sortedRewards.map((reward, index) => {
                     const position = (reward.threshold / maxThreshold) * 100;
                     const isUnlocked = progressBar.calculationType === 'cartTotal' 
                       ? (subtotal / 100) >= reward.threshold
@@ -361,7 +362,6 @@
                       </div>
                     `;
                   }).join('')}
-                </div>
               </div>
             ` : `
               <div id="revlyft-progress-text" style="margin-bottom: 8px; font-size: 13px; color: inherit;">

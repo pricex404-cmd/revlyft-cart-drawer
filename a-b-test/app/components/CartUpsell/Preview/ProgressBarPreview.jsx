@@ -64,7 +64,8 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
             backgroundColor: config.backgroundColor,
             borderRadius: '3px',
             position: 'absolute',
-            overflow: 'visible'
+            top: 0,
+            left: 0
           }} />
           <div style={{
             width: `${progressPercentage}%`,
@@ -72,12 +73,15 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
             backgroundColor: config.barColor,
             transition: 'width 0.3s ease',
             borderRadius: '3px',
-            position: 'relative',
+            position: 'absolute',
+            top: 0,
+            left: 0,
             zIndex: 1
           }} />
-          
-          {/* Tier markers */}
-          {sortedRewards.map((reward, index) => {
+        </div>
+        
+        {/* Tier markers */}
+        {sortedRewards.map((reward, index) => {
             const position = (reward.threshold / maxThreshold) * 100;
             const isUnlocked = currentValue >= reward.threshold;
             const isLast = index === sortedRewards.length - 1;
