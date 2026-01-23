@@ -153,7 +153,6 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
               </div>
             );
           })}
-        </div>
       </div>
     </div>
   );
