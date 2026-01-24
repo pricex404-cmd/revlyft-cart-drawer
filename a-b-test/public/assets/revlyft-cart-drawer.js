@@ -326,7 +326,7 @@
         ` : ''}
 
         ${progressBar.enabled && (sortedRewards.length > 0 || progressBar.goal) ? `
-          <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background-color: #fff;">
+          <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background-color: ${appearance.cartBackgroundColor};">
             ${sortedRewards.length > 0 ? `
               <div id="revlyft-progress-text" style="margin-bottom: 16px; font-size: 11px; color: ${appearance.cartTextColor}; font-weight: 500; text-align: center;">
                 ${allUnlocked 
