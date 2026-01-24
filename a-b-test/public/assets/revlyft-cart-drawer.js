@@ -42,6 +42,9 @@
       
       const config = await response.json();
       console.log('✅ Cart config loaded:', config);
+      console.log('🎨 Progress Bar from Firebase:', config.progressBar);
+      console.log('🎨 Background Color from Firebase:', config.progressBar?.backgroundColor);
+      console.log('🎨 Bar Color from Firebase:', config.progressBar?.barColor);
       
       return config;
     } catch (error) {
@@ -199,6 +202,11 @@
   function createCartDrawerHTML(config, cart) {
     const { appearance, header, announcementBar, progressBar, upsell } = config;
     
+    // Debug: Log progress bar config
+    console.log('🎨 Progress Bar Config:', progressBar);
+    console.log('🎨 Background Color:', progressBar?.backgroundColor);
+    console.log('🎨 Bar Color:', progressBar?.barColor);
+    
     // Calculate totals
     const subtotal = cart.total_price;
     const itemCount = cart.item_count;
@@ -337,8 +345,8 @@
               </div>
               <div style="position: relative; margin-bottom: 30px;">
                 <div style="position: relative; width: 100%; height: 6px;">
-                  <div style="width: 100%; height: 6px; background-color: ${progressBar.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
-                  <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                  <div id="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
+                  <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
                 </div>
                 ${sortedRewards.map((reward, index) => {
                     const position = (reward.threshold / maxThreshold) * 100;
@@ -370,8 +378,8 @@
                   : 'Add ' + formatPrice(remainingAmount) + ' to unlock ' + progressBar.goalText
                 }
               </div>
-              <div style="width: 100%; height: 8px; background-color: ${progressBar.backgroundColor}; border-radius: 4px; overflow: hidden;">
-                <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar.barColor}; transition: width 0.3s ease;"></div>
+              <div id="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; overflow: hidden;">
+                <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease;"></div>
               </div>
             `}
           </div>
@@ -559,6 +567,37 @@
       
       // Start banner rotation if dynamic banner is enabled
       startBannerRotation();
+      
+      // Apply progress bar colors after a brief delay to ensure DOM is ready
+      setTimeout(applyProgressBarColors, 50);
+    }
+  }
+
+  /**
+   * Apply progress bar colors (called after rendering to ensure colors are applied)
+   */
+  function applyProgressBarColors() {
+    if (!cartConfig?.progressBar) return;
+    
+    const bgElement = document.getElementById('revlyft-progress-bar-bg');
+    const fillElement = document.getElementById('revlyft-progress-bar-fill');
+    
+    console.log('🎨 Applying progress bar colors...');
+    console.log('🎨 BG Element:', bgElement);
+    console.log('🎨 Fill Element:', fillElement);
+    console.log('🎨 Colors from config:', {
+      backgroundColor: cartConfig.progressBar.backgroundColor,
+      barColor: cartConfig.progressBar.barColor
+    });
+    
+    if (bgElement && cartConfig.progressBar.backgroundColor) {
+      bgElement.style.backgroundColor = cartConfig.progressBar.backgroundColor;
+      console.log('✅ Applied background color:', cartConfig.progressBar.backgroundColor);
+    }
+    
+    if (fillElement && cartConfig.progressBar.barColor) {
+      fillElement.style.backgroundColor = cartConfig.progressBar.barColor;
+      console.log('✅ Applied bar color:', cartConfig.progressBar.barColor);
     }
   }
 
@@ -721,6 +760,9 @@
         stopBannerRotation();
         startBannerRotation();
       }
+      
+      // Reapply progress bar colors after refresh
+      setTimeout(applyProgressBarColors, 50);
     }
   }
 
