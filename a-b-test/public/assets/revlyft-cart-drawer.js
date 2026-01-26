@@ -954,6 +954,17 @@
     container.innerHTML = createCartDrawerHTML(cartConfig, cartData);
     document.body.appendChild(container);
 
+    // Set initial CSS variables for progress bar colors
+    const drawer = document.getElementById('revlyft-cart-drawer');
+    if (drawer && cartConfig.progressBar) {
+      drawer.style.setProperty('--revlyft-progress-bg', cartConfig.progressBar.backgroundColor || '#e5e7eb');
+      drawer.style.setProperty('--revlyft-progress-fill', cartConfig.progressBar.barColor || '#10b981');
+      console.log('🎨 Initial CSS variables set:', {
+        bg: cartConfig.progressBar.backgroundColor || '#e5e7eb',
+        fill: cartConfig.progressBar.barColor || '#10b981'
+      });
+    }
+
     // Attach event listeners
     attachCartEventListeners();
 
