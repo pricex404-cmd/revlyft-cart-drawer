@@ -402,7 +402,7 @@
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
-                        <div style="position: absolute; top: 32px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           ${reward.rewardText || reward.description || 'Reward'}
                         </div>
                       </div>
@@ -742,7 +742,7 @@
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
-                        <div style="position: absolute; top: 32px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           ${reward.rewardText || reward.description || 'Reward'}
                         </div>
                       </div>

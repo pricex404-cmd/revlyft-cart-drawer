@@ -136,7 +136,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 {/* Reward text below icon */}
                 <div style={{
                   position: 'absolute',
-                  top: '32px',
+                  top: '45px',
                   left: '50%',
                   transform: 'translateX(-50%)',
                   fontSize: '8px',
