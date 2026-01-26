@@ -326,7 +326,7 @@
         ` : ''}
 
         ${progressBar.enabled && (sortedRewards.length > 0 || progressBar.goal) ? `
-          <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background-color: ${appearance.cartBackgroundColor};">
+          <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5;">
             ${sortedRewards.length > 0 ? `
               <div id="revlyft-progress-text" style="margin-bottom: 16px; font-size: 11px; color: ${appearance.cartTextColor}; font-weight: 500; text-align: center;">
                 ${allUnlocked 
@@ -344,8 +344,8 @@
                 }
               </div>
               <div style="position: relative; margin-bottom: 30px;">
-                <div style="position: relative; width: 100%; height: 6px;">
-                  <div class="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
+                <div style="position: relative; width: 100%; height: 6px; background: transparent;">
+                  <div class="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 0;"></div>
                   <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
                 </div>
                 ${sortedRewards.map((reward, index) => {
@@ -378,8 +378,9 @@
                   : 'Add ' + formatPrice(remainingAmount) + ' to unlock ' + progressBar.goalText
                 }
               </div>
-              <div class="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; overflow: hidden;">
-                <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease;"></div>
+              <div style="position: relative; width: 100%; height: 8px; background: transparent;">
+                <div class="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; position: absolute; top: 0; left: 0; z-index: 0;"></div>
+                <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 8px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 4px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
               </div>
             `}
           </div>
