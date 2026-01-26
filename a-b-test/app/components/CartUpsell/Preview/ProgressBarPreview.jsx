@@ -33,7 +33,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
   const allUnlocked = currentValue >= maxThreshold;
   
   return (
-    <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5', backgroundColor: '#fff' }}>
+    <div style={{ padding: '12px 14px', borderBottom: '1px solid #e1e3e5', backgroundColor: 'transparent' }}>
       {/* Progress message */}
       {sortedRewards.length > 0 && (
         <div style={{ marginBottom: '16px', fontSize: '11px', color: textColor, fontWeight: '500', textAlign: 'center' }}>
@@ -91,7 +91,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 key={reward.id}
                 style={{
                   position: 'absolute',
-                  left: isLast ? `calc(${position}% - 15px)` : `${position}%`,
+                  left: isLast ? `calc(${position}% - 20px)` : `${position}%`,
                   top: '50%',
                   transform: 'translate(-50%, -50%)',
                   zIndex: 2
@@ -100,8 +100,8 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 {/* Icon circle */}
                 <div
                   style={{
-                    width: '20px',
-                    height: '20px',
+                    width: '40px',
+                    height: '40px',
                     borderRadius: '50%',
                     backgroundColor: '#fff',
                     border: `2px solid ${isUnlocked ? config.completeIconColor : config.incompleteIconColor}`,
@@ -114,20 +114,20 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                   title={`${reward.rewardText || reward.description || 'Reward'} - ${config.calculationType === 'cartTotal' ? `${currencySymbol}${reward.threshold}` : `${reward.threshold} items`}`}
                 >
                   {isUnlocked ? (
-                    <span style={{ fontSize: '12px', color: config.completeIconColor }}>✓</span>
+                    <span style={{ fontSize: '22px', color: config.completeIconColor }}>✓</span>
                   ) : reward.rewardType && reward.rewardType !== 'custom' ? (
                     <img 
                       src={getRewardIcon(reward.rewardType)} 
                       alt={reward.rewardType}
                       style={{ 
-                        width: '12px', 
-                        height: '12px',
+                        width: '22px', 
+                        height: '22px',
                         filter: 'grayscale(1) brightness(0.4)',
                         color: config.incompleteIconColor
                       }} 
                     />
                   ) : (
-                    <span style={{ fontSize: '10px', color: config.incompleteIconColor }}>
+                    <span style={{ fontSize: '20px', color: config.incompleteIconColor }}>
                       {reward.icon || '🎁'}
                     </span>
                   )}
@@ -136,7 +136,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                 {/* Reward text below icon */}
                 <div style={{
                   position: 'absolute',
-                  top: '26px',
+                  top: '32px',
                   left: '50%',
                   transform: 'translateX(-50%)',
                   fontSize: '8px',
