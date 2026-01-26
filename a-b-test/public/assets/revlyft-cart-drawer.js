@@ -93,6 +93,32 @@
   }
 
   /**
+   * Inject scoped CSS for progress bar (immune to theme overrides)
+   */
+  function injectProgressBarStyles() {
+    // Idempotent - only inject once
+    if (document.getElementById('revlyft-progress-bar-style')) {
+      return;
+    }
+
+    const style = document.createElement('style');
+    style.id = 'revlyft-progress-bar-style';
+    style.textContent = `
+      #revlyft-cart-drawer .revlyft-progress-bar-bg {
+        background-color: var(--revlyft-progress-bg) !important;
+        z-index: 0 !important;
+      }
+
+      #revlyft-cart-drawer .revlyft-progress-bar-fill {
+        background-color: var(--revlyft-progress-fill) !important;
+        z-index: 1 !important;
+      }
+    `;
+    document.head.appendChild(style);
+    console.log('🎨 Progress bar styles injected (CSS variables + !important)');
+  }
+
+  /**
    * Get reward icon URL based on reward type
    */
   function getRewardIcon(rewardType) {
@@ -344,9 +370,9 @@
                 }
               </div>
               <div style="position: relative; margin-bottom: 30px;">
-                <div style="position: relative; width: 100%; height: 6px; background: transparent;">
-                  <div class="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 0;"></div>
-                  <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                <div style="position: relative; width: 100%; height: 6px;">
+                  <div class="revlyft-progress-bar-bg" style="width: 100%; height: 6px; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
+                  <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
                 </div>
                 ${sortedRewards.map((reward, index) => {
                     const position = (reward.threshold / maxThreshold) * 100;
@@ -378,9 +404,9 @@
                   : 'Add ' + formatPrice(remainingAmount) + ' to unlock ' + progressBar.goalText
                 }
               </div>
-              <div style="position: relative; width: 100%; height: 8px; background: transparent;">
-                <div class="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; position: absolute; top: 0; left: 0; z-index: 0;"></div>
-                <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 8px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 4px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+              <div style="position: relative; width: 100%; height: 8px;">
+                <div class="revlyft-progress-bar-bg" style="width: 100%; height: 8px; border-radius: 4px; position: absolute; top: 0; left: 0;"></div>
+                <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 8px; transition: width 0.3s ease; border-radius: 4px; position: absolute; top: 0; left: 0;"></div>
               </div>
             `}
           </div>
@@ -644,6 +670,13 @@
 
       // Update progress bar if enabled
       if (progressBar.enabled) {
+        // Set CSS variables for colors (applies to all progress bars)
+        const drawer = document.getElementById('revlyft-cart-drawer');
+        if (drawer) {
+          drawer.style.setProperty('--revlyft-progress-bg', progressBar.backgroundColor || '#e5e7eb');
+          drawer.style.setProperty('--revlyft-progress-fill', progressBar.barColor || '#10b981');
+        }
+
         // Check if using multi-tier rewards or legacy single goal
         if (progressBar.rewards && progressBar.rewards.length > 0) {
           // Multi-tier rewards - need to rebuild the entire progress bar section
@@ -681,20 +714,13 @@
               }
             }
             
-            // Update progress bar fill width and colors
+            // Update progress bar fill width only (colors now via CSS variables)
             const progressBarFills = document.querySelectorAll('.revlyft-progress-bar-fill');
             if (progressBarFills.length > 0) {
               progressBarFills.forEach(fill => {
                 fill.style.width = `${progressPercentage}%`;
-                fill.style.backgroundColor = progressBar.barColor || '#10b981';
               });
             }
-            
-            // Update progress bar background colors
-            const progressBarBgs = document.querySelectorAll('.revlyft-progress-bar-bg');
-            progressBarBgs.forEach(bg => {
-              bg.style.backgroundColor = progressBar.backgroundColor || '#e5e7eb';
-            });
           }
         } else if (progressBar.goal) {
           // Legacy single goal support
@@ -709,20 +735,13 @@
               : `Add ${formatPrice(remainingAmount)} to unlock ${progressBar.goalText}`;
           }
           
-          // Update progress bar fill width and colors
+          // Update progress bar fill width only (colors now via CSS variables)
           const progressBarFills = document.querySelectorAll('.revlyft-progress-bar-fill');
           if (progressBarFills.length > 0) {
             progressBarFills.forEach(fill => {
               fill.style.width = `${progressPercentage}%`;
-              fill.style.backgroundColor = progressBar.barColor || '#10b981';
             });
           }
-          
-          // Update progress bar background colors
-          const progressBarBgs = document.querySelectorAll('.revlyft-progress-bar-bg');
-          progressBarBgs.forEach(bg => {
-            bg.style.backgroundColor = progressBar.backgroundColor || '#e5e7eb';
-          });
         }
       }
 
@@ -847,6 +866,9 @@
   async function initCartDrawer() {
     console.log('🚀 Initializing Revlyft Cart Drawer...');
     console.log('Shop Domain:', SHOP_DOMAIN);
+    
+    // Inject progress bar styles (must run before rendering)
+    injectProgressBarStyles();
     
     // Fetch configuration
     cartConfig = await fetchCartConfig();
