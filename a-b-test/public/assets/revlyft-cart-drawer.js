@@ -104,18 +104,30 @@
     const style = document.createElement('style');
     style.id = 'revlyft-progress-bar-style';
     style.textContent = `
+      #revlyft-cart-drawer .revlyft-progress-bar-bg,
+      #revlyft-cart-drawer .revlyft-progress-bar-fill {
+        display: block !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        overflow: visible !important;
+        min-height: 6px !important;
+        max-height: none !important;
+      }
+
       #revlyft-cart-drawer .revlyft-progress-bar-bg {
-        background-color: var(--revlyft-progress-bg) !important;
+        width: 100% !important;
+        background-color: var(--revlyft-progress-bg, #e5e7eb) !important;
         z-index: 0 !important;
       }
 
       #revlyft-cart-drawer .revlyft-progress-bar-fill {
-        background-color: var(--revlyft-progress-fill) !important;
+        background-color: var(--revlyft-progress-fill, #10b981) !important;
         z-index: 1 !important;
       }
     `;
     document.head.appendChild(style);
-    console.log('🎨 Progress bar styles injected (CSS variables + !important)');
+    console.log('🎨 Progress bar styles injected (layout-hardened + CSS variables)');
   }
 
   /**
@@ -680,7 +692,7 @@
         // Check if using multi-tier rewards or legacy single goal
         if (progressBar.rewards && progressBar.rewards.length > 0) {
           // Multi-tier rewards - need to rebuild the entire progress bar section
-          const progressContainer = document.querySelector('#revlyft-cart-drawer > div:nth-child(3)');
+          const progressContainer = document.querySelector('#revlyft-cart-drawer #revlyft-progress-text')?.closest('div');
           if (progressContainer && progressContainer.querySelector('#revlyft-progress-text')) {
             // Recalculate all values
             const sortedRewards = [...progressBar.rewards].sort((a, b) => a.threshold - b.threshold);
