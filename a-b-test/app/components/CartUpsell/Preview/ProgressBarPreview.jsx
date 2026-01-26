@@ -139,7 +139,7 @@ export default function ProgressBarPreview({ config, products, currencyCode, tex
                   top: '45px',
                   left: '50%',
                   transform: 'translateX(-50%)',
-                  fontSize: '8px',
+                  fontSize: '10px',
                   color: isUnlocked ? config.completeIconColor : '#999',
                   fontWeight: isUnlocked ? '600' : '400',
                   width: '60px',

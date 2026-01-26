@@ -398,11 +398,11 @@
                           ${isUnlocked 
                             ? '<span style="font-size: 22px; color: ' + progressBar.completeIconColor + ';">✓</span>'
                             : (reward.rewardType && reward.rewardType !== 'custom'
-                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px;" />'
+                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px; filter: grayscale(1) brightness(0.4);" />'
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
-                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 10px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           ${reward.rewardText || reward.description || 'Reward'}
                         </div>
                       </div>
@@ -738,11 +738,11 @@
                           ${isUnlocked 
                             ? '<span style="font-size: 22px; color: ' + progressBar.completeIconColor + ';">✓</span>'
                             : (reward.rewardType && reward.rewardType !== 'custom'
-                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px;" />'
+                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px; filter: grayscale(1) brightness(0.4);" />'
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
-                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 8px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        <div style="position: absolute; top: 45px; left: 50%; transform: translateX(-50%); font-size: 10px; color: ${isUnlocked ? progressBar.completeIconColor : '#999'}; font-weight: ${isUnlocked ? '600' : '400'}; width: 60px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                           ${reward.rewardText || reward.description || 'Reward'}
                         </div>
                       </div>
