@@ -364,7 +364,7 @@
         ` : ''}
 
         ${progressBar.enabled && (sortedRewards.length > 0 || progressBar.goal) ? `
-          <div style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background: transparent;">
+          <div id="revlyft-progress-section" style="padding: 12px 14px; border-bottom: 1px solid #e1e3e5; background: transparent;">
             ${sortedRewards.length > 0 ? `
               <div id="revlyft-progress-text" style="margin-bottom: 16px; font-size: 11px; color: ${appearance.cartTextColor}; font-weight: 500; text-align: center;">
                 ${allUnlocked 
@@ -398,7 +398,7 @@
                           ${isUnlocked 
                             ? '<span style="font-size: 22px; color: ' + progressBar.completeIconColor + ';">✓</span>'
                             : (reward.rewardType && reward.rewardType !== 'custom'
-                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px; filter: grayscale(1) brightness(0.4);" />'
+                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px;" />'
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
@@ -692,7 +692,7 @@
         // Check if using multi-tier rewards or legacy single goal
         if (progressBar.rewards && progressBar.rewards.length > 0) {
           // Multi-tier rewards - rebuild entire progress bar section with updated unlock states
-          const progressContainer = document.querySelector('#revlyft-cart-drawer #revlyft-progress-text')?.closest('div');
+          const progressContainer = document.getElementById('revlyft-progress-section');
           if (progressContainer) {
             // Recalculate all values
             const sortedRewards = [...progressBar.rewards].sort((a, b) => a.threshold - b.threshold);
@@ -738,7 +738,7 @@
                           ${isUnlocked 
                             ? '<span style="font-size: 22px; color: ' + progressBar.completeIconColor + ';">✓</span>'
                             : (reward.rewardType && reward.rewardType !== 'custom'
-                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px; filter: grayscale(1) brightness(0.4);" />'
+                                ? '<img src="' + getRewardIcon(reward.rewardType) + '" alt="' + reward.rewardType + '" style="width: 22px; height: 22px;" />'
                                 : '<span style="font-size: 20px; color: ' + progressBar.incompleteIconColor + ';">' + (reward.icon || '🎁') + '</span>')
                           }
                         </div>
