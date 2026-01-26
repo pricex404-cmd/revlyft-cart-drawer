@@ -345,8 +345,8 @@
               </div>
               <div style="position: relative; margin-bottom: 30px;">
                 <div style="position: relative; width: 100%; height: 6px;">
-                  <div id="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
-                  <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
+                  <div class="revlyft-progress-bar-bg" style="width: 100%; height: 6px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 3px; position: absolute; top: 0; left: 0;"></div>
+                  <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 6px; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease; border-radius: 3px; position: absolute; top: 0; left: 0; z-index: 1;"></div>
                 </div>
                 ${sortedRewards.map((reward, index) => {
                     const position = (reward.threshold / maxThreshold) * 100;
@@ -378,8 +378,8 @@
                   : 'Add ' + formatPrice(remainingAmount) + ' to unlock ' + progressBar.goalText
                 }
               </div>
-              <div id="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; overflow: hidden;">
-                <div id="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease;"></div>
+              <div class="revlyft-progress-bar-bg" style="width: 100%; height: 8px; background-color: ${progressBar?.backgroundColor || '#e5e7eb'}; border-radius: 4px; overflow: hidden;">
+                <div class="revlyft-progress-bar-fill" style="width: ${progressPercentage}%; height: 100%; background-color: ${progressBar?.barColor || '#10b981'}; transition: width 0.3s ease;"></div>
               </div>
             `}
           </div>
@@ -567,37 +567,6 @@
       
       // Start banner rotation if dynamic banner is enabled
       startBannerRotation();
-      
-      // Apply progress bar colors after a brief delay to ensure DOM is ready
-      setTimeout(applyProgressBarColors, 50);
-    }
-  }
-
-  /**
-   * Apply progress bar colors (called after rendering to ensure colors are applied)
-   */
-  function applyProgressBarColors() {
-    if (!cartConfig?.progressBar) return;
-    
-    const bgElement = document.getElementById('revlyft-progress-bar-bg');
-    const fillElement = document.getElementById('revlyft-progress-bar-fill');
-    
-    console.log('🎨 Applying progress bar colors...');
-    console.log('🎨 BG Element:', bgElement);
-    console.log('🎨 Fill Element:', fillElement);
-    console.log('🎨 Colors from config:', {
-      backgroundColor: cartConfig.progressBar.backgroundColor,
-      barColor: cartConfig.progressBar.barColor
-    });
-    
-    if (bgElement && cartConfig.progressBar.backgroundColor) {
-      bgElement.style.backgroundColor = cartConfig.progressBar.backgroundColor;
-      console.log('✅ Applied background color:', cartConfig.progressBar.backgroundColor);
-    }
-    
-    if (fillElement && cartConfig.progressBar.barColor) {
-      fillElement.style.backgroundColor = cartConfig.progressBar.barColor;
-      console.log('✅ Applied bar color:', cartConfig.progressBar.barColor);
     }
   }
 
@@ -711,11 +680,20 @@
               }
             }
             
-            // Update progress bar fill
-            const progressBarFill = document.querySelector('#revlyft-progress-bar-fill');
-            if (progressBarFill) {
-              progressBarFill.style.width = `${progressPercentage}%`;
+            // Update progress bar fill width and colors
+            const progressBarFills = document.querySelectorAll('.revlyft-progress-bar-fill');
+            if (progressBarFills.length > 0) {
+              progressBarFills.forEach(fill => {
+                fill.style.width = `${progressPercentage}%`;
+                fill.style.backgroundColor = progressBar.barColor || '#10b981';
+              });
             }
+            
+            // Update progress bar background colors
+            const progressBarBgs = document.querySelectorAll('.revlyft-progress-bar-bg');
+            progressBarBgs.forEach(bg => {
+              bg.style.backgroundColor = progressBar.backgroundColor || '#e5e7eb';
+            });
           }
         } else if (progressBar.goal) {
           // Legacy single goal support
@@ -723,16 +701,27 @@
           const remainingAmount = Math.max((progressBar.goal * 100) - subtotal, 0);
           
           const progressText = document.querySelector('#revlyft-progress-text');
-          const progressBarFill = document.querySelector('#revlyft-progress-bar-fill');
           
           if (progressText) {
             progressText.textContent = progressPercentage >= 100 
               ? progressBar.goalText 
               : `Add ${formatPrice(remainingAmount)} to unlock ${progressBar.goalText}`;
           }
-          if (progressBarFill) {
-            progressBarFill.style.width = `${progressPercentage}%`;
+          
+          // Update progress bar fill width and colors
+          const progressBarFills = document.querySelectorAll('.revlyft-progress-bar-fill');
+          if (progressBarFills.length > 0) {
+            progressBarFills.forEach(fill => {
+              fill.style.width = `${progressPercentage}%`;
+              fill.style.backgroundColor = progressBar.barColor || '#10b981';
+            });
           }
+          
+          // Update progress bar background colors
+          const progressBarBgs = document.querySelectorAll('.revlyft-progress-bar-bg');
+          progressBarBgs.forEach(bg => {
+            bg.style.backgroundColor = progressBar.backgroundColor || '#e5e7eb';
+          });
         }
       }
 
@@ -760,9 +749,6 @@
         stopBannerRotation();
         startBannerRotation();
       }
-      
-      // Reapply progress bar colors after refresh
-      setTimeout(applyProgressBarColors, 50);
     }
   }
 
